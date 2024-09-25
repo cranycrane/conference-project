@@ -1,0 +1,40 @@
+version: '3.4'
+
+services:
+  php:
+    container_name: web-conference-php
+    image: web-conference-php
+    build: .docker/php
+    volumes:
+      - ./:/var/www/html/
+    ports:
+      - 3450:80
+    environment:
+      - NETTE_DEBUG=1
+      - COMPOSER_AUTH=${COMPOSER_AUTH}
+    links:
+      - database
+
+  database:
+    container_name: web-conference-db
+    image: web-conference-db
+    build: .docker/database
+    ports:
+      - 3306:3306
+    environment:
+      MYSQL_ROOT_PASSWORD: contributte
+      MYSQL_USER: contributte
+      MYSQL_PASSWORD: contributte
+      MYSQL_DATABASE: contributte
+
+  phpmyadmin:
+    image: phpmyadmin
+    ports: 
+      - 8080:80
+    environment:
+      - PMA_HOST=web-conference-db
+      - PMA_USER=contributte
+      - PMA_PASSWORD=contributte
+
+volumes:
+  postgres_data:

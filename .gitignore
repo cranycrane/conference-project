@@ -1,0 +1,19 @@
+# Nette
+
+# Composer
+
+# NodeJS
+/node_modules
+
+# Assets
+/www/dist
+
+# Tests
+.env
+temp/*
+vendor/*
+.idea/*
+log/*
+var/*
+tests/temp/*
+tests/log/*
