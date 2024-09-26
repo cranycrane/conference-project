@@ -7,6 +7,7 @@ use App\Model\Exception\Runtime\AuthenticationException;
 use App\UI\Form\BaseForm;
 use App\UI\Form\FormFactory;
 use App\UI\Modules\Admin\BaseAdminPresenter;
+use Nette\Forms\Form;
 
 final class SignPresenter extends BaseAdminPresenter
 {
@@ -39,7 +40,7 @@ final class SignPresenter extends BaseAdminPresenter
 		$this->redirect(App::DESTINATION_AFTER_SIGN_OUT);
 	}
 
-	public function processLoginForm(BaseForm $form): void
+	public function processLoginForm(Form $form): void
 	{
 		try {
 			$this->user->setExpiration($form->values->remember ? '14 days' : '20 minutes');
@@ -53,7 +54,7 @@ final class SignPresenter extends BaseAdminPresenter
 		$this->redirect(App::DESTINATION_AFTER_SIGN_IN);
 	}
 
-	protected function createComponentLoginForm(): BaseForm
+	protected function createComponentLoginForm(): Form
 	{
 		$form = $this->formFactory->forBackend();
 		$form->addEmail('email')

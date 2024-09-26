@@ -2,6 +2,7 @@
 
 namespace App\Domain\User;
 
+use App\Domain\Reservation\Reservation;
 use App\Model\Database\Entity\AbstractEntity;
 use App\Model\Database\Entity\TCreatedAt;
 use App\Model\Database\Entity\TId;
@@ -9,6 +10,8 @@ use App\Model\Database\Entity\TUpdatedAt;
 use App\Model\Exception\Logic\InvalidArgumentException;
 use App\Model\Security\Identity;
 use DateTime;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
@@ -32,17 +35,14 @@ class User extends AbstractEntity
 
 	public const STATES = [self::STATE_FRESH, self::STATE_BLOCKED, self::STATE_ACTIVATED];
 
-	/** @ORM\Column(type="string", length=255, nullable=FALSE, unique=false) */
-	private string $name;
+	/** @ORM\Column(type="string", length=255, nullable=TRUE, unique=false) */
+	public string $firstName;
 
-	/** @ORM\Column(type="string", length=255, nullable=FALSE, unique=false) */
-	private string $surname;
-
-	/** @ORM\Column(type="string", length=255, nullable=FALSE, unique=TRUE) */
-	private string $email;
+	/** @ORM\Column(type="string", length=255, nullable=TRUE, unique=false) */
+	public string $lastName;
 
 	/** @ORM\Column(type="string", length=255, nullable=FALSE, unique=TRUE) */
-	private string $username;
+	public string $email;
 
 	/** @ORM\Column(type="integer", length=10, nullable=FALSE) */
 	private int $state;
@@ -59,16 +59,27 @@ class User extends AbstractEntity
 	 */
 	private ?DateTime $lastLoggedAt = null;
 
-	public function __construct(string $name, string $surname, string $email, string $username, string $passwordHash)
+	/**
+	 * @ORM\OneToMany(targetEntity="App\Domain\Reservation\Reservation", mappedBy="user")
+	 */
+	public Collection $reservations;
+
+	public function __construct(string $email, string $passwordHash)
 	{
-		$this->name = $name;
-		$this->surname = $surname;
 		$this->email = $email;
-		$this->username = $username;
 		$this->password = $passwordHash;
+		$this->reservations = new ArrayCollection();
 
 		$this->role = self::ROLE_USER;
 		$this->state = self::STATE_FRESH;
+	}
+
+	public function addReservation(Reservation $reservation): void
+	{
+		if (!$this->reservations->contains($reservation)) {
+			$this->reservations[] = $reservation;
+			$reservation->setUser($this);
+		}
 	}
 
 	public function changeLoggedAt(): void
@@ -79,16 +90,6 @@ class User extends AbstractEntity
 	public function getEmail(): string
 	{
 		return $this->email;
-	}
-
-	public function getUsername(): string
-	{
-		return $this->username;
-	}
-
-	public function changeUsername(string $username): void
-	{
-		$this->username = $username;
 	}
 
 	public function getLastLoggedAt(): ?DateTime
@@ -131,25 +132,9 @@ class User extends AbstractEntity
 		return $this->state === self::STATE_ACTIVATED;
 	}
 
-	public function getName(): string
-	{
-		return $this->name;
-	}
-
-	public function getSurname(): string
-	{
-		return $this->surname;
-	}
-
 	public function getFullname(): string
 	{
-		return $this->name . ' ' . $this->surname;
-	}
-
-	public function rename(string $name, string $surname): void
-	{
-		$this->name = $name;
-		$this->surname = $surname;
+		return $this->firstName . ' ' . $this->lastName;
 	}
 
 	public function getState(): int
@@ -166,19 +151,11 @@ class User extends AbstractEntity
 		$this->state = $state;
 	}
 
-	public function getGravatar(): string
-	{
-		return 'https://www.gravatar.com/avatar/' . md5($this->email);
-	}
-
 	public function toIdentity(): Identity
 	{
 		return new Identity($this->getId(), [$this->role], [
 			'email' => $this->email,
-			'name' => $this->name,
-			'surname' => $this->surname,
 			'state' => $this->state,
-			'gravatar' => $this->getGravatar(),
 		]);
 	}
 

@@ -30,9 +30,6 @@ services:
 		type: Nette\Application\IRouter
 		factory: @App\Model\Router\RouterFactory::create
 
-	# Domain =================
-	- App\Domain\User\CreateUserFacade
-
 	# Console ================
 	- App\Console\HelloCommand
 
@@ -41,3 +38,10 @@ services:
 latte:
 	macros:
 		- App\Model\Latte\Macros::register
+search:
+  -	in: %appDir%
+    classes:
+      - *Form
+      - *Service
+      - *FormFactory
+      - *GridFactory
