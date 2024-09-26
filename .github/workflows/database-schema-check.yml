@@ -1,4 +1,4 @@
-name: Database Schema Check
+name: Test Database
 
 on:
     push:
@@ -9,37 +9,50 @@ on:
             - main
 
 jobs:
-    check-database-schema:
+    test-database:
         runs-on: ubuntu-latest
 
         services:
             mysql:
-                image: mysql:latest
-                ports:
-                    - 3306:3306
-                options: --health-cmd='mysqladmin ping --silent' --health-interval=10s --health-timeout=5s --health-retries=3
+                image: mariadb:latest
                 env:
-                    MYSQL_ROOT_PASSWORD: root
-                    MYSQL_DATABASE: contributte
+                    MYSQL_ROOT_PASSWORD: contributte
                     MYSQL_USER: contributte
                     MYSQL_PASSWORD: contributte
+                    MYSQL_DATABASE: contributte
+                ports:
+                    - 3306:3306
+                options: >-
+                    --health-cmd "mysqladmin ping --silent"
+                    --health-interval 10s
+                    --health-timeout 5s
+                    --health-retries 5
 
         steps:
             - name: Checkout repository
-              uses: actions/checkout@v3
+              uses: actions/checkout@v2
 
             - name: Set up PHP
               uses: shivammathur/setup-php@v2
               with:
-                  php-version: '8.1' # Nastavte požadovanou verzi PHP
-                  extensions: pdo_mysql # Nainstaluje rozšíření pro MySQL
+                  php-version: '8.1'
+                  extensions: pdo_mysql
 
-            - name: Install dependencies
+            - name: Install Composer dependencies
+              run: composer install
+
+            - name: Wait for MySQL
               run: |
-                  composer install
+                  until mysqladmin ping -h 127.0.0.1 -u contributte -pcontributte --silent; do
+                    sleep 1
+                  done
 
-            - name: Update database schema
+            - name: Run database migrations
               env:
-                  DATABASE_URL: 'mysql://contributte:contributte@web-conference-db:3306/contributte'
-              run: |
-                  php bin/console orm:schema-tool:update --dump-sql --force
+                  DATABASE_URL: "mysql:host=127.0.0.1;port=3306;dbname=contributte;user=contributte;password=contributte"
+              run: php www/index.php migrations:migrate --no-interaction
+
+            - name: Load database fixtures
+              env:
+                  DATABASE_URL: "mysql:host=127.0.0.1;port=3306;dbname=contributte;user=contributte;password=contributte"
+              run: php www/index.php fixtures:load --no-interaction
