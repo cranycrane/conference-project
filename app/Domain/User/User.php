@@ -64,11 +64,29 @@ class User extends AbstractEntity
 	 */
 	public Collection $reservations;
 
+	/**
+	 * @ORM\OneToMany(targetEntity="App\Domain\Conference\Conference", mappedBy="user")
+	 */
+	public Collection $createdConferences;
+
+	/**
+	 * @ORM\OneToMany(targetEntity="App\Domain\Presentation\Presentation", mappedBy="speaker")
+	 */
+	public Collection $presentations;
+
+	/**
+	 * @ORM\OneToMany(targetEntity="App\Domain\Attendance\Attendance", mappedBy="user")
+	 */
+	public Collection $attendances;
+
 	public function __construct(string $email, string $passwordHash)
 	{
 		$this->email = $email;
 		$this->password = $passwordHash;
 		$this->reservations = new ArrayCollection();
+		$this->createdConferences = new ArrayCollection();
+		$this->presentations = new ArrayCollection();
+		$this->attendances = new ArrayCollection();
 
 		$this->role = self::ROLE_USER;
 		$this->state = self::STATE_FRESH;
