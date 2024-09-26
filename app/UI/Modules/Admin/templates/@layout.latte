@@ -1,16 +1,9 @@
 {layout '../../Base/templates/@layout.latte'}
 
 {block #head}
-	<link href="{$basePath}/css/bootstrap.min.css" rel="stylesheet">
 {/block}
 
 {block #main}
-	<script src="{$basePath}/js/bootstrap.bundle.min.js"></script>
-	<script src="https://unpkg.com/naja@3/dist/Naja.min.js"></script>
-	<script>
-		naja.initialize();
-		console.log("NAJA INITIALIZED");
-	</script>
 
 	<div class="container-fluid">
 		<div class="row">
@@ -28,8 +21,8 @@
 							</a>
 						</li>
 						<li class="nav-item">
-							<a class="nav-link" n:href="':Front:Home:default'">
-								Users
+							<a class="nav-link" n:href="':Admin:User:default'">
+								Uživatelé
 							</a>
 						</li>
 					</ul>

@@ -1,43 +1,101 @@
 {layout '../../Base/templates/@layout.latte'}
 
 {block #head}
-	<link href="{$basePath}/css/bootstrap.min.css" rel="stylesheet">
 	<link rel="stylesheet" href="{$basePath}/assets/front.css" defer/>
 	<script src="{$basePath}/assets/front.js" defer></script>
+
 {/block}
 
 {block #main}
-	<script src="{$basePath}/js/bootstrap.bundle.min.js"></script>
-	<script src="https://unpkg.com/naja@3/dist/Naja.min.js"></script>
-	<script>
-		naja.initialize();
-		console.log("NAJA INITIALIZED");
-	</script>
-	<div class="cover-container d-flex w-100 h-100 p-3 mx-auto flex-column">
-		<header class="masthead mb-auto">
-			<div class="inner">
-				<h3 class="masthead-brand">Ko</h3>
-				<nav class="nav nav-masthead justify-content-center">
-					<a n:class="$presenter->isLinkCurrent(':Front:Home:') ? active, nav-link" n:href=":Front:Home:">Domů</a>
-					<a n:class="$presenter->isLinkCurrent(':Admin:Home:') ? active, nav-link" n:href=":Admin:Home:">Konference</a>
-					<a n:class="$presenter->isLinkCurrent(':Admin:Home:') ? active, nav-link" n:href=":Admin:Home:">Moje rezervace</a>
-					<a n:class="$presenter->isLinkCurrent(':Admin:Home:') ? active, nav-link" n:href=":Admin:Home:">Moje prezentace</a>
-					<a n:class="$presenter->isLinkCurrent(':Admin:Home:') ? active, nav-link" n:href=":Admin:Home:">Moje konference</a>
-					<a n:class="$presenter->isLinkCurrent(':Pdf:Home:') ? active, nav-link" n:href=":Pdf:Home:">PDF example</a>
-				</nav>
-			</div>
-		</header>
+
+
+<nav class="navbar navbar-expand-lg navbar-dark py-4">
+	<div class="container">
+		<a class="navbar-brand" href="#">EDU-<span class='jerabek'>KONF</span></a>
+
+		<button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
+				aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+			<span class="navbar-toggler-icon"></span>
+		</button>
+
+		<div class="collapse navbar-collapse" id="navbarNav">
+			<ul class="navbar-nav mx-auto align-items-center">
+				<li class="nav-item">
+					<a n:class="$presenter->isLinkCurrent(':Front:Home:') ? active, nav-link, me-4" n:href=":Front:Home:">Domů</a>
+				</li>
+				<li class="nav-item">
+					<a n:class="$presenter->isLinkCurrent(':Admin:Home:') ? active, nav-link, me-4" n:href=":Admin:Home:">Konference</a>
+				</li>
+				{if $user->isLoggedIn()}
+				<li class="nav-item">
+					<a n:class="$presenter->isLinkCurrent(':Admin:Home:') ? active, nav-link, me-4" n:href=":Admin:Home:">Moje rezervace</a>
+				</li>
+				<li class="nav-item">
+					<a n:class="$presenter->isLinkCurrent(':Admin:Home:') ? active, nav-link, me-4" n:href=":Admin:Home:">Moje konference</a>
+				</li>
+				<li class="nav-item">
+					<a n:class="$presenter->isLinkCurrent(':Admin:Home:') ? active, nav-link, me-4" n:href=":Admin:Home:">Moje prezentace</a>
+				</li>
+				<li class="nav-item">
+					<a n:class="$presenter->isLinkCurrent(':Admin:Home:') ? active, nav-link, me-4" n:href=":Admin:Home:">Správa profilu</a>
+				</li>
+				<li class="nav-item">
+						<a class="btn btn-danger mx-2 me-4" n:href=":Front:Sign:out">Odhlásit se</a>
+				</li>
+				{else}
+				<li class="nav-item">
+						<a class="btn btn-success mx-2" n:href=":Front:Sign:in">Přihlásit se</a>
+				</li>
+				{/if}
+				{if $user->isInRole('admin')}
+					<a n:class="$presenter->isLinkCurrent(':Admin:Home:') ? active, nav-link, me-4" n:href=":Admin:Home:">Admin</a>
+				{/if}
+			</ul>
+		</div>
+	</div>
+</nav>
+	<div class="container d-flex w-100 h-100 p-3 mx-auto flex-column">
+
 
 		<main role="main" class="inner cover">
 			{block content}
 			{/block}
 		</main>
 
-		<footer class="mastfoot mt-auto">
-			<div class="inner">
-				<p>Cover template for <a href="https://getbootstrap.com/">Bootstrap</a>, by
-					<a href="https://twitter.com/mdo">@mdo</a>.</p>
-			</div>
-		</footer>
 	</div>
+        <footer>
+            <div class="container py-5">
+                <div class="row gy-3">
+                    <div class="col-md">
+                    <div class="contact-info">
+                        <h3 class="mb-2">Buďme v kontaktu</h3>
+                        <div class="d-flex align-items-center my-3">
+                        <i class="fa fa-envelope contact-icon circle-icon"/>
+                        <div>
+                            <div>Email</div>
+                            <div>info@edu-konf.cz</div>
+                        </div>
+                        </div>
+                        <div class="d-flex align-items-center">
+                        <i class="fa fa-map contact-icon circle-icon"/>
+                        <div>
+                            <div>Adresa</div>
+                            <div>Brno, Česká republika</div>
+                        </div>
+                        </div>
+                        <div class="d-flex align-items-center">
+                            <div class="social-icons pt-4">
+                                <div class="icon-row">
+                                <a href="https://www.facebook.com" class="icon-link"><i class="fab fa-facebook-f"></i></a>
+                                <a href="https://www.instagram.com" class="icon-link"><i class="fab fa-instagram"></i></a>
+                                <a href="https://github.com" class="icon-link"><i class="fab fa-github"></i></a>
+                                <a href="https://linkedin.com/" class="icon-link"><i class="fab fa-linkedin-in"></i></a>
+                            </div>
+                        </div>
+                        </div>
+                    </div>
+                    </div>
+                </div>
+            </div>
+        </footer>
 {/block}

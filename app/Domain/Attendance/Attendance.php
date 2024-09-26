@@ -28,13 +28,13 @@ class Attendance extends AbstractEntity
 
 	/**
 	 * @ORM\ManyToOne(targetEntity="App\Domain\User\User", inversedBy="attendances")
-	 * @ORM\JoinColumn(name="user_id", referencedColumnName="id", nullable=false)
+	 * @ORM\JoinColumn(name="user_id", referencedColumnName="id", nullable=false, onDelete="CASCADE")
 	 */
 	public User $user;
 
 	/**
 	 * @ORM\ManyToOne(targetEntity="App\Domain\Presentation\Presentation", inversedBy="attendances")
-	 * @ORM\JoinColumn(name="presentation_id", referencedColumnName="id", nullable=false)
+	 * @ORM\JoinColumn(name="presentation_id", referencedColumnName="id", nullable=false, onDelete="CASCADE")
 	 */
 	public Presentation $presentation;
 

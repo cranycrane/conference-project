@@ -7,7 +7,7 @@
 	<link rel="shortcut icon" href="{$basePath}/favicon.ico">
 
 	<!-- Seo -->
-	<title>{block #title|stripHtml|trim}Webapp Skeleton{/} | Contributte</title>
+	<title>{block #title|stripHtml|trim}EDU-Konf{/block} | Contributte</title>
 
 	<!-- Meta -->
 	<meta name="description" n:ifset="#description" content="{include #description}">
@@ -16,13 +16,32 @@
 	<meta name="googlebot" content="snippet,archive">
 	<meta name="author" content="f3l1x">
 
-	{block #head}{/}
+	<link href="{$basePath}/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="{$basePath}/assets/datagrid.css">
+	<link rel="stylesheet" href="{$basePath}/assets/datagrid-spinners.css">
+
+	{block #head}{/block}
+
+
 </head>
 <body>
+<script src="{$basePath}/assets/jquery-3.7.1.min.js"></script>
+<script src="https://unpkg.com/naja@3/dist/Naja.min.js"></script>
+<script>
+	naja.initialize();
+	console.log("NAJA INITIALIZED");
+</script>
+<script src="{$basePath}/assets/datagrid.js"></script>
+<script src="{$basePath}/assets/datagrid-spinners.js"></script>
+<script src="{$basePath}/js/bootstrap.bundle.min.js"></script>
+<script src="https://unpkg.com/nette-forms@3"></script>
+{snippet flashMessages}
+	{include '../../Base/templates/flashMessages.latte'}
+{/snippet}
 {block #main}
 	<div class="container">
 		{include #content}
 	</div>
-{/}
+{/block}
 </body>
 </html>

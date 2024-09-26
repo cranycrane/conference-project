@@ -20,4 +20,8 @@ abstract class BasePresenter extends Presenter
 	use TFlashMessage;
 	use TModuleUtils;
 
+	public function beforeRender(): void {
+		$this->template->user = $this->getUser();
+	}
+
 }

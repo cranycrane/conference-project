@@ -58,15 +58,15 @@ class Presentation extends AbstractEntity
 
 	/**
 	 * @ORM\ManyToOne(targetEntity="App\Domain\User\User", inversedBy="presentations")
-	 * @ORM\JoinColumn(name="user_id", referencedColumnName="id", nullable=false)
+	 * @ORM\JoinColumn(name="user_id", referencedColumnName="id", nullable=false, onDelete="CASCADE")
 	 */
 	public User $speaker;
 
 	/**
 	 * @ORM\ManyToOne(targetEntity="App\Domain\Room\Room", inversedBy="presentations")
-	 * @ORM\JoinColumn(name="room_id", referencedColumnName="id", nullable=false)
+	 * @ORM\JoinColumn(name="room_id", referencedColumnName="id", nullable=true, onDelete="SET NULL")
 	 */
-	public Room $room;
+	public ?Room $room;
 
 	/**
 	 * @ORM\OneToMany(targetEntity="App\Domain\Attendance\Attendance", mappedBy="presentation")

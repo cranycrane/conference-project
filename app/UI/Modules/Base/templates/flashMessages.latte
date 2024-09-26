@@ -1,0 +1,49 @@
+{* flashMessages.latte *}
+<style>
+  .flash {
+    padding: 10px;
+    margin-bottom: 10px;
+    border-radius: 5px;
+    opacity: 1; /* Výchozí neprůhlednost */
+    transition: opacity 5s; /* Přechod pro změnu neprůhlednosti */
+    text-align: center;
+  }
+
+  .flash.success {
+    background-color: #dff0d8;
+    color: #3c763d;
+  }
+
+  .flash.error {
+    background-color: #f2dede;
+    color: #a94442;
+  }
+
+  .flash.info {
+    background-color: #d9edf7;
+    color: #31708f;
+  }
+</style>
+
+{block flashMessages}
+    {foreach $flashes as $flash}
+        <div class="flash {$flash->type}">
+            {$flash->message}
+        </div>
+    {/foreach}
+
+    <script>
+      document.addEventListener('DOMContentLoaded', function () {
+        setTimeout(function () {
+          var flashes = document.querySelectorAll('.flash');
+          flashes.forEach(function (flash) {
+            flash.style.transition = 'opacity 0.5s';
+            flash.style.opacity = '0';
+            setTimeout(function () {
+              flash.remove();
+            }, 500); // Čas pro dokončení přechodu
+          });
+        }, 5000); // Čas před skrytím zprávy (3000ms = 3 sekundy)
+      });
+    </script>
+{/block}
