@@ -43,6 +43,11 @@ jobs:
                     sleep 1
                   done
 
+            - name: Create necessary directories
+              run: |
+                  mkdir -p var/log
+                  mkdir -p var/cache
+
             - name: Run database migrations
               env:
                   DATABASE_URL: "mysql:host=127.0.0.1;port=3306;dbname=contributte;user=contributte;password=contributte"
