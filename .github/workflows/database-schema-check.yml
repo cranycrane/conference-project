@@ -1,0 +1,45 @@
+name: Database Schema Check
+
+on:
+    push:
+        branches:
+            - main
+    pull_request:
+        branches:
+            - main
+
+jobs:
+    check-database-schema:
+        runs-on: ubuntu-latest
+
+        services:
+            mysql:
+                image: mysql:latest
+                ports:
+                    - 3306:3306
+                options: --health-cmd='mysqladmin ping --silent' --health-interval=10s --health-timeout=5s --health-retries=3
+                env:
+                    MYSQL_ROOT_PASSWORD: root
+                    MYSQL_DATABASE: contributte
+                    MYSQL_USER: contributte
+                    MYSQL_PASSWORD: contributte
+
+        steps:
+            - name: Checkout repository
+              uses: actions/checkout@v3
+
+            - name: Set up PHP
+              uses: shivammathur/setup-php@v2
+              with:
+                  php-version: '8.1' # Nastavte požadovanou verzi PHP
+                  extensions: pdo_mysql # Nainstaluje rozšíření pro MySQL
+
+            - name: Install dependencies
+              run: |
+                  composer install
+
+            - name: Update database schema
+              env:
+                  DATABASE_URL: 'mysql://contributte:contributte@web-conference-db:3306/contributte'
+              run: |
+                  php bin/console orm:schema-tool:update --dump-sql --force
