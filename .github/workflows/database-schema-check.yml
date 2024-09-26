@@ -43,6 +43,9 @@ jobs:
                     sleep 1
                   done
 
+            - name: Set permissions for bin/console
+              run: chmod +x bin/console
+
             - name: Create necessary directories
               run: |
                   mkdir -p var/log
