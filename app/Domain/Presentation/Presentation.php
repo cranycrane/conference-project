@@ -51,10 +51,10 @@ class Presentation extends AbstractEntity
 	private ?string $photo;
 
 	/** @ORM\Column(type="datetime", nullable=FALSE) */
-	protected DateTime $startsAt;
+	public DateTime $startsAt;
 
 	/** @ORM\Column(type="datetime", nullable=FALSE) */
-	protected DateTime $endsAt;
+	public DateTime $endsAt;
 
 	/**
 	 * @ORM\ManyToOne(targetEntity="App\Domain\User\User", inversedBy="presentations")

@@ -25,9 +25,12 @@ class UserFixture extends AbstractFixture
 			$entity->setRole($user['role']);
 
 			$manager->persist($entity);
+
+			$this->addReference($user['role'] === User::ROLE_ADMIN ? 'admin-user' : 'user-user', $entity);
 		}
 		$manager->flush();
 	}
+
 
 	/**
 	 * @return mixed[]

@@ -2,6 +2,7 @@
 
 namespace App\Domain\Reservation;
 
+use App\Domain\Conference\Conference;
 use App\Domain\User\User;
 use App\Model\Database\Entity\AbstractEntity;
 use App\Model\Database\Entity\TCreatedAt;
@@ -43,28 +44,21 @@ class Reservation extends AbstractEntity
 	 */
 	private User $user;
 
+	/**
+	 * @ORM\ManyToOne(targetEntity="App\Domain\Conference\Conference", inversedBy="reservations")
+	 * @ORM\JoinColumn(name="conference_id", referencedColumnName="id", nullable=false)
+	 */
+	private Conference $conference;
 
-	public function __construct(string $email, string $passwordHash)
+
+
+	public function __construct(int $numOfPeople, User $user, Conference $conference)
 	{
-		$this->email = $email;
-		$this->password = $passwordHash;
+		$this->numOfPeople = $numOfPeople;
+		$this->user = $user;
+		$this->conference = $conference;
 
 		$this->state = self::STATE_CREATED;
-	}
-
-	public function getUser(): User
-	{
-		return $this->user;
-	}
-
-	public function setUser(User $user): void
-	{
-		$this->user = $user;
-	}
-
-	public function cancel(): void
-	{
-		$this->state = self::STATE_CANCELED;
 	}
 
 	public function getState(): int

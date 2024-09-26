@@ -47,7 +47,7 @@ class Conference extends AbstractEntity
 	/**
 	 * @ORM\Column(type="json", nullable=false)
 	 */
-	private array $tags = [];
+	public array $tags = [];
 
 	/** @ORM\Column(type="string", length=255, nullable=FALSE) */
 	public string $place;
@@ -78,6 +78,11 @@ class Conference extends AbstractEntity
 	 */
 	public Collection $rooms;
 
+	/**
+	 * @ORM\OneToMany(targetEntity="App\Domain\Reservation\Reservation", mappedBy="conference")
+	 */
+	public Collection $reservations;
+
 
 	public function __construct(
 		User $user,
@@ -104,6 +109,7 @@ class Conference extends AbstractEntity
 		$this->description = $description;
 
 		$this->rooms = new ArrayCollection();
+		$this->reservations = new ArrayCollection();
 
 
 		$this->state = self::STATE_CREATED;
