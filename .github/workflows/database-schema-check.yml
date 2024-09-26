@@ -51,9 +51,9 @@ jobs:
             - name: Run database migrations
               env:
                   DATABASE_URL: "mysql:host=127.0.0.1;port=3306;dbname=contributte;user=contributte;password=contributte"
-              run: php www/index.php migrations:migrate --no-interaction
+              run: bin/console orm:schema-tool:update --force
 
             - name: Load database fixtures
               env:
                   DATABASE_URL: "mysql:host=127.0.0.1;port=3306;dbname=contributte;user=contributte;password=contributte"
-              run: php www/index.php fixtures:load --no-interaction
+              run: bin/console doctrine:fixtures:load --no-interaction
