@@ -12,22 +12,6 @@ jobs:
     test-database:
         runs-on: ubuntu-latest
 
-        services:
-            mysql:
-                image: mariadb:latest
-                env:
-                    MYSQL_ROOT_PASSWORD: contributte
-                    MYSQL_USER: contributte
-                    MYSQL_PASSWORD: contributte
-                    MYSQL_DATABASE: contributte
-                ports:
-                    - 3306:3306
-                options: >-
-                    --health-cmd "mysqladmin ping --silent"
-                    --health-interval 10s
-                    --health-timeout 5s
-                    --health-retries 5
-
         steps:
             - name: Checkout repository
               uses: actions/checkout@v2
@@ -35,8 +19,17 @@ jobs:
             - name: Set up PHP
               uses: shivammathur/setup-php@v2
               with:
-                  php-version: '8.1'
+                  php-version: '8.1'  # Upravte podle verze PHP, kterou používáte
                   extensions: pdo_mysql
+
+            - name: Start MariaDB
+              uses: mirromutth/mysql-action@v1
+              with:
+                  mysql version: '11.0'  # Specifikujte verzi MariaDB
+                  mysql database: contributte
+                  mysql user: contributte
+                  mysql password: contributte
+                  mysql root password: contributte
 
             - name: Install Composer dependencies
               run: composer install
