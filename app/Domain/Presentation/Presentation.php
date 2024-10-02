@@ -31,24 +31,27 @@ class Presentation extends AbstractEntity
 	public const STATE_APPROVED = 2;
 	public const STATE_BLOCKED = 3;
 
-	public const STATES = [self::STATE_CREATED, self::STATE_BLOCKED, self::STATE_APPROVED];
-
+	public const STATES = [
+		self::STATE_CREATED => 'Čeká na schválení',
+		self::STATE_BLOCKED => 'Blokováno',
+		self::STATE_APPROVED => 'Schváleno'
+	];
 	/** @ORM\Column(type="string", length=255, nullable=FALSE) */
-	private string $title;
+	public string $title;
 
 	/** @ORM\Column(type="integer", length=10, nullable=FALSE) */
-	private int $state;
-
-	/** @ORM\Column(type="string", length=255, nullable=FALSE) */
-	private string $description;
-
-	/**
-	 * @ORM\Column(type="json", nullable=false)
-	 */
-	private array $tags = [];
+	public int $state;
 
 	/** @ORM\Column(type="string", length=255, nullable=TRUE) */
-	private ?string $photo;
+	public string $description;
+
+	/**
+	 * @ORM\Column(type="json", nullable=TRUE)
+	 */
+	public array $tags = [];
+
+	/** @ORM\Column(type="string", length=255, nullable=TRUE) */
+	public ?string $photo;
 
 	/** @ORM\Column(type="datetime", nullable=FALSE) */
 	public DateTime $startsAt;
@@ -75,10 +78,12 @@ class Presentation extends AbstractEntity
 
 
 
-	public function __construct(string $title, string $description, array $tags, string $photo = null)
+	public function __construct(User $speaker, string $title, string $description = null, array $tags = null, string $photo = null)
 	{
+		$this->speaker = $speaker;
 		$this->title = $title;
 		$this->description = $description;
+		$this->tags = $tags;
 		$this->photo = $photo;
 		$this->attendances = new ArrayCollection();
 
@@ -88,11 +93,16 @@ class Presentation extends AbstractEntity
 
 	public function setState(int $state): void
 	{
-		if (!in_array($state, self::STATES, true)) {
-			throw new InvalidArgumentException(sprintf('Unsupported state %s', $state));
+		if (!array_key_exists($state, self::STATES)) {
+			throw new InvalidArgumentException(sprintf('Unsupported state %d', $state));
 		}
 
 		$this->state = $state;
+	}
+
+	public function getStateLabel(): string
+	{
+		return self::STATES[$this->state] ?? 'Neznámý';
 	}
 
 
