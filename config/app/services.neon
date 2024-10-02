@@ -3,7 +3,7 @@
 services:
 	# Forms ===================
 	- App\UI\Form\FormFactory
-
+	- App\UI\Components\Conference\ConferenceFormFactory
 	# Latte ===================
 	latte.latteFactory:
 		setup:

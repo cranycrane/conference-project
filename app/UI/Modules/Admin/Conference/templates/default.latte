@@ -1,0 +1,32 @@
+{block content}
+    <h2>Seznam konferencí</h2>
+    {control conferenceGrid}
+
+    <!-- Tlačítko pro otevření modálního okna -->
+    <a href="#" class="btn btn-sm btn-success" data-bs-toggle="modal" data-bs-target="#conferenceModal">Přidat novou konferenci</a>
+
+    <!-- Modální okno bez začernění -->
+    <div class="modal fade" id="conferenceModal" tabindex="-1" aria-labelledby="conferenceModalLabel" aria-hidden="true">
+      <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="conferenceModalLabel">Přidat novou konferenci</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Zavřít"></button>
+          </div>
+          <div class="modal-body">
+            {control conferenceForm} <!-- Vykreslení formuláře -->
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- JavaScript pro odstranění backdropu -->
+    <script>
+        var myModal = new bootstrap.Modal(document.getElementById('conferenceModal'), {
+            backdrop: false  // Zajistí, že nebude žádné začernění při zobrazení modálního okna
+        });
+        document.querySelector('a[data-bs-target="#conferenceModal"]').addEventListener('click', function () {
+            myModal.show();
+        });
+    </script>
+{/block}

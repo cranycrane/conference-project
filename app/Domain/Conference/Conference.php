@@ -144,5 +144,12 @@ class Conference extends AbstractEntity
 		$this->state = $state;
 	}
 
+	public function getStartsAt(): DateTime {
+        return $this->startsAt;
+    }
+
+	public function getEndsAt(): DateTime {
+		return $this->endsAt;
+	}
 
 }
