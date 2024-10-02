@@ -26,13 +26,13 @@ class PresentationFixture extends AbstractFixture
 			$room = $this->getReference($presentationData['roomReference']);
 
 			$presentation = new Presentation(
+				$speaker,
 				$presentationData['title'],
 				$presentationData['description'],
 				$presentationData['tags'],
 				$presentationData['photo']
 			);
 
-			$presentation->speaker = $speaker;
 			$presentation->startsAt = $presentationData['startsAt'];
 			$presentation->endsAt = $presentationData['endsAt'];
 			$presentation->room = $room;

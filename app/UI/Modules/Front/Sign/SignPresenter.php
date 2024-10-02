@@ -43,7 +43,7 @@ class SignPresenter extends BaseFrontPresenter {
 				$this->getUser()->setExpiration('2 hours');
 				$this->restoreRequest($this->backlink);
 				if ($this->getUser()->isInRole('admin')) {
-					$this->redirect(':Admin:Dashboard:');
+					$this->redirect(':Admin:Home:');
 				}
 				else {
 					$this->redirect(':Front:Home:');

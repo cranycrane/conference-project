@@ -10,22 +10,5 @@ use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 final class HomePresenter extends BaseAdminPresenter
 {
 
-	/** @var EventDispatcherInterface @inject */
-	public EventDispatcherInterface $dispatcher;
-
-	protected function createComponentOrderForm(): Form
-	{
-		$form = new Form();
-
-		$form->addText('order', 'Order name')
-			->setRequired(true);
-		$form->addSubmit('send', 'OK');
-
-		$form->onSuccess[] = function (Form $form): void {
-			$this->dispatcher->dispatch(new OrderCreated($form->values->order), OrderCreated::NAME);
-		};
-
-		return $form;
-	}
 
 }
