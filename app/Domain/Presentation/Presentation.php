@@ -2,6 +2,7 @@
 
 namespace App\Domain\Presentation;
 
+use App\Domain\Conference\Conference;
 use App\Domain\Room\Room;
 use App\Domain\User\User;
 use App\Model\Database\Entity\AbstractEntity;
@@ -76,11 +77,18 @@ class Presentation extends AbstractEntity
 	 */
 	public Collection $attendances;
 
+	/**
+	 * @ORM\ManyToOne(targetEntity="App\Domain\Conference\Conference", inversedBy="presentations")
+	 * @ORM\JoinColumn(name="conference_id", referencedColumnName="id", nullable=false)
+	 */
+	public Conference $conference;
 
 
-	public function __construct(User $speaker, string $title, string $description = null, array $tags = null, string $photo = null)
+
+	public function __construct(User $speaker, Conference $conference, string $title, string $description = null, array $tags = null, string $photo = null)
 	{
 		$this->speaker = $speaker;
+		$this->conference = $conference;
 		$this->title = $title;
 		$this->description = $description;
 		$this->tags = $tags;

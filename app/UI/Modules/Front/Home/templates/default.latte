@@ -1,2 +1,19 @@
+{block slider}
+	<div id="carouselExampleSlidesOnly" class="carousel slide" data-ride="carousel">
+		<div class="carousel-inner h-100">
+			<div class="carousel-item active">
+				<img class="d-block w-100" src="{$basePath}/img/slider.jpg" alt="First slide">
+				<div class="overlay h-100">
+					<h2 class="overlay-text">Cesta za vzděláním začíná</h2>
+					<h2 class="jerabek">ZDE</h2>
+				</div>
+			</div>
+		</div>
+	</div>
+{/block}
+
 {block content}
-Welcome
+
+
+	<h2 class="text-center">Nejpopulárnější prezentace</h2>
+	{control popularPresentations}

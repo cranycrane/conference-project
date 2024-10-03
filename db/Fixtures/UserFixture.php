@@ -19,7 +19,9 @@ class UserFixture extends AbstractFixture
 		foreach ($this->getUsers() as $user) {
 			$entity = new User(
 				$user['email'],
-				$this->container->getByType(Passwords::class)->hash('admin')
+				$this->container->getByType(Passwords::class)->hash('admin'),
+				$user['firstName'],
+				$user['lastName']
 			);
 			$entity->activate();
 			$entity->setRole($user['role']);
@@ -39,13 +41,17 @@ class UserFixture extends AbstractFixture
 	{
 		yield [
 			'email' => 'admin@admin.cz',
-			'role' => User::ROLE_ADMIN
+			'role' => User::ROLE_ADMIN,
+			'firstName' => 'Jakub',
+			'lastName' => 'Jeřábek',
 		];
 
         yield [
             'email' => 'user@user.cz',
-            'role' => User::ROLE_USER
-        ];
+            'role' => User::ROLE_USER,
+        	'firstName' => 'Vojtěch',
+			'lastName' => 'Teichmann',
+		];
 	}
 
 }

@@ -35,10 +35,10 @@ class User extends AbstractEntity
 
 	public const STATES = [self::STATE_FRESH, self::STATE_BLOCKED, self::STATE_ACTIVATED];
 
-	/** @ORM\Column(type="string", length=255, nullable=TRUE, unique=false) */
+	/** @ORM\Column(type="string", length=255, nullable=FALSE, unique=false) */
 	public string $firstName;
 
-	/** @ORM\Column(type="string", length=255, nullable=TRUE, unique=false) */
+	/** @ORM\Column(type="string", length=255, nullable=FALSE, unique=false) */
 	public string $lastName;
 
 	/** @ORM\Column(type="string", length=255, nullable=FALSE, unique=TRUE) */
@@ -79,10 +79,12 @@ class User extends AbstractEntity
 	 */
 	public Collection $attendances;
 
-	public function __construct(string $email, string $passwordHash)
+	public function __construct(string $email, string $passwordHash, string $firstName, string $lastName)
 	{
 		$this->email = $email;
 		$this->password = $passwordHash;
+		$this->firstName = $firstName;
+		$this->lastName = $lastName;
 		$this->reservations = new ArrayCollection();
 		$this->createdConferences = new ArrayCollection();
 		$this->presentations = new ArrayCollection();

@@ -15,5 +15,30 @@ use App\Model\Database\Repository\AbstractRepository;
  */
 class PresentationRepository extends AbstractRepository
 {
+  public function findPresentationsBySpeaker($userId)
+  {
+    return $this->createQueryBuilder('r')
+      ->where('r.speaker = :userId')
+      ->setParameter('userId', $userId)
+      ->orderBy('r.startsAt', 'DESC')
+      ->getQuery()
+      ->getResult();
+  }
+
+  public function findUpcomingPresentationsWithMostAttendances()
+  {
+    return $this->createQueryBuilder('p')
+      ->leftJoin('p.attendances', 'a') // Spojí s tabulkou Attendance
+      ->addSelect('COUNT(a.id) AS HIDDEN attendanceCount') // Spočítá počet účastníků
+      ->where('p.endsAt > :currentDateTime') // Omezení na prezentace, které ještě neproběhly
+      ->setParameter('currentDateTime', new \DateTime())
+      ->groupBy('p.id') // Seskupení podle prezentace
+      ->orderBy('attendanceCount', 'DESC') // Seřazení podle počtu účastníků
+      ->setMaxResults(3) // Vrátí pouze 3 výsledky
+      ->getQuery()
+      ->getResult();
+  }
+
+
 
 }
