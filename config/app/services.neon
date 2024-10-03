@@ -44,4 +44,5 @@ search:
       - *Form
       - *Service
       - *FormFactory
+      - *ListFactory
       - *GridFactory

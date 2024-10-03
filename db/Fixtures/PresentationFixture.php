@@ -2,6 +2,7 @@
 
 namespace Database\Fixtures;
 
+use App\Domain\Conference\Conference;
 use App\Domain\Presentation\Presentation;
 use App\Domain\Room\Room;
 use App\Domain\User\User;
@@ -18,15 +19,19 @@ class PresentationFixture extends AbstractFixture
 	public function load(ObjectManager $manager): void
 	{
 		foreach ($this->getPresentations() as $presentationData) {
-			// Získání referencí uživatele a místnosti
+			// Získání referencí uživatele, místnosti a konference
 			/** @var User $speaker */
 			$speaker = $this->getReference($presentationData['userReference']);
 
 			/** @var Room $room */
 			$room = $this->getReference($presentationData['roomReference']);
 
+			/** @var Conference $conference */
+			$conference = $this->getReference($presentationData['conferenceReference']);
+
 			$presentation = new Presentation(
 				$speaker,
+				$conference,
 				$presentationData['title'],
 				$presentationData['description'],
 				$presentationData['tags'],
@@ -47,6 +52,7 @@ class PresentationFixture extends AbstractFixture
 		$manager->flush();
 	}
 
+
 	/**
 	 * Vrací data pro prezentace
 	 * @return iterable
@@ -56,6 +62,7 @@ class PresentationFixture extends AbstractFixture
 		yield [
 			'userReference' => 'admin-user',
 			'roomReference' => 'tech-room-101',
+			'conferenceReference' => 'tech-conference',
 			'title' => 'Future of AI',
 			'description' => 'A deep dive into AI advancements.',
 			'tags' => ['AI', 'Machine Learning', 'Innovation'],
@@ -68,6 +75,7 @@ class PresentationFixture extends AbstractFixture
 		yield [
 			'userReference' => 'user-user',
 			'roomReference' => 'marketing-room-202',
+			'conferenceReference' => 'marketing-summit',
 			'title' => 'Digital Marketing Trends',
 			'description' => 'Exploring the future of digital marketing.',
 			'tags' => ['Marketing', 'Digital', 'Trends'],

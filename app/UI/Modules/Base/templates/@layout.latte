@@ -34,6 +34,11 @@
 <script src="{$basePath}/assets/datagrid.js"></script>
 <script src="{$basePath}/assets/datagrid-spinners.js"></script>
 <script src="{$basePath}/js/bootstrap.bundle.min.js"></script>
+<script>
+	$(document).ready(function(){
+		$('.dropdown-toggle').dropdown()
+	});
+</script>
 <script src="https://unpkg.com/nette-forms@3"></script>
 {snippet flashMessages}
 	{include '../../Base/templates/flashMessages.latte'}
