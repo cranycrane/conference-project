@@ -1,0 +1,130 @@
+{block slider}
+	<div id="presentation-slider" class="carousel slide" data-ride="carousel">
+		<div class="carousel-inner h-100">
+			<div class="carousel-item active">
+				{if $presentation->photo}
+					<img class="d-block w-100" src="{$basePath}/{$presentation->photo}" alt="Card image cap">
+				{else}
+					<img class="d-block w-100" src="{$basePath}/uploads/presentations/default.jpg" alt="Card image cap">
+				{/if}
+				<div class="overlay h-100">
+					<h2 class="overlay-text">{$presentation->title}</h2>
+				</div>
+			</div>
+		</div>
+	</div>
+{/block}
+
+
+{block content}
+	<div class="row">
+		<div class="col">
+			<a class="btn btn-secondary" n:href=":Front:Home:default">Zpátky na konferenci</a>
+		</div>
+	</div>
+
+
+	<div class="row pt-2 justify-content-center align-items-center text-center">
+		<div class="col-5">
+			<h3 class="card-subtitle mb-2 me-auto">Konference:</h3>
+		</div>
+		<div class="col-5">
+{*			todo odkaz na detail konference *}
+			<h3 class="card-subtitle mb-2">{$presentation->conference->title}</h3>
+		</div>
+	</div>
+
+	<!-- Začátek -->
+	<div class="row pt-2 justify-content-center align-items-center text-center">
+		<div class="col-5">
+			<h3 class="card-subtitle mb-2">Začátek:</h3>
+		</div>
+		<div class="col-5">
+			<h3 class="card-subtitle mb-2">{$presentation->startsAt|date:'d.m.Y H:i'}</h3>
+		</div>
+	</div>
+
+	<!-- Konec -->
+	<div class="row pt-2 justify-content-center align-items-center text-center">
+		<div class="col-5">
+			<h3 class="card-subtitle mb-2">Konec:</h3>
+		</div>
+		<div class="col-5">
+			<h3 class="card-subtitle mb-2">{$presentation->endsAt|date:'d.m.Y H:i'}</h3>
+		</div>
+	</div>
+
+	<!-- Přednášející -->
+	<div class="row pt-2 justify-content-center align-items-center text-center">
+		<div class="col-5">
+			<h3 class="card-subtitle mb-2">Přednášející:</h3>
+		</div>
+		<div class="col-5">
+			<h3 class="card-subtitle mb-2">{$presentation->speaker->getFullName()}</h3>
+		</div>
+	</div>
+
+	<div class="row pt-2 justify-content-center align-items-center my-3">
+		<div class="col-auto">
+		<h3 class="card-subtitle mb-2">Popis</h3>
+		</div>
+	</div>
+	<p class="text-center">{$presentation->description}</p>
+
+	{if $presentation->speaker->getId() === $user->getId()}
+		<div class="row pt-2 justify-content-center align-items-center my-3">
+			<div class="col text-end">
+				<a href="#" class="btn btn-warning" data-bs-toggle="modal" data-bs-target="#dialog">Upravit</a>
+			</div>
+		</div>
+	{/if}
+
+
+	<div class="modal fade" id="dialog" tabindex="-1" aria-labelledby="dialog-label" aria-hidden="true">
+		<div class="modal-dialog">
+			<div class="modal-content">
+				<div class="modal-header">
+					<h5 class="modal-title" id="dialog-label">Upravit prezentaci</h5>
+					<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Zavřít">
+					</button>
+				</div>
+				<div class="modal-body">
+					{control presentationEditForm}
+				</div>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Zavřít</button>
+				</div>
+			</div>
+		</div>
+	</div>
+
+
+
+{*	*}{* Presentation edit modal	*}
+{*	<div class="modal fade" id="presentationEditModal" style="z-index: 999999999;" tabindex="-1" role="dialog" aria-hidden="true">*}
+{*		<div class="modal-dialog" role="document">*}
+{*			<div class="modal-content">*}
+{*				<div class="modal-header">*}
+{*					<h5 class="modal-title" id="modalLabel">Upravit prezentaci</h5>*}
+{*					<button type="button" class="close" data-dismiss="modal" aria-label="Close">*}
+{*						<span aria-hidden="true">&times;</span>*}
+{*					</button>*}
+{*				</div>*}
+{*				<div class="modal-body">*}
+{*					{control presentationEditForm}*}
+{*				</div>*}
+{*			</div>*}
+{*		</div>*}
+{*	</div>*}
+
+{*	<script>*}
+{*		$.nette.ext('modal', {*}
+{*			success: function (payload) {*}
+{*				if (payload.showPresentationEditModal) {*}
+{*					$('#weddingModal').modal('show');*}
+{*				}*}
+{*			}*}
+{*		});*}
+{*	</script>*}
+
+{/block}

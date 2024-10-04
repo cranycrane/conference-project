@@ -41,7 +41,7 @@ latte:
 search:
   -	in: %appDir%
     classes:
-      - *Form
+#      - *Form
       - *Service
       - *FormFactory
       - *ListFactory

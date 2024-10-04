@@ -68,8 +68,8 @@ class PresentationFixture extends AbstractFixture
 			'tags' => ['AI', 'Machine Learning', 'Innovation'],
 			'photo' => null,
 			'state' => Presentation::STATE_APPROVED,
-			'startsAt' => new DateTime('2024-05-01 10:00:00'),
-			'endsAt' => new DateTime('2024-05-01 11:30:00'),
+			'startsAt' => new DateTime('2025-05-01 10:00:00'),
+			'endsAt' => new DateTime('2025-05-01 11:30:00'),
 		];
 
 		yield [
@@ -81,8 +81,8 @@ class PresentationFixture extends AbstractFixture
 			'tags' => ['Marketing', 'Digital', 'Trends'],
 			'photo' => null,
 			'state' => Presentation::STATE_APPROVED,
-			'startsAt' => new DateTime('2024-06-15 11:00:00'),
-			'endsAt' => new DateTime('2024-06-15 12:30:00'),
+			'startsAt' => new DateTime('2025-06-15 11:00:00'),
+			'endsAt' => new DateTime('2025-06-15 12:30:00'),
 		];
 	}
 }

@@ -45,8 +45,8 @@ nav {
 }
 
 /*SLIDER*/
-.carousel-inner {
-	/*height: 800px; !* Nastavte požadovanou výšku karuselu *!*/
+#presentation-slider {
+	height: 500px; /* Nastavte požadovanou výšku */
 }
 
 .dropdown:hover .dropdown-menu {
@@ -56,11 +56,12 @@ nav {
 
 .carousel-inner img {
 	height: 100%; /* Nastaví výšku obrázku podle výšky kontejneru */
-	object-fit: contain; /* Ořízne obrázek a vyplní kontejner */
+	object-fit: cover; /* Ořízne obrázek a vyplní kontejner */
 }
 
 .carousel-item {
-	position: relative; /* Nastavíme relativní pozici pro položku karuselu */
+	height: 100%; /* Nastaví výšku položky na výšku rodiče (karuselu) */
+	position: relative; /* Pro overlay */
 }
 
 .carousel-item .overlay {
