@@ -15,6 +15,7 @@ use DateTime;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Nette\Http\FileUpload;
 
 /**
  * @ORM\Entity(repositoryClass="App\Domain\Presentation\PresentationRepository")
@@ -23,7 +24,6 @@ use Doctrine\ORM\Mapping as ORM;
  */
 class Presentation extends AbstractEntity
 {
-
 	use TId;
 	use TCreatedAt;
 	use TUpdatedAt;
@@ -49,16 +49,16 @@ class Presentation extends AbstractEntity
 	/**
 	 * @ORM\Column(type="json", nullable=TRUE)
 	 */
-	public array $tags = [];
+	public ?array $tags = [];
 
 	/** @ORM\Column(type="string", length=255, nullable=TRUE) */
 	public ?string $photo;
 
-	/** @ORM\Column(type="datetime", nullable=FALSE) */
-	public DateTime $startsAt;
+	/** @ORM\Column(type="datetime", nullable=TRUE) */
+	public ?DateTime $startsAt;
 
-	/** @ORM\Column(type="datetime", nullable=FALSE) */
-	public DateTime $endsAt;
+	/** @ORM\Column(type="datetime", nullable=TRUE) */
+	public ?DateTime $endsAt;
 
 	/**
 	 * @ORM\ManyToOne(targetEntity="App\Domain\User\User", inversedBy="presentations")
@@ -97,6 +97,12 @@ class Presentation extends AbstractEntity
 
 
 		$this->state = self::STATE_CREATED;
+	}
+
+	public function setPhotoUpload(FileUpload $file): void {
+		$fileName = 'uploads/presentations/' . $file->getSanitizedName();
+		$file->move($fileName);
+		$this->photo = $fileName;
 	}
 
 	public function setState(int $state): void

@@ -16,6 +16,12 @@ class PresentationList extends Control {
 		$this->presentations = $presentations;
 	}
 
+
+	// todo vymyslet edit v listu - problem s predavanim conferenceId
+//	public function createComponentPresentationEditForm(PresentationFormFactory $formFactory): PresentationForm {
+//		return $formFactory->create();
+//	}
+
 	public function render(): void
 	{
 		$this->template->presentations = $this->presentations;

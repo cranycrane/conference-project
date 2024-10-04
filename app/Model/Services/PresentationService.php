@@ -2,6 +2,7 @@
 
 namespace App\Model\Services;
 
+use App\Domain\Conference\Conference;
 use App\Domain\Presentation\Presentation;
 use App\Domain\Presentation\PresentationRepository;
 use App\Domain\User\User;
@@ -32,8 +33,12 @@ class PresentationService implements ICrudService {
 	 */
 	public function create(array $data): Presentation
 	{
+    $user = $this->entityManager->getReference(User::class, $data['userId']);
+    $conference = $this->entityManager->getReference(Conference::class, $data['conferenceId']);
+
 		$presentation = new Presentation(
-			$data['user'],
+			$user,
+      $conference,
 			$data['title'],
 			$data['description'] ?? null,
 			$data['tags'] ?? null,
@@ -46,6 +51,11 @@ class PresentationService implements ICrudService {
 
 		return $presentation;
 	}
+
+  public function update(): void
+  {
+    $this->entityManager->flush();
+  }
 
 	public function findByBySpeaker(int $speakerId): ArrayCollection {
 		return new ArrayCollection($this->presentationRepository->findPresentationsBySpeaker($speakerId));
@@ -67,7 +77,7 @@ class PresentationService implements ICrudService {
 		$this->entityManager->flush();
 	}
 
-	public function find($id): Presentation
+	public function find($id): ?Presentation
 	{
 		return $this->presentationRepository->find($id);
 	}

@@ -58,7 +58,8 @@
 						</div>
 
 						<p class="card-text">{$presentation->description}</p>
-						<a href="#" class="btn btn-primary">Více informací</a>
+						<a href="{plink :Front:Presentations:detail id => $presentation->getId()}" class="btn btn-primary">Více informací</a>
+
 						{if $presentation->speaker->getId() === $user->getId()}
 							<a href="#" class="btn btn-warning">Upravit</a>
 						{/if}
