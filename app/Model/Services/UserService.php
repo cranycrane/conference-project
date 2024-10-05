@@ -38,7 +38,9 @@ class UserService implements ICrudService
 		// Create User
 		$user = new User(
 			(string) $data['email'],
-			Passwords::create()->hash(strval($data['password'] ?? md5(microtime())))
+			Passwords::create()->hash(strval($data['password'] ?? md5(microtime()))),
+			$data['firstName'],
+			$data['lastName']
 		);
 
 		// Set role

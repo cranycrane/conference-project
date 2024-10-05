@@ -19,7 +19,7 @@
 		</button>
 
 		<div class="collapse navbar-collapse" id="navbarNav">
-			<ul class="navbar-nav mx-auto align-items-center">
+			<ul class="navbar-nav ms-auto align-items-center">
 				<li class="nav-item">
 					<a n:class="$presenter->isLinkCurrent(':Front:Home:') ? active, nav-link, me-4" n:href=":Front:Home:">Domů</a>
 				</li>
@@ -27,26 +27,32 @@
 					<a n:class="$presenter->isLinkCurrent(':Admin:Home:') ? active, nav-link, me-4" n:href=":Admin:Home:">Konference</a>
 				</li>
 				{if $user->isLoggedIn()}
+				  <li class="nav-item dropdown">
+					<a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+					  Profil
+					</a>
+					<div class="dropdown-menu" aria-labelledby="navbarDropdown">
+					<a n:class="$presenter->isLinkCurrent(':Admin:Home:') ? active, dropdown-item, me-4" n:href=":Admin:Home:">Moje rezervace</a>
+					<a n:class="$presenter->isLinkCurrent(':Admin:Home:') ? active, dropdown-item, me-4" n:href=":Admin:Home:">Moje konference</a>
+					<a n:class="$presenter->isLinkCurrent(':Admin:Home:') ? active, dropdown-item, me-4" n:href=":Front:Presentations:my">Moje prezentace</a>
+					<a n:class="$presenter->isLinkCurrent(':Admin:Home:') ? active, dropdown-item, me-4" n:href=":Admin:Home:">Správa profilu</a>
+					  <div class="dropdown-divider"></div>
+					  <a class="dropdown-item" n:href=":Front:Sign:out">Odhlásit se</a>
+					</div>
+				  </li>
+				</div>
 				<li class="nav-item">
-					<a n:class="$presenter->isLinkCurrent(':Admin:Home:') ? active, nav-link, me-4" n:href=":Admin:Home:">Moje rezervace</a>
-				</li>
-				<li class="nav-item">
-					<a n:class="$presenter->isLinkCurrent(':Admin:Home:') ? active, nav-link, me-4" n:href=":Admin:Home:">Moje konference</a>
-				</li>
-				<li class="nav-item">
-					<a n:class="$presenter->isLinkCurrent(':Admin:Home:') ? active, nav-link, me-4" n:href=":Admin:Home:">Moje prezentace</a>
-				</li>
-				<li class="nav-item">
-					<a n:class="$presenter->isLinkCurrent(':Admin:Home:') ? active, nav-link, me-4" n:href=":Admin:Home:">Správa profilu</a>
-				</li>
-				<li class="nav-item">
-						<a class="btn btn-danger mx-2 me-4" n:href=":Front:Sign:out">Odhlásit se</a>
+						<a class="btn btn-success mx-2 me-4" n:href=":Front:Sign:out">Vytvořit konferenci</a>
 				</li>
 				{else}
 				<li class="nav-item">
 						<a class="btn btn-success mx-2" n:href=":Front:Sign:in">Přihlásit se</a>
 				</li>
+				<li class="nav-item">
+						<a class="btn btn-primary mx-2" n:href=":Front:Sign:up">Registrovat se</a>
+				</li>
 				{/if}
+
 				{if $user->isInRole('admin')}
 					<a n:class="$presenter->isLinkCurrent(':Admin:Home:') ? active, nav-link, me-4" n:href=":Admin:Home:">Admin</a>
 				{/if}
@@ -54,15 +60,19 @@
 		</div>
 	</div>
 </nav>
-	<div class="container d-flex w-100 h-100 p-3 mx-auto flex-column">
+
+	{block slider}
+	{/block}
 
 
+	<div class="container py-4">
 		<main role="main" class="inner cover">
 			{block content}
 			{/block}
 		</main>
-
 	</div>
+
+
         <footer>
             <div class="container py-5">
                 <div class="row gy-3">
