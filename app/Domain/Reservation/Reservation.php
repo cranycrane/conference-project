@@ -30,25 +30,30 @@ class Reservation extends AbstractEntity
 	public const STATE_PAID = 3;
 	public const STATE_CANCELED = 4;
 
-	public const STATES = [self::STATE_CREATED, self::STATE_CONFIRMED, self::STATE_PAID, self::STATE_CANCELED];
+	public const STATES = [
+		self::STATE_CREATED => 'Vytvořeno',
+		self::STATE_CONFIRMED => 'Potvrzeno',
+		self::STATE_PAID => 'Zaplaceno',
+		self::STATE_CANCELED => 'Zrušeno'
+	];
 
 	/** @ORM\Column(type="integer", length=10, nullable=FALSE) */
-	private int $numOfPeople;
+	public int $numOfPeople;
 
 	/** @ORM\Column(type="integer", length=10, nullable=FALSE) */
-	private int $state;
+	public int $state;
 
 	/**
 	 * @ORM\ManyToOne(targetEntity="App\Domain\User\User", inversedBy="reservations")
 	 * @ORM\JoinColumn(name="user_id", referencedColumnName="id", nullable=false, onDelete="CASCADE")
 	 */
-	private User $user;
+	public User $user;
 
 	/**
 	 * @ORM\ManyToOne(targetEntity="App\Domain\Conference\Conference", inversedBy="reservations")
 	 * @ORM\JoinColumn(name="conference_id", referencedColumnName="id", nullable=false)
 	 */
-	private Conference $conference;
+	public Conference $conference;
 
 
 
