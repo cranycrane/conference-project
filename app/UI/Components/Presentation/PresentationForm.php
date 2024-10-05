@@ -25,6 +25,9 @@ class PresentationForm extends Control {
 	public function createComponentForm(): Form {
 		$form = $this->formFactory->forFrontend();
 
+    $form->addHidden('id')
+      ->setDefaultValue($this->presentation ? $this->presentation->getId() : null);
+
 		$form->addText('title', 'Název prezentace')
 			->setRequired();
 
@@ -49,8 +52,6 @@ class PresentationForm extends Control {
 			->addRule($form::Image, 'Soubor musí být JPEG, PNG, GIF, WebP nebo AVIF')
 			->addRule($form::MaxFileSize, 'Maximální velikost je 5 MB', 2 * 1024 * 1024);
 
-		// todo vymyslet jak s fotkama
-
 		if ($this->presentation) {
 			$form->setDefaults($this->presentation);
 
@@ -67,7 +68,6 @@ class PresentationForm extends Control {
 	}
 
 	public function formSucceeded(Form $form, array $values): void {
-
 		try {
 			if($this->presentation) {
 				$this->presentation->title = $values['title'];

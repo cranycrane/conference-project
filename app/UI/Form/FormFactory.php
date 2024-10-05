@@ -26,6 +26,7 @@ final class FormFactory
 	private function create(): Form
 	{
 		$form = new BootstrapForm;
+		$form->setAjax(false);
 		if ($this->user->isLoggedIn()) {
 			$form->addProtection();
 		}
