@@ -59,7 +59,7 @@ class Conference extends AbstractEntity
 	protected DateTime $endsAt;
 
 	/** @ORM\Column(type="string", length=255, nullable=TRUE) */
-	public string $description;
+	public ?string $description;
 
 	/** @ORM\Column(type="integer", length=10, nullable=FALSE) */
 	public int $priceForSeat;
@@ -99,7 +99,7 @@ class Conference extends AbstractEntity
 		DateTime $endsAt,
 		int $priceForSeat,
 		int $capacity,
-		string $description = null,
+		?string $description = null,
 		)
 	{
 		$this->user = $user;
@@ -149,5 +149,27 @@ class Conference extends AbstractEntity
 		$this->state = $state;
 	}
 
+	public function getStartsAt(): DateTime {
+        return $this->startsAt;
+    }
+
+	public function getEndsAt(): DateTime {
+		return $this->endsAt;
+	}
+
+	public function setStartsAt(DateTime $startsAt): void
+	{
+		$this->startsAt = $startsAt;
+	}
+
+	public function setEndsAt(DateTime $endsAt): void
+	{
+		$this->endsAt = $endsAt;
+	}
+
+	public function getNumOfPeople(): int
+	{
+		return $this->numOfPeople;
+	}
 
 }
