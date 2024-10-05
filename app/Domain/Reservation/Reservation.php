@@ -73,8 +73,8 @@ class Reservation extends AbstractEntity
 
 	public function setState(int $state): void
 	{
-		if (!in_array($state, self::STATES, true)) {
-			throw new InvalidArgumentException(sprintf('Unsupported state %s', $state));
+		if (!array_key_exists($state, self::STATES)) {
+			throw new InvalidArgumentException(sprintf('Unsupported state %d', $state));
 		}
 
 		$this->state = $state;
