@@ -35,36 +35,7 @@ class ConferenceGrid extends Control {
 		$grid->addColumnNumber('capacity', 'Kapacita')
 			->setFormat(0, ',', ' ');
 	
-		// Inline editace - povolení a konfigurace
-		$grid->addInlineEdit()
-			->onControlAdd[] = function (Container $container): void {
-				$container->addText('title', '')->setRequired('Zadejte název konference');
-				$container->addText('place', '')->setRequired('Zadejte místo konání');
-				$container->addText('startsAt', '')->setRequired('Zadejte datum začátku.');
-				$container->addText('endsAt', '')->setRequired('Zadejte datum konce.');
-				$container->addText('priceForSeat', '')->setRequired('Zadejte cenu za sedadlo.');
-				$container->addText('capacity', '')->setRequired('Zadejte kapacitu.');
-			};
-	
-		// Nastavení výchozích hodnot pro inline editaci
-		$grid->getInlineEdit()->onSetDefaults[] = function (Container $container, $item): void {
-			$container->setDefaults([
-				'title' => $item->title,
-				'place' => $item->place,
-				'startsAt' => $item->startsAt->format('Y-m-d H:i:s'),
-				'endsAt' => $item->endsAt->format('Y-m-d H:i:s'),
-				'priceForSeat' => $item->priceForSeat,
-				'capacity' => $item->capacity,
-			]);
-		};
-	
-		// Zpracování uložených hodnot
-		$grid->getInlineEdit()->onSubmit[] = function ($id, $values): void {
-			$this->conferenceService->updateConference($id, $values);
-			$this->presenter->flashMessage('Záznam byl úspěšně upraven.', 'success');
-			$this->presenter->redrawControl('conferenceGrid');
-		};
-	
+
 		// Akce pro mazání
 		$grid->addAction('delete', 'Smazat', 'delete!')
 			->setIcon('trash')

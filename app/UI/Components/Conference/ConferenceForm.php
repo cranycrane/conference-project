@@ -61,6 +61,13 @@ class ConferenceForm extends Control
 
         $form->addSubmit('send', 'Uložit konferenci');
 
+        $form->addSubmit('back', 'Zpět')
+            ->setHtmlAttribute('class', 'btn btn-secondary') // Šedé tlačítko
+            ->setValidationScope([]) // Bez validace
+            ->onClick[] = function() {
+                $this->presenter->redirect('Conference:default');
+        };
+
         $form->onSuccess[] = [$this, 'formSucceeded'];
 
         return $form;
