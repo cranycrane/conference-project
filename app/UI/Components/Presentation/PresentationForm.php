@@ -49,6 +49,7 @@ class PresentationForm extends Control {
 			->setDefaultValue($this->presentation->room ? $this->presentation->room->roomNumber : 'Není přiřazena');
 
 		$form->addUpload('photoImage', 'Fotka/Poster:')
+      ->setOption('description', sprintf('maximálně 5 MB, JPEG, PNG, GIF, WebP nebo AVIF'))
 			->addRule($form::Image, 'Soubor musí být JPEG, PNG, GIF, WebP nebo AVIF')
 			->addRule($form::MaxFileSize, 'Maximální velikost je 5 MB', 2 * 1024 * 1024);
 

@@ -24,6 +24,7 @@ final class StaticAuthorizator extends Permission
 	protected function addRoles(): void
 	{
 		$this->addRole(User::ROLE_ADMIN);
+		$this->addRole(User::ROLE_USER);
 	}
 
 	/**
