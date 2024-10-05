@@ -152,4 +152,19 @@ class Conference extends AbstractEntity
 		return $this->endsAt;
 	}
 
+	public function setStartsAt(DateTime $startsAt): void
+	{
+		$this->startsAt = $startsAt;
+	}
+
+	public function setEndsAt(DateTime $endsAt): void
+	{
+		$this->endsAt = $endsAt;
+	}
+
+	public function getNumOfPeople(): int
+	{
+		return $this->numOfPeople;
+	}
+
 }

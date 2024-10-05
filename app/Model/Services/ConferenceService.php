@@ -68,15 +68,31 @@ class ConferenceService
      * @return Conference
      */
     public function saveConference($values): Conference
-    {
-        $user = $this->userRepository->find($this->netteUser->getId());
+{
+    if (isset($values->id) && $values->id) {
+        // Pokud je ID přítomné, upravujeme existující konferenci
+        $conference = $this->find($values->id);
 
-        if (!$user) {
-            throw new InvalidArgumentException("User not found.");
+        if (!$conference) {
+            throw new \Exception('Konference nebyla nalezena.');
         }
 
+        // Zde aktualizujeme hodnoty konference
+        $conference->title = $values->title;
+        $conference->getNumOfPeople();
+        $conference->genre = $values->genre;
+        $conference->place = $values->place;
+        $conference->setStartsAt(new \DateTime($values->startsAt));
+        $conference->setEndsAt(new \DateTime($values->endsAt));
+        $conference->priceForSeat = (int) $values->priceForSeat;
+        $conference->capacity = (int) $values->capacity;
+        $conference->description = $values->description ?? null;
+        
+        $this->entityManager->flush();
+    } else {
+        // Pokud není ID, vytváříme novou konferenci
         $conference = new Conference(
-            $user,
+            $this->userRepository->find($this->netteUser->getId()),
             $values->title,
             (int) $values->numOfPeople,
             $values->genre,
@@ -90,26 +106,70 @@ class ConferenceService
 
         $this->entityManager->persist($conference);
         $this->entityManager->flush();
+    }
 
-        return $conference;
+    return $conference;
+}
+
+
+     /**
+     * Aktualizace celé konference na základě hodnot z inline editace.
+     * @param int $id
+     * @param array $values
+     */
+    public function updateConference(int $id, array $values): void
+    {
+        $conference = $this->find($id);
+        if (!$conference) {
+            throw new InvalidArgumentException("Konference nenalezena.");
+        }
+
+        $conference->title = $values['title'];
+        $conference->place = $values['place'];
+        $conference->setStartsAt(new \DateTime($values['startsAt']));
+        $conference->setEndsAt(new \DateTime($values['endsAt']));
+        $conference->priceForSeat = (int)$values['priceForSeat'];
+        $conference->capacity = (int)$values['capacity'];
+
+        $this->entityManager->flush();
     }
 
     /**
-     * Updates the specified conference.
-     * @param int $conferenceId
-     * @param array $data
+     * Aktualizace konkrétního pole v konferenci.
+     * @param int $id
+     * @param string $field
+     * @param mixed $value
      */
-    public function update(int $conferenceId, array $data): void
+    public function updateField(int $id, string $field, $value): void
     {
-        $conference = $this->find($conferenceId);
-
+        $conference = $this->find($id);
         if (!$conference) {
-            throw new InvalidArgumentException("Conference not found.");
+            throw new InvalidArgumentException("Konference nenalezena.");
         }
 
-        // Update properties as necessary
-        // Example: $conference->setTitle($data['title']);
-        // Call setters as needed and check for existence of keys in $data
+        // Použití setter metody dle názvu pole
+        switch ($field) {
+            case 'title':
+                $conference->title = $value;
+                break;
+            case 'place':
+                $conference->place = $value;
+                break;
+            case 'startsAt':
+                $conference->setStartsAt(new \DateTime($value));
+                break;
+            case 'endsAt':
+                $conference->setEndsAt(new \DateTime($value));
+                break;
+            case 'priceForSeat':
+                $conference->priceForSeat = (int)$value;
+                break;
+            case 'capacity':
+                $conference->capacity = (int)$value;
+                break;
+            default:
+                throw new InvalidArgumentException("Field '{$field}' does not exist.");
+        }
 
         $this->entityManager->flush();
     }

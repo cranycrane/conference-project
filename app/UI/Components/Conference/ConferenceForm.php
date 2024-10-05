@@ -24,6 +24,8 @@ class ConferenceForm extends Control
         // Využití vaší továrny na formuláře
         $form = $this->formFactory->forBackend(); // nebo forBackend(), pokud je formulář určen pro administrátory
         $form->setAjax(false);
+        $form->addHidden('id');
+
 
         $form->addText('title', 'Název konference:')
             ->setRequired('Prosím, zadejte název konference.');
@@ -57,7 +59,7 @@ class ConferenceForm extends Control
         $form->addTextArea('description', 'Popis:')
             ->setNullable();
 
-        $form->addSubmit('send', 'Přidat konferenci');
+        $form->addSubmit('send', 'Uložit konferenci');
 
         $form->onSuccess[] = [$this, 'formSucceeded'];
 
@@ -65,18 +67,27 @@ class ConferenceForm extends Control
     }
 
     public function formSucceeded(Form $form, $values): void
-    {
-        try {
-            $this->conferenceService->saveConference($values);
-            $this->presenter->flashMessage('Konference byla úspěšně přidána.', 'success');
-        } catch (\Exception $e) {
-            $this->presenter->flashMessage('Nastala chyba při přidávání konference.', 'error');
-        }
+{
+    \Tracy\Debugger::barDump($values, 'Form Values');
 
-        if (!$this->presenter->isAjax()) {
-            $this->redirect('this');
-        }
+    try {
+        $this->conferenceService->saveConference($values);
+        $this->presenter->flashMessage('Konference byla úspěšně upravena.', 'success');
+    } catch (\Exception $e) {
+        \Tracy\Debugger::barDump($values, 'Form Values');
+
+        $this->presenter->flashMessage('Nastala chyba při ukládání konference.', 'error');
     }
+
+    if ($this->presenter->isAjax()) {
+        // Přidáme payload pro přesměrování
+        $this->presenter->payload->redirect = $this->presenter->link('Conference:default');
+        $this->presenter->redrawControl(); // Překreslíme modální okno
+    } else {
+        // Pokud nejde o AJAX, přesměrujeme standardně
+        $this->presenter->redirect('Conference:default');
+    }
+}
 
     public function render(): void
     {
