@@ -6,7 +6,6 @@ use Nette\Application\UI\Form;
 use Nette\Application\UI\Control;
 use App\Model\Services\RoomService;
 use App\UI\Form\FormFactory;
-use DateTime;
 
 class RoomForm extends Control
 {
@@ -30,8 +29,7 @@ class RoomForm extends Control
             ->setRequired('Please enter the room number.');
         $form->addText('address', 'Address:')
             ->setRequired('Please enter the address.');
-        $form->addText('conference', 'Conference:')
-            ->setNullable('Please enter the conference.');
+
 
         $form->addSubmit('send', 'Uložit místnost');
 

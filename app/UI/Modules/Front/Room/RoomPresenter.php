@@ -10,6 +10,7 @@ use App\UI\Components\Room\RoomForm;
 use App\UI\Components\Room\RoomFormFactory;
 use App\UI\Modules\Front\BaseFrontPresenter;
 use Nette\DI\Attributes\Inject;
+use Nette\Bridges\ApplicationLatte\Template;
 
 final class RoomPresenter extends BaseFrontPresenter
 {
@@ -48,6 +49,7 @@ final class RoomPresenter extends BaseFrontPresenter
             'conference' => $room->conference,
         ]);
     }
+
 
     public function renderCreate(): void
     {

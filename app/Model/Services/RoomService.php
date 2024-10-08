@@ -41,6 +41,34 @@ class RoomService implements ICrudService {
 		return $Room;
 	}
 
+	public function saveRoom($values): Room
+	{
+		if (isset($values->id) && $values->id) {
+			$room = $this->find($values->id);
+
+			if (!$room) {
+				throw new \Exception('Místnost nebyla nalezena.');
+			}
+
+			// Zde aktualizujeme hodnoty konference
+			$room->roomNumber = $values->roomNumber;
+			$room->address = $values->address;
+			$this->entityManager->flush();
+		} else {
+			$room = new Room(
+				$values->roomNumber,
+				$values->address
+			);
+
+			$this->entityManager->persist($room);
+			$this->entityManager->flush();
+		}
+
+		return $room;
+	}
+
+
+
 
 	public function delete($id): void
 	{
@@ -58,4 +86,6 @@ class RoomService implements ICrudService {
 	{
 		return new ArrayCollection($this->RoomRepository->findAll());
 	}
+
+	
 }
