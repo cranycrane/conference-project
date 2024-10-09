@@ -110,13 +110,16 @@
 				{control presentationsList}
 		</div>
 		{*	NE-SCHVALENE PREZENTACE	*}
-		<div class="tab-pane fade" id="profile" role="tabpanel" aria-labelledby="profile-tab">
-			DVA
-		</div>
-		{*	MISTNOSTI	*}
-		<div class="tab-pane fade" id="contact" role="tabpanel" aria-labelledby="contact-tab">
-			{control roomGrid}
-		</div>
+		{if $user->isLoggedIn() && $conference->getUser()->getId() === $user->getId()}
+
+			<div class="tab-pane fade" id="profile" role="tabpanel" aria-labelledby="profile-tab">
+				DVA
+			</div>
+			{*	MISTNOSTI	*}
+			<div class="tab-pane fade" id="contact" role="tabpanel" aria-labelledby="contact-tab">
+				{control roomGrid}
+			</div>
+		{/if}
 	</div>
 
 
