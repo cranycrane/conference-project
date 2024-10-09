@@ -4,6 +4,8 @@ namespace App\Model\Services;
 
 use App\Domain\Room\Room;
 use App\Domain\Room\RoomRepository;
+use App\Domain\Conference\Conference;
+use App\Domain\Conference\ConferenceRepository;
 use App\Model\Exception\Logic\InvalidArgumentException;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\DBAL\Exception\UniqueConstraintViolationException;
@@ -13,6 +15,7 @@ use Nette\Utils\Validators;
 class RoomService implements ICrudService {
 
 	private RoomRepository $RoomRepository;
+	private ConferenceRepository $ConferenceRepository;
 	private EntityManagerInterface $entityManager;
 
 	public function __construct(
@@ -21,6 +24,9 @@ class RoomService implements ICrudService {
 		$this->entityManager = $entityManager;
 		/** @var RoomRepository $this->RoomRepository */
 		$this->RoomRepository = $entityManager->getRepository(Room::class);
+		/** @var ConferenceRepository $this->ConferenceRepository */
+		$this->ConferenceRepository = $entityManager->getRepository(Conference::class);
+		
 	}
 
 	/**
@@ -41,8 +47,13 @@ class RoomService implements ICrudService {
 		return $Room;
 	}
 
-	public function saveRoom($values): Room
+	public function saveRoom($values, ?int $conferenceId): Room
 	{
+		$conference = $this->ConferenceRepository->find($conferenceId);
+		if (!$conference) {
+			throw new \Exception('Conference not found');
+		}
+
 		if (isset($values->id) && $values->id) {
 			$room = $this->find($values->id);
 
@@ -50,14 +61,15 @@ class RoomService implements ICrudService {
 				throw new \Exception('Místnost nebyla nalezena.');
 			}
 
-			// Zde aktualizujeme hodnoty konference
+			// Zde aktualizujeme hodnoty místnosti
 			$room->roomNumber = $values->roomNumber;
 			$room->address = $values->address;
 			$this->entityManager->flush();
 		} else {
 			$room = new Room(
 				$values->roomNumber,
-				$values->address
+				$values->address,
+				$conference
 			);
 
 			$this->entityManager->persist($room);
@@ -80,6 +92,11 @@ class RoomService implements ICrudService {
 	public function find($id): Room
 	{
 		return $this->RoomRepository->find($id);
+	}
+
+	public function findByConference(int $conferenceId): ArrayCollection
+	{
+		return new ArrayCollection($this->RoomRepository->findBy(['conference' => $conferenceId]));
 	}
 
 	public function findAll(): ArrayCollection

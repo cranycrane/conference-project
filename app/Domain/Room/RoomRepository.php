@@ -2,18 +2,18 @@
 
 namespace App\Domain\Room;
 
-use App\Domain\Reservation\Reservation;
+use App\Domain\Room\Room;
 use App\Domain\User\User;
 use App\Model\Database\Repository\AbstractRepository;
 
 /**
- * @method Presentation|NULL find($id, ?int $lockMode = NULL, ?int $lockVersion = NULL)
- * @method Presentation|NULL findOneBy(array $criteria, array $orderBy = NULL)
- * @method Presentation[] findAll()
- * @method Presentation[] findBy(array $criteria, array $orderBy = NULL, ?int $limit = NULL, ?int $offset = NULL)
+ * @method Room|NULL find($id, ?int $lockMode = NULL, ?int $lockVersion = NULL)
+ * @method Room|NULL findOneBy(array $criteria, array $orderBy = NULL)
+ * @method Room[] findAll()
+ * @method Room[] findBy(array $criteria, array $orderBy = NULL, ?int $limit = NULL, ?int $offset = NULL)
  * @extends AbstractRepository<Room>
  */
 class RoomRepository extends AbstractRepository
 {
-
+    
 }

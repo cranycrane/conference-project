@@ -50,6 +50,19 @@ final class RoomPresenter extends BaseFrontPresenter
         ]);
     }
 
+    public function renderDefault(int $conferenceId = null): void
+    {
+        if ($conferenceId !== null) {
+            // Fetch rooms related to the specific conference
+            $rooms = $this->roomService->findByConference($conferenceId);
+        } else {
+            // Fetch all rooms
+            $rooms = $this->roomService->findAll();
+        }
+
+        $this->template->rooms = $rooms;
+    }
+
 
     public function renderCreate(): void
     {

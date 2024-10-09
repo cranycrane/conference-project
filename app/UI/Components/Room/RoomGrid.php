@@ -11,14 +11,25 @@ use Ublaboo\DataGrid\DataGrid;
 class RoomGrid extends Control {
 
 	private RoomService $RoomService;
+	private ?int $conferenceId = null;
+
 	public function __construct(RoomService $RoomService) {
 		$this->RoomService = $RoomService;
 	}
 
+	public function setConferenceId(?int $conferenceId): void {
+        $this->conferenceId = $conferenceId; // Setter to pass the conferenceId
+    }
+
 	public function createComponentGrid(): DataGrid {
 		$grid = new DataGrid();
 
-		$grid->setDataSource($this->RoomService->findAll());	
+		
+		if ($this->conferenceId !== null) {
+            $grid->setDataSource($this->RoomService->findByConference($this->conferenceId));
+        } else {
+            $grid->setDataSource($this->RoomService->findAll());
+        }	
 
 		$grid->addColumnText('roomNumber', 'Room number')
         	->setSortable(); // Make sure the alias matches your query
@@ -41,9 +52,10 @@ class RoomGrid extends Control {
 	}
 
 	public function handleEdit(int $id): void
-	{
-		$this->presenter->redirect('Room:edit', $id); 
-	}
+    {
+        // Use the stored conferenceId instead of passing it
+        $this->presenter->redirect('Room:edit', ['id' => $id, 'conferenceId' => $this->conferenceId]);
+    }
 
 	public function handleDelete(int $id): void
 	{

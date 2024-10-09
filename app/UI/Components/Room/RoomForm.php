@@ -11,11 +11,16 @@ class RoomForm extends Control
 {
     private FormFactory $formFactory;
     private RoomService $RoomService;
+    private ?int $conferenceId = null;
 
     public function __construct(FormFactory $formFactory, RoomService $RoomService)
     {
         $this->formFactory = $formFactory;
         $this->RoomService = $RoomService;
+    }
+
+    public function setConferenceId(?int $conferenceId): void {
+        $this->conferenceId = $conferenceId; // Setter to pass the conferenceId
     }
 
     public function createComponentForm(): Form
@@ -37,7 +42,8 @@ class RoomForm extends Control
             ->setHtmlAttribute('class', 'btn btn-secondary') // Šedé tlačítko
             ->setValidationScope([]) // Bez validace
             ->onClick[] = function() {
-                $this->presenter->redirect('Room:default');
+                // Use $this->conferenceId inside the callback
+                $this->presenter->redirect('Room:default', ['conferenceId' => $this->conferenceId]);
         };
 
         $form->onSuccess[] = [$this, 'formSucceeded'];
@@ -46,27 +52,27 @@ class RoomForm extends Control
     }
 
     public function formSucceeded(Form $form, $values): void
-{
-    \Tracy\Debugger::barDump($values, 'Form Values');
-
-    try {
-        $this->RoomService->saveRoom($values);
-        $this->presenter->flashMessage('Místnost byla úspěšně upravena.', 'success');
-    } catch (\Exception $e) {
+    {
         \Tracy\Debugger::barDump($values, 'Form Values');
 
-        $this->presenter->flashMessage('Nastala chyba při ukládání místnosti.', 'error');
-    }
+        try {
+            $this->RoomService->saveRoom($values, $this->conferenceId);
+            $this->presenter->flashMessage('Místnost byla úspěšně upravena.', 'success');
+        } catch (\Exception $e) {
+            \Tracy\Debugger::barDump($values, 'Form Values');
 
-    if ($this->presenter->isAjax()) {
-        // Přidáme payload pro přesměrování
-        $this->presenter->payload->redirect = $this->presenter->link('Room:default');
-        $this->presenter->redrawControl(); // Překreslíme modální okno
-    } else {
-        // Pokud nejde o AJAX, přesměrujeme standardně
-        $this->presenter->redirect('Room:default');
+            $this->presenter->flashMessage('Nastala chyba při ukládání místnosti.', 'error');
+        }
+        \Tracy\Debugger::barDump($this->conferenceId, 'conferenceId before redirect');
+        if ($this->presenter->isAjax()) {
+            // Přidáme payload pro přesměrování
+            $this->presenter->payload->redirect = $this->presenter->link('Room:default', ['conferenceId' => $this->conferenceId]);
+            $this->presenter->redrawControl(); // Překreslíme modální okno
+        } else {
+            // Pokud nejde o AJAX, přesměrujeme standardně
+            $this->presenter->redirect('Room:default', ['conferenceId' => $this->conferenceId]);
+        }
     }
-}
 
     public function render(): void
     {
