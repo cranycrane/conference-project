@@ -26,9 +26,6 @@
 				<li class="nav-item">
 					<a n:class="$presenter->isLinkCurrent(':Admin:Home:') ? active, nav-link, me-4" n:href=":Admin:Home:">Konference</a>
 				</li>
-				<li class="nav-item">
-					<a n:class="$presenter->isLinkCurrent(':Front:Room:') ? active, nav-link, me-4" n:href=":Front:Room:">Místnosti</a>
-				</li>
 				{if $user->isLoggedIn()}
 				  <li class="nav-item dropdown">
 					<a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
