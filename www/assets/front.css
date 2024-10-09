@@ -2,6 +2,12 @@
 	color: #7456FF;
 }
 
+label:has(input:required)::after {
+	content: ' *';
+	color: red;
+}
+
+
 nav {
 	font-family: 'Poppins', sans-serif;
 }

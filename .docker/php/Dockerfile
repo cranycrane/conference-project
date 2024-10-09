@@ -22,8 +22,6 @@ COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 RUN composer self-update
 ENV COMPOSER_ALLOW_SUPERUSER=1
 
-
-
 CMD sh -c "\
 	composer install && composer dump-autoload && \
 	bin/console orm:schema-tool:update --force && \
