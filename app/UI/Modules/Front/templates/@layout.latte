@@ -21,14 +21,14 @@
 		<div class="collapse navbar-collapse" id="navbarNav">
 			<ul class="navbar-nav ms-auto align-items-center">
 				<li class="nav-item">
-					<a n:class="$presenter->isLinkCurrent(':Front:Home:') ? active, nav-link, me-4" n:href=":Front:Home:">Domů</a>
+					<a n:class="$presenter->isLinkCurrent(':Front:Home:') ? active, nav-link, me-4, text-white" n:href=":Front:Home:">Domů</a>
 				</li>
 				<li class="nav-item">
-					<a n:class="$presenter->isLinkCurrent(':Admin:Home:') ? active, nav-link, me-4" n:href=":Admin:Home:">Konference</a>
+					<a n:class="$presenter->isLinkCurrent(':Admin:Home:') ? active, nav-link, me-4, text-white" n:href=":Front:Conference:default">Konference</a>
 				</li>
 				{if $user->isLoggedIn()}
 				  <li class="nav-item dropdown">
-					<a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+					<a class="nav-link dropdown-toggle text-white" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
 					  Profil
 					</a>
 					<div class="dropdown-menu" aria-labelledby="navbarDropdown">

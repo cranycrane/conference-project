@@ -1,0 +1,92 @@
+<div class="row my-4">
+	{if $conferences->count() > 0}
+		{foreach $conferences as $conference}
+			<div class="col-sm-12 col-md-6 col-lg-4 mb-4"> <!-- Responzivní sloupce -->
+				<div class="card" style="width: 100%;"> <!-- Nastavení šířky karty na 100% sloupce -->
+					<div class="card-image-container"> <!-- Kontejner pro obrázek a overlay -->
+						{if $conference->photo}
+							<img class="card-img-top" src="{$basePath}{$conference->photo}" alt="Card image cap">
+						{else}
+							<img class="card-img-top" src="{$basePath}/uploads/conferences/default.jpg" alt="Card image cap">
+						{/if}
+               			{if $conference->getEndsAt() < $currentDateTime} <!-- Zkontroluje, zda prezentace již skončila -->
+							<div class="presentation-overlay">PROBĚHLO</div>
+						{/if}
+					</div>
+
+					<div class="card-body">
+						<h5 class="card-title">{$conference->title}</h5>
+
+						<!-- Další informace o prezentaci -->
+						<div class="row pt-2">
+							<div class="col-5">
+								<h6 class="card-subtitle mb-2">Konference:</h6>
+							</div>
+							<div class="col-7">
+								<h6 class="card-subtitle mb-2">{$conference->title}</h6>
+							</div>
+						</div>
+
+						<!-- Začátek -->
+						<div class="row">
+							<div class="col-5">
+								<h6 class="card-subtitle mb-2">Začátek:</h6>
+							</div>
+							<div class="col-7">
+								<h6 class="card-subtitle mb-2">{$conference->getStartsAt()|date:'d.m.Y H:i'}</h6>
+							</div>
+						</div>
+
+						<!-- Konec -->
+						<div class="row">
+							<div class="col-5">
+								<h6 class="card-subtitle mb-2">Konec:</h6>
+							</div>
+							<div class="col-7">
+								<h6 class="card-subtitle mb-2">{$conference->getEndsAt()|date:'d.m.Y H:i'}</h6>
+							</div>
+						</div>
+
+						<p class="card-text">{$conference->description}</p>
+						<a href="{plink :Front:Conference:detail id => $conference->getId()}" class="btn btn-primary">Více informací</a>
+
+						{if $user->isLoggedIn() && $conference->getUser()->getId() === $user->getId()}
+							<a n:href="edit! $conference->getId()" class="btn btn-warning ajax" data-bs-toggle="modal" data-bs-target="#dialog-conf">Upravit</a>
+						{/if}
+					</div>
+				</div>
+			</div>
+		{/foreach}
+
+	{else}
+		<h5 class="text-center">Nenalezeny žádné konference.</h5>
+	{/if}
+</div>
+
+
+<div class="modal fade" id="dialog-conf" tabindex="-1" aria-labelledby="dialog-label" aria-hidden="true">
+	<div class="modal-dialog">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h5 class="modal-title" id="dialog-label">Upravit konferenci</h5>
+				<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Zavřít">
+				</button>
+			</div>
+			<div class="modal-body">
+				{snippet conferenceEditSnippet}
+					{if $currentConferenceId}
+						{control conferenceEditForm}
+					{else}
+						<div class="text-center">
+							<div class="spinner-border" role="status">
+							</div>
+						</div>
+					{/if}
+				{/snippet}
+			</div>
+			<div class="modal-footer">
+				<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Zavřít</button>
+			</div>
+		</div>
+	</div>
+</div>

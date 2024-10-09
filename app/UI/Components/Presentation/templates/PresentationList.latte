@@ -60,7 +60,7 @@
 						<p class="card-text">{$presentation->description}</p>
 						<a href="{plink :Front:Presentations:detail id => $presentation->getId()}" class="btn btn-primary">Více informací</a>
 
-						{if $presentation->speaker->getId() === $user->getId()}
+						{if $user->isLoggedIn() && $presentation->speaker->getId() === $user->getId()}
 							<a n:href="edit! $presentation->getId()" class="btn btn-warning ajax" data-bs-toggle="modal" data-bs-target="#dialog">Upravit</a>
 
 {*							<a n:href="edit! $presentation->getId()" class="btn btn-warning ajax">Upravit</a>*}

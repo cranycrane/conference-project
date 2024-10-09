@@ -86,14 +86,14 @@ class ConferenceForm extends Control
         $this->presenter->flashMessage('Nastala chyba při ukládání konference.', 'error');
     }
 
-    if ($this->presenter->isAjax()) {
-        // Přidáme payload pro přesměrování
-        $this->presenter->payload->redirect = $this->presenter->link('Conference:default');
-        $this->presenter->redrawControl(); // Překreslíme modální okno
-    } else {
-        // Pokud nejde o AJAX, přesměrujeme standardně
-        $this->presenter->redirect('Conference:default');
-    }
+//    if ($this->presenter->isAjax()) {
+//        // Přidáme payload pro přesměrování
+//        $this->presenter->payload->redirect = $this->presenter->link('Conference:default');
+//        $this->presenter->redrawControl(); // Překreslíme modální okno
+//    } else {
+//        // Pokud nejde o AJAX, přesměrujeme standardně
+//        $this->presenter->redirect('Conference:default');
+//    }
 }
 
     public function render(): void

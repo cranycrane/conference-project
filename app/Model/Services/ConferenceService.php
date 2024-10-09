@@ -87,7 +87,7 @@ class ConferenceService
         $conference->priceForSeat = (int) $values->priceForSeat;
         $conference->capacity = (int) $values->capacity;
         $conference->description = $values->description ?? null;
-        
+
         $this->entityManager->flush();
     } else {
         // Pokud není ID, vytváříme novou konferenci
@@ -188,6 +188,10 @@ class ConferenceService
         $this->entityManager->remove($conference);
         $this->entityManager->flush();
     }
+
+	public function find5UpcomingConferences(): ArrayCollection {
+		return new ArrayCollection($this->conferenceRepository->find5UpcomingConferences());
+	}
 
     /**
      * Finds a conference by ID.
