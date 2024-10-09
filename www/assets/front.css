@@ -43,7 +43,7 @@ nav {
 }
 
 .nav-link {
-	color: #fff !important; /* Bílá barva odkazů */
+	color: #fff; /* Bílá barva odkazů */
 }
 
 .nav-link:hover {
