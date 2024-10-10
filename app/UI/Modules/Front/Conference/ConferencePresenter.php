@@ -31,6 +31,9 @@ final class ConferencePresenter extends BaseFrontPresenter
 	public PresentationService $presentationService;
 
 	#[Inject]
+	public PresentationFormFactory $presentationFormFactory;
+
+	#[Inject]
 	public ConferenceService $conferenceService;
 
 	#[Inject]
@@ -42,11 +45,19 @@ final class ConferencePresenter extends BaseFrontPresenter
 	private int $conferenceId;
 
 	public function createComponentPresentationsList(): PresentationList {
-		return $this->presentationListFactory->create($this->presentationService->findByConference($this->conferenceId));
+		return $this->presentationListFactory->create($this->presentationService->findByConferenceApproved($this->conferenceId));
+	}
+
+	public function createComponentPresentationsNotApprovedList(): PresentationList {
+		return $this->presentationListFactory->create($this->presentationService->findByConferenceNotApproved($this->conferenceId));
 	}
 
 	public function createComponentConferenceList(): ConferenceList {
 		return $this->conferenceListFactory->create($this->conferenceService->findAll());
+	}
+
+	public function createComponentPresentationForm(): PresentationForm {
+		return $this->presentationFormFactory->create($this->conferenceId);
 	}
 
 	public function createComponentRoomGrid(): RoomGrid {

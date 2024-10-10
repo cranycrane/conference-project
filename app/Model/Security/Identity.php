@@ -9,7 +9,7 @@ class Identity extends NetteIdentity
 
 	public function getFullname(): string
 	{
-		return sprintf('%s %s', $this->data['name'] ?? '', $this->data['surname'] ?? '');
+		return sprintf('%s %s', $this->data['firstName'] ?? '', $this->data['lastName'] ?? '');
 	}
 
 }

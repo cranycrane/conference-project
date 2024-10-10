@@ -176,6 +176,8 @@ class User extends AbstractEntity
 		return new Identity($this->getId(), [$this->role], [
 			'email' => $this->email,
 			'state' => $this->state,
+			'firstName' => $this->firstName,
+			'lastName' => $this->lastName
 		]);
 	}
 

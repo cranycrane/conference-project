@@ -36,7 +36,8 @@ class PresentationForm extends Control {
 
 		$form->addText('speakerName', 'Jméno řečníka:')
 			->setDisabled()
-			->setDefaultValue($this->presentation->speaker->getFullname());
+			->setDefaultValue($this->presentation?->speaker->getFullname()
+				?? $this->presenter->getUser()->getIdentity()->getFullname());
 
 		$form->addDateTime('startsAt', 'Kdy začne:')
 			->setDisabled();
@@ -46,7 +47,7 @@ class PresentationForm extends Control {
 
 		$form->addText('roomNumber', 'Místnost:')
 			->setDisabled()
-			->setDefaultValue($this->presentation->room ? $this->presentation->room->roomNumber : 'Není přiřazena');
+			->setDefaultValue($this->presentation?->room ? $this->presentation->room->roomNumber : 'Není přiřazena');
 
 		$form->addUpload('photoImage', 'Fotka/Poster:')
       ->setOption('description', sprintf('maximálně 5 MB, JPEG, PNG, GIF, WebP nebo AVIF'))

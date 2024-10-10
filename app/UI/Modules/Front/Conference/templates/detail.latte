@@ -21,12 +21,12 @@
 		<div class="col">
 			<a class="btn btn-primary" n:href=":Front:Home:default">Rezervovat lístky</a>
 		</div>
-		{if $user}
+		{if $user->isLoggedIn()}
 		<div class="col text-end">
 			{if $conference->getUser()->getId() === $user->getId()}
 			<a href="#" class="btn btn-warning" data-bs-toggle="modal" data-bs-target="#dialog">Upravit konferenci</a>
 			{/if}
-			<a class="btn btn-success" n:href=":Front:Home:default">Přidat návrh prezentace</a>
+			<a href="#" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#dialog-presentation">Přidat návrh prezentace</a>
 		</div>
 		{/if}
 	</div>
@@ -36,7 +36,6 @@
 			<h3 class="card-subtitle mb-2 me-auto">Konference:</h3>
 		</div>
 		<div class="col-5">
-			{*			todo odkaz na detail konference *}
 			<h3 class="card-subtitle mb-2">{$conference->title}</h3>
 		</div>
 	</div>
@@ -113,7 +112,7 @@
 		{if $user->isLoggedIn() && $conference->getUser()->getId() === $user->getId()}
 
 			<div class="tab-pane fade" id="profile" role="tabpanel" aria-labelledby="profile-tab">
-				DVA
+				{control presentationsNotApprovedList}
 			</div>
 			{*	MISTNOSTI	*}
 			<div class="tab-pane fade" id="contact" role="tabpanel" aria-labelledby="contact-tab">
@@ -143,6 +142,23 @@
 		</div>
 	</div>
 
+	<div class="modal fade" id="dialog-presentation" tabindex="-1" aria-labelledby="dialog-label" aria-hidden="true">
+		<div class="modal-dialog">
+			<div class="modal-content">
+				<div class="modal-header">
+					<h5 class="modal-title" id="dialog-label">Přidat návrh prezentace</h5>
+					<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Zavřít">
+					</button>
+				</div>
+				<div class="modal-body">
+					{control presentationForm}
+				</div>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Zavřít</button>
+				</div>
+			</div>
+		</div>
+	</div>
 
 
 	{*	*}{* Presentation edit modal	*}
