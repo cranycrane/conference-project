@@ -7,11 +7,13 @@ use App\Model\Services\PresentationService;
 use Doctrine\Common\Collections\ArrayCollection;
 use Nette\Application\Attributes\Persistent;
 use Nette\Application\UI\Control;
+use Nette\Security\User;
 use Nette\DI\Attributes\Inject;
 
 class PresentationList extends Control {
 
   private PresentationFormFactory $presentationFormFactory;
+  private User $user;
 
 	private PresentationService $presentationService;
 
@@ -19,10 +21,11 @@ class PresentationList extends Control {
   #[Persistent]
   public ?int $currentPresentationId = null;
 
-	public function __construct(PresentationService $presentationService, ArrayCollection $presentations, PresentationFormFactory $presentationFormFactory) {
+	public function __construct(PresentationService $presentationService, ArrayCollection $presentations, PresentationFormFactory $presentationFormFactory,  User $user) {
 		$this->presentationService = $presentationService;
 		$this->presentations = $presentations;
-    $this->presentationFormFactory = $presentationFormFactory;
+    	$this->presentationFormFactory = $presentationFormFactory;
+		$this->user = $user;
 	}
 
   	public function handleEdit(int $id): void {
@@ -45,8 +48,12 @@ class PresentationList extends Control {
 
 	public function render(): void
 	{
-    $this->template->currentPresentationId = $this->currentPresentationId;
-		$this->template->presentations = $this->presentations;
+		$this->template->currentPresentationId = $this->currentPresentationId;
+
+
+		$userId = $this->user->getId();
+	
+		$this->template->presentations = $this->presentationService->findByUser($userId); 
 		$this->template->currentDateTime = new \DateTime();
 		$this->template->user = $this->presenter->getUser();
 		$this->template->setFile(__DIR__ . '/templates/PresentationList.latte');

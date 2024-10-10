@@ -48,4 +48,10 @@ final class PresentationsPresenter extends BaseFrontPresenter
 	public function renderDetail($id): void {
 		$this->template->presentation = $this->presentationService->find($id);
 	}
+
+  public function renderMy(): void
+  {
+      $userId = $this->getUser()->getId();  // Získáme ID přihlášeného uživatele
+      $this->template->presentations = $this->presentationService->findByUser($userId);  // Najdeme prezentace uživatele
+  }
 }
