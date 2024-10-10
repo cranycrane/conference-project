@@ -61,7 +61,17 @@ final class ConferencePresenter extends BaseFrontPresenter
 	}
 
 	public function createComponentRoomGrid(): RoomGrid {
-		return $this->roomGridFactory->create();
+		$grid = $this->roomGridFactory->create();
+    
+        $conferenceId = $this->conferenceId;
+    
+        if ($conferenceId !== null) {
+            $conferenceId = (int) $conferenceId; // Cast conferenceId to an integer
+        }
+    
+        $grid->setConferenceId($conferenceId); // Pass the conferenceId to RoomGrid
+    
+        return $grid;
 	}
 
 	protected function createComponentConferenceEditForm(): ConferenceForm {
