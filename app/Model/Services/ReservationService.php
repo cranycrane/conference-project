@@ -39,6 +39,9 @@ class ReservationService implements ICrudService {
 
 		$reservation = new Reservation(
 			$data['numOfPeople'],
+			$data['firstName'],
+			$data['lastName'],
+			$data['email'],
 			$user,
 			$conference
 		);
@@ -55,8 +58,8 @@ class ReservationService implements ICrudService {
 	}
 
 	public function delete($id): void {
-		$user = $this->find($id);
-		$this->entityManager->remove($user);
+		$reservation = $this->find($id);
+		$this->entityManager->remove($reservation);
 		$this->entityManager->flush();
 	}
 

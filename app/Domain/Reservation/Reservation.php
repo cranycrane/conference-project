@@ -43,9 +43,18 @@ class Reservation extends AbstractEntity
 	/** @ORM\Column(type="integer", length=10, nullable=FALSE) */
 	public int $state;
 
+	/** @ORM\Column(type="string", length=255, nullable=FALSE, unique=false) */
+	public string $firstName;
+
+	/** @ORM\Column(type="string", length=255, nullable=FALSE, unique=false) */
+	public string $lastName;
+
+	/** @ORM\Column(type="string", length=255, nullable=FALSE, unique=false) */
+	public string $email;
+
 	/**
 	 * @ORM\ManyToOne(targetEntity="App\Domain\User\User", inversedBy="reservations")
-	 * @ORM\JoinColumn(name="user_id", referencedColumnName="id", nullable=false, onDelete="CASCADE")
+	 * @ORM\JoinColumn(name="user_id", referencedColumnName="id", nullable=true, onDelete="CASCADE")
 	 */
 	public User $user;
 
