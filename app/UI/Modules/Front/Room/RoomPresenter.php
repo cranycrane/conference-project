@@ -1,6 +1,6 @@
 <?php declare(strict_types = 1);
 
-namespace App\UI\Modules\Admin\Room;
+namespace App\UI\Modules\Front\Room;
 
 use App\Domain\Room\Room;
 use App\Model\Services\RoomService;
@@ -9,11 +9,11 @@ use App\UI\Components\Room\RoomGrid;
 use App\UI\Components\Room\RoomGridFactory;
 use App\UI\Components\Room\RoomForm;
 use App\UI\Components\Room\RoomFormFactory;
-use App\UI\Modules\Admin\BaseAdminPresenter;
+use App\UI\Modules\Front\BaseFrontPresenter;
 use Nette\DI\Attributes\Inject;
 use Nette\Bridges\ApplicationLatte\Template;
 
-final class RoomPresenter extends BaseAdminPresenter
+final class RoomPresenter extends BaseFrontPresenter
 {
     #[Inject]
     public RoomService $roomService;
@@ -44,7 +44,7 @@ final class RoomPresenter extends BaseAdminPresenter
     }
 
     public function createComponentRoomForm(): RoomForm {
-        $form = $this->roomFormFactory->create(true);
+        $form = $this->roomFormFactory->create(false);
 
         $conferenceId = $this->getParameter('conferenceId'); // Get conferenceId from request
     

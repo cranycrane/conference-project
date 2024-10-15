@@ -57,6 +57,8 @@ class RoomGrid extends Control {
         $this->presenter->redirect('Room:edit', ['id' => $id, 'conferenceId' => $this->conferenceId]);
     }
 
+
+
 	public function handleDelete(int $id): void
 	{
 		$this->roomService->delete($id);

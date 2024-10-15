@@ -12,11 +12,13 @@ class RoomForm extends Control
     private FormFactory $formFactory;
     private RoomService $RoomService;
     private ?int $conferenceId = null;
+    private bool $admin = true;
 
-    public function __construct(FormFactory $formFactory, RoomService $RoomService)
+    public function __construct(FormFactory $formFactory, RoomService $RoomService, bool $admin)
     {
         $this->formFactory = $formFactory;
         $this->RoomService = $RoomService;
+        $this->admin = $admin;
     }
 
     public function setConferenceId(?int $conferenceId): void {
@@ -42,9 +44,13 @@ class RoomForm extends Control
             ->setHtmlAttribute('class', 'btn btn-secondary') // Šedé tlačítko
             ->setValidationScope([]) // Bez validace
             ->onClick[] = function() {
-                // Use $this->conferenceId inside the callback
-                $this->presenter->redirect('Room:default', ['conferenceId' => $this->conferenceId]);
-        };
+                if($this->admin){
+                    $this->presenter->redirect('Room:default', ['conferenceId' => $this->conferenceId]);
+                }
+                else{
+                    $this->presenter->redirect('Conference:detail', ['id' => $this->conferenceId]);
+                }    
+            };
 
         $form->onSuccess[] = [$this, 'formSucceeded'];
 
@@ -66,11 +72,21 @@ class RoomForm extends Control
         \Tracy\Debugger::barDump($this->conferenceId, 'conferenceId before redirect');
         if ($this->presenter->isAjax()) {
             // Přidáme payload pro přesměrování
-            $this->presenter->payload->redirect = $this->presenter->link('Room:default', ['conferenceId' => $this->conferenceId]);
+            if($this->admin){
+                $this->presenter->payload->redirect = $this->presenter->link('Room:default', ['conferenceId' => $this->conferenceId]);
+            }
+            else{
+                $this->presenter->payload->redirect = $this->presenter->link('Conference:detail', ['id' => $this->conferenceId]);
+            }
             $this->presenter->redrawControl(); // Překreslíme modální okno
         } else {
             // Pokud nejde o AJAX, přesměrujeme standardně
-            $this->presenter->redirect('Room:default', ['conferenceId' => $this->conferenceId]);
+            if($this->admin){
+                $this->presenter->redirect('Room:default', ['conferenceId' => $this->conferenceId]);
+            }
+            else{
+                $this->presenter->redirect('Conference:detail', ['id' => $this->conferenceId]);
+            }
         }
     }
 
