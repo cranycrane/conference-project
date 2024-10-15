@@ -9,7 +9,7 @@
 						{else}
 							<img class="card-img-top" src="{$basePath}/uploads/presentations/default.jpg" alt="Card image cap">
 						{/if}
-               			{if $presentation->endsAt && $presentation->endsAt < $currentDateTime} <!-- Zkontroluje, zda prezentace již skončila -->
+               			{if isset($presentation->endsAt) && $presentation->endsAt < $currentDateTime} <!-- Zkontroluje, zda prezentace již skončila -->
 							<div class="presentation-overlay">PROBĚHLO</div>
 						{/if}
 					</div>
@@ -33,7 +33,11 @@
 								<h6 class="card-subtitle mb-2">Začátek:</h6>
 							</div>
 							<div class="col-7">
-								<h6 class="card-subtitle mb-2">{$presentation->startsAt|date:'d.m.Y H:i'}</h6>
+								{if isset($presentation->startsAt)}
+									<h6 class="card-subtitle mb-2">{$presentation->startsAt|date:'d.m.Y H:i'}</h6>
+								{else}
+									<h6 class="card-subtitle mb-2">TBD</h6>
+								{/if}
 							</div>
 						</div>
 
@@ -43,7 +47,12 @@
 								<h6 class="card-subtitle mb-2">Konec:</h6>
 							</div>
 							<div class="col-7">
-								<h6 class="card-subtitle mb-2">{$presentation->endsAt|date:'d.m.Y H:i'}</h6>
+								{if isset($presentation->endsAt)}
+									<h6 class="card-subtitle mb-2">{$presentation->endsAt|date:'d.m.Y H:i'}</h6>
+								{else}
+									<h6 class="card-subtitle mb-2">TBD</h6>
+								{/if}
+
 							</div>
 						</div>
 

@@ -5,6 +5,7 @@ namespace App\UI\Components\Room;
 use App\Model\Services\RoomService;
 use Nette\Forms\Container;
 use Nette\Application\UI\Control;
+use Nette\Utils\ArrayHash;
 use Ublaboo\DataGrid\Column\Action\Confirmation\StringConfirmation;
 use Ublaboo\DataGrid\DataGrid;
 
@@ -37,10 +38,6 @@ class RoomGrid extends Control {
 		$grid->addColumnText('address', 'Address')
 			->setSortable();
 
-		$grid->addAction('edit', 'Upravit')
-			->setClass('btn btn-primary')
-			->setText('Upravit');
-
 		$grid->addAction('delete', 'Smazat', 'delete!')
 			->setIcon('trash')
 			->setClass('btn btn-danger')
@@ -48,14 +45,35 @@ class RoomGrid extends Control {
 				new StringConfirmation('Opravdu chcete smazat místnost %s?', 'roomNumber')
 			);
 
+
+		/**
+		 * Big inline editing
+		 */
+		$grid->addInlineEdit()
+			->onControlAdd[] = function(Container $container): void {
+			$container->addText('roomNumber', '');
+			$container->addText('address', '');
+		};
+
+		$grid->getInlineEdit()->onSetDefaults[] = function(Container $container, $item): void {
+			$container->setDefaults([
+				'roomNumber' => $item->roomNumber,
+				'address' => $item->address,
+			]);
+		};
+
+		$grid->getInlineEdit()->onSubmit[] = function($id, ArrayHash $values): void {
+			/**
+			 * Save new values
+			 */
+			$room = $this->roomService->find($id);
+			$room->roomNumber = $values['roomNumber'];
+			$room->address = $values['address'];
+			$this->roomService->update();
+		};
+
 		return $grid;
 	}
-
-	public function handleEdit(int $id): void
-    {
-        // Use the stored conferenceId instead of passing it
-        $this->presenter->redirect('Room:edit', ['id' => $id, 'conferenceId' => $this->conferenceId]);
-    }
 
 	public function handleDelete(int $id): void
 	{

@@ -11,18 +11,18 @@ use Nette\DI\Attributes\Inject;
 
 class PresentationList extends Control {
 
-  private PresentationFormFactory $presentationFormFactory;
+	private PresentationFormFactory $presentationFormFactory;
 
 	private PresentationService $presentationService;
 
 	private ArrayCollection $presentations;
-  #[Persistent]
-  public ?int $currentPresentationId = null;
+  	#[Persistent]
+	public ?int $currentPresentationId = null;
 
 	public function __construct(PresentationService $presentationService, ArrayCollection $presentations, PresentationFormFactory $presentationFormFactory) {
 		$this->presentationService = $presentationService;
 		$this->presentations = $presentations;
-    $this->presentationFormFactory = $presentationFormFactory;
+    	$this->presentationFormFactory = $presentationFormFactory;
 	}
 
   	public function handleEdit(int $id): void {
@@ -34,18 +34,22 @@ class PresentationList extends Control {
     }
 
 	public function createComponentPresentationEditForm(): PresentationForm {
-    $id = $this->currentPresentationId;
+		$id = $this->currentPresentationId;
 
-    $presentation = $this->presentations->filter(function ($presentation) use ($id) {
-      return $presentation->getId() === $id;
-    })->first();
+		$presentation = $this->presentations->filter(function ($presentation) use ($id) {
+		  return $presentation->getId() === $id;
+		})->first();
 
-		return $this->presentationFormFactory->create($presentation->conference->getId(), $presentation);
+		if($presentation) {
+			return $this->presentationFormFactory->create($presentation->conference->getId(), $presentation);
+		} else {
+			return $this->presentationFormFactory->create($this->presentations->first()->getId());
+		}
 	}
 
 	public function render(): void
 	{
-    $this->template->currentPresentationId = $this->currentPresentationId;
+    	$this->template->currentPresentationId = $this->currentPresentationId;
 		$this->template->presentations = $this->presentations;
 		$this->template->currentDateTime = new \DateTime();
 		$this->template->user = $this->presenter->getUser();
