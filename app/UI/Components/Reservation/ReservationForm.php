@@ -4,26 +4,45 @@ namespace App\UI\Components\Reservation;
 
 use Nette\Application\UI\Form;
 use Nette\Application\UI\Control;
+use App\Domain\Reservation\Reservation;
 use App\Model\Services\ReservationService;
+use App\Model\Services\UserService;
 use App\UI\Form\FormFactory;
-use DateTime;
+use Doctrine\Common\Collections\ArrayCollection;
+
+
+
+
+
 
 class ReservationForm extends Control
 {
     private FormFactory $formFactory;
-    private ReservationService $ReservationService;
-    private ?string $email;
-    private ?string $firstName;
-    private ?string $lastName;
+    private ReservationService $reservationService;
+    private UserService $userService;
+    private int $conferenceId;
+    private ?int $userId = null;
+    private ?string $email = null;
+    private ?string $firstName = null;
+    private ?string $lastName = null;
 
-    public function __construct(FormFactory $formFactory, ReservationService $ReservationService, 
-                                string $email = null, string $firstName = null, string $lastName = null)
+    public function __construct(FormFactory $formFactory, ReservationService $reservationService,
+                                UserService $userService, int $conferenceId, int $userId = null)
     {
         $this->formFactory = $formFactory;
-        $this->ReservationService = $ReservationService;
-        $this->email = $email;
-        $this->firstName = $firstName;
-        $this->lastName = $lastName;
+        $this->reservationService = $reservationService;
+        $this->userService = $userService;
+        $this->conferenceId = $conferenceId;
+        $this->userId = $userId;       
+        if ($this->userId) {
+            $user = $this->userService->find($this->userId);
+            if ($user){
+                $this->email = $user->email;
+                $this->firstName = $user->firstName;
+                $this->lastName = $user->lastName;
+            }
+        }
+
     }
 
     public function createComponentForm(): Form
@@ -44,12 +63,16 @@ class ReservationForm extends Control
 
         if ($this->email && $this->firstName && $this->lastName) {
             // Set email value and disable the field if an email is passed
-            $emailField->setDefaultValue($this->email)
-                ->setDisabled();
-            $emailField->setDefaultValue($this->email)
-                ->setDisabled();
-            $emailField->setDefaultValue($this->email)
-                ->setDisabled();
+            $emailField
+                ->setDisabled()
+                ->setDefaultValue($this->email);
+            $firstNameField
+                ->setDisabled()
+                ->setDefaultValue($this->firstName);
+
+            $lastNameField
+                ->setDisabled()
+                ->setDefaultValue($this->lastName);
         }
 
         $form->addInteger('numOfPeople', 'Počet lidí:')
@@ -57,35 +80,30 @@ class ReservationForm extends Control
             ->setDefaultValue(1)
             ->addRule(Form::MIN, 'Počet lidí musí být kladný.', 1);
 
-        $form->addSubmit('send', 'Uložit konferenci');
+        $form->addSubmit('submit', 'Potvrdit rezervaci');
 
         $form->onSuccess[] = [$this, 'formSucceeded'];
 
         return $form;
     }
 
-    public function formSucceeded(Form $form, $values): void
-{
-    \Tracy\Debugger::barDump($values, 'Form Values');
+    public function formSucceeded(Form $form, array $values): void {
+        try{
+            if ($this->email && $this->firstName && $this->lastName){
+                $values['email'] = $this->email;
+			    $values['firstName'] = $this->firstName;
+                $values['lastName'] = $this->lastName;
+            }
+			$values['userId'] = $this->userId;
+			$values['conferenceId'] = $this->conferenceId;
+			$this->reservationService->create($values);
 
-    try {
-        $this->ReservationService->saveReservation($values);
-        $this->presenter->flashMessage('Rezervace byla úspěšně uložena.', 'success');
-    } catch (\Exception $e) {
-        \Tracy\Debugger::barDump($values, 'Form Values');
+			$this->presenter->flashMessage('Rezervace úspěšně uložena.', 'success');
 
-        $this->presenter->flashMessage('Nastala chyba při ukládání rezervace.', 'error');
-    }
-
-//    if ($this->presenter->isAjax()) {
-//        // Přidáme payload pro přesměrování
-//        $this->presenter->payload->redirect = $this->presenter->link('Reservation:default');
-//        $this->presenter->redrawControl(); // Překreslíme modální okno
-//    } else {
-//        // Pokud nejde o AJAX, přesměrujeme standardně
-//        $this->presenter->redirect('Reservation:default');
-//    }
-}
+		} catch (\Exception $e) {
+			$this->presenter->flashMessage('Nastala neznámá chyba. Na opravě pracujeme.' . $e->getMessage(), 'error');
+		}
+	}
 
     public function render(): void
     {

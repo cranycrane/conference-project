@@ -34,7 +34,7 @@ class ReservationService implements ICrudService {
 	 * @param array<string, scalar> $data
 	 */
 	public function create(array $data): Reservation {
-		$user = $this->entityManager->getReference(User::class, $data['userId']);
+		$user = $data['userId'] ? $this->entityManager->getReference(User::class, $data['userId']) : null;
 		$conference = $this->entityManager->getReference(Conference::class, $data['conferenceId']);
 
 		$reservation = new Reservation(

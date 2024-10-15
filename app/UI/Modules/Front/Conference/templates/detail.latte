@@ -19,7 +19,7 @@
 {block content}
 	<div class="row">
 		<div class="col">
-			<a class="btn btn-primary" n:href=":Front:Home:default">Rezervovat lístky</a>
+			<a href="#" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#dialog-reservation">Rezervovat lístky</a>
 		</div>
 		{if $user->isLoggedIn()}
 		<div class="col text-end">
@@ -152,6 +152,24 @@
 				</div>
 				<div class="modal-body">
 					{control presentationForm}
+				</div>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Zavřít</button>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<div class="modal fade" id="dialog-reservation" tabindex="-1" aria-labelledby="dialog-label" aria-hidden="true">
+		<div class="modal-dialog">
+			<div class="modal-content">
+				<div class="modal-header">
+					<h5 class="modal-title" id="dialog-label">Rezervovat vstupenky</h5>
+					<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Zavřít">
+					</button>
+				</div>
+				<div class="modal-body">
+					{control reservationForm}
 				</div>
 				<div class="modal-footer">
 					<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Zavřít</button>

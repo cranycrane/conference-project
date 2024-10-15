@@ -6,6 +6,6 @@ use App\Domain\Reservation\Reservation;
 
 interface ReservationFormFactory {
 
-	public function create(): ReservationForm;
+	public function create(int $conferenceId, int $userId = null): ReservationForm;
 
 }

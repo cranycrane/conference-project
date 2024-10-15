@@ -56,7 +56,7 @@ class Reservation extends AbstractEntity
 	 * @ORM\ManyToOne(targetEntity="App\Domain\User\User", inversedBy="reservations")
 	 * @ORM\JoinColumn(name="user_id", referencedColumnName="id", nullable=true, onDelete="CASCADE")
 	 */
-	public User $user;
+	public ?User $user = null;
 
 	/**
 	 * @ORM\ManyToOne(targetEntity="App\Domain\Conference\Conference", inversedBy="reservations")
@@ -66,9 +66,13 @@ class Reservation extends AbstractEntity
 
 
 
-	public function __construct(int $numOfPeople, User $user, Conference $conference)
+	public function __construct(int $numOfPeople, string $email, string $firstName, 
+								string $secondName, ?User $user, Conference $conference)
 	{
 		$this->numOfPeople = $numOfPeople;
+		$this->firstName = $firstName;
+		$this->secondName = $secondName;
+		$this->email = $email;
 		$this->user = $user;
 		$this->conference = $conference;
 
