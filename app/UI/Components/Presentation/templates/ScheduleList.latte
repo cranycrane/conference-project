@@ -26,7 +26,7 @@
 								<h5 class="card-title">{$presentation->title}</h5>
 								<p class="card-text">{$presentation->startsAt->format('H:i')} - {$presentation->endsAt->format('H:i')}</p>
 								<p class="card-text">Místnost: {$presentation->room->roomNumber}</p>
-								<a href="#" class="btn btn-primary">Více informací</a>
+								<a href="{plink :Front:Presentations:detail id => $presentation->getId()}" class="btn btn-primary">Více informací</a>
 								{if $user->isLoggedIn()}
 									{var $attendance = $presentation->getUserAttendance($user->getId())}
 									{if $attendance}
