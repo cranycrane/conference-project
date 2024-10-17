@@ -33,7 +33,7 @@ class ReservationForm extends Control
         $this->reservationService = $reservationService;
         $this->userService = $userService;
         $this->conferenceId = $conferenceId;
-        $this->userId = $userId;       
+        $this->userId = $userId;
         if ($this->userId) {
             $user = $this->userService->find($this->userId);
             if ($user){
@@ -79,6 +79,10 @@ class ReservationForm extends Control
             ->setRequired('Prosím, zadejte počet lidí.')
             ->setDefaultValue(1)
             ->addRule(Form::MIN, 'Počet lidí musí být kladný.', 1);
+
+		$form->addText('numOfpeople')
+			->addConditionOn()
+
 
         $form->addSubmit('submit', 'Potvrdit rezervaci');
 
