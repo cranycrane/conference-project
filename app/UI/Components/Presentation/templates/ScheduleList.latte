@@ -27,7 +27,14 @@
 								<p class="card-text">{$presentation->startsAt->format('H:i')} - {$presentation->endsAt->format('H:i')}</p>
 								<p class="card-text">Místnost: {$presentation->room->roomNumber}</p>
 								<a href="#" class="btn btn-primary">Více informací</a>
-								<a href="#" class="btn btn-success">Přidat do rozvrhu</a>
+								{if $user->isLoggedIn()}
+									{var $attendance = $presentation->getUserAttendance($user->getId())}
+									{if $attendance}
+										<a n:href="RemoveSchedule! $attendance->getId()" class="btn btn-danger">Odebrat z rozvrhu</a>
+									{else}
+										<a n:href="AddSchedule! $presentation->getId()" class="btn btn-success">Přidat do rozvrhu</a>
+									{/if}
+								{/if}
 							</div>
 						</div>
 					{/foreach}
