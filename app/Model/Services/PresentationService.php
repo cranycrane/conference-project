@@ -61,10 +61,26 @@ class PresentationService implements ICrudService {
 		return new ArrayCollection($this->presentationRepository->findPresentationsBySpeaker($speakerId));
 	}
 
-  public function findByConference(int $conferenceId): ArrayCollection
-  {
-    return new ArrayCollection($this->presentationRepository->findBy(['conference' => $conferenceId]));
-  }
+	public function findByConferenceApproved(int $conferenceId): ArrayCollection
+	{
+		return new ArrayCollection(
+			$this->presentationRepository->findBy([
+				'conference' => $conferenceId,
+				'state' => 2
+			])
+		);
+	}
+
+	public function findByConferenceNotApproved(int $conferenceId): ArrayCollection
+	{
+		return new ArrayCollection(
+			$this->presentationRepository->findBy([
+				'conference' => $conferenceId,
+				'state' => [1, 3]
+			])
+		);
+	}
+
 
   public function findUpcomingPresentationsWithMostAttendances(): ArrayCollection {
     return new ArrayCollection($this->presentationRepository->findUpcomingPresentationsWithMostAttendances());

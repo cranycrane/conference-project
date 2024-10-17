@@ -63,10 +63,12 @@ class SignPresenter extends BaseFrontPresenter {
 		$form = $this->formFactory->forFrontend();
 
 		$form->addEmail('email', 'E-mail:')
+			->setOption('required', true)
 			->addRule($form::Email, 'Prosím zadejte platný e-mail')
 			->setRequired('Zadejte váš e-mail.');
 
 		$form->addText('firstName', 'Křestní jméno:')
+			->addRule($form::Filled, 'Prosím zadejte křesní jméno')
 			->setRequired('Prosím, zadejte křestní jméno.');
 
 		$form->addText('lastName', 'Příjmení:')

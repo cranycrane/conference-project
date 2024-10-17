@@ -44,6 +44,9 @@ class Conference extends AbstractEntity
 	/** @ORM\Column(type="string", length=255, nullable=FALSE) */
 	public string $genre;
 
+	/** @ORM\Column(type="string", length=255, nullable=TRUE) */
+	public ?string $photo;
+
 	/**
 	 * @ORM\Column(type="json", nullable=false)
 	 */
@@ -61,6 +64,7 @@ class Conference extends AbstractEntity
 	/** @ORM\Column(type="string", length=255, nullable=TRUE) */
 	public ?string $description;
 
+	// todo currency
 	/** @ORM\Column(type="integer", length=10, nullable=FALSE) */
 	public int $priceForSeat;
 
@@ -74,7 +78,7 @@ class Conference extends AbstractEntity
 	private User $user;
 
 	/**
-	 * @ORM\OneToMany(targetEntity="App\Domain\Room\Room", mappedBy="room")
+	 * @ORM\OneToMany(targetEntity="App\Domain\Room\Room", mappedBy="conference")
 	 */
 	public Collection $rooms;
 

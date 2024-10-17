@@ -45,6 +45,10 @@ class ConferenceGrid extends Control {
 		$grid->addAction('edit', 'Upravit')
 			->setClass('btn btn-primary') // Nastavení třídy pro modré tlačítko
 			->setText('Upravit');
+
+		$grid->addAction('viewRooms', 'Místnosti')
+			->setClass('btn btn-primary') // Style the button
+			->setText('View Rooms'); // Button text
 	
 	
 		return $grid;
@@ -55,6 +59,12 @@ class ConferenceGrid extends Control {
 		$this->conferenceService->delete($id);
 		$this->presenter->flashMessage('Konference byla úspěšně smazána.', 'success');
 		$this->presenter->redrawControl('conferenceGrid');
+	}
+
+	public function handleViewRooms(int $id): void
+	{
+		// Zpracujte úpravu zde - přesměrování na editaci nebo inline úprava
+		$this->presenter->redirect('Room:default', $id); // Předpoklad, že máte edit akci v ConferencePresenter
 	}
 
 	public function handleEdit(int $id): void

@@ -1,18 +1,18 @@
 <div class="row my-4">
-    {if $presentations->count() > 0}
-        {foreach $presentations as $presentation}
-            <div class="col-sm-12 col-md-6 col-lg-4 mb-4"> <!-- Responzivní sloupce -->
-                <div class="card" style="width: 100%;"> <!-- Nastavení šířky karty na 100% sloupce -->
-                    <div class="card-image-container"> <!-- Kontejner pro obrázek a overlay -->
-                        {if $presentation->photo}
-                            <img class="card-img-top" src="{$basePath}{$presentation->photo}" alt="Card image cap">
-                        {else}
-                            <img class="card-img-top" src="{$basePath}/uploads/presentations/default.jpg" alt="Card image cap">
-                        {/if}
-                        {if $presentation->endsAt < $currentDateTime} <!-- Zkontroluje, zda prezentace již skončila -->
-                            <div class="presentation-overlay">PROBĚHLO</div>
-                        {/if}
-                    </div>
+	{if $presentations->count() > 0}
+		{foreach $presentations as $presentation}
+			<div class="col-sm-12 col-md-6 col-lg-4 mb-4"> <!-- Responzivní sloupce -->
+				<div class="card" style="width: 100%;"> <!-- Nastavení šířky karty na 100% sloupce -->
+					<div class="card-image-container"> <!-- Kontejner pro obrázek a overlay -->
+						{if $presentation->photo}
+							<img class="card-img-top" src="{$basePath}{$presentation->photo}" alt="Card image cap">
+						{else}
+							<img class="card-img-top" src="{$basePath}/uploads/presentations/default.jpg" alt="Card image cap">
+						{/if}
+               			{if isset($presentation->endsAt) && $presentation->endsAt < $currentDateTime} <!-- Zkontroluje, zda prezentace již skončila -->
+							<div class="presentation-overlay">PROBĚHLO</div>
+						{/if}
+					</div>
 
                     <div class="card-body">
                         <h5 class="card-title">{$presentation->title}</h5>
@@ -28,25 +28,34 @@
                             {/if}
                         {/if}
 
-                        <!-- Další informace o prezentaci -->
-                        <div class="row pt-2">
-                            <div class="col-5">
-                                <h6 class="card-subtitle mb-2">Konference:</h6>
-                            </div>
-                            <div class="col-7">
-                                <h6 class="card-subtitle mb-2">{$presentation->conference->title}</h6>
-                            </div>
-                        </div>
+						<!-- Začátek -->
+						<div class="row">
+							<div class="col-5">
+								<h6 class="card-subtitle mb-2">Začátek:</h6>
+							</div>
+							<div class="col-7">
+								{if isset($presentation->startsAt)}
+									<h6 class="card-subtitle mb-2">{$presentation->startsAt|date:'d.m.Y H:i'}</h6>
+								{else}
+									<h6 class="card-subtitle mb-2">TBD</h6>
+								{/if}
+							</div>
+						</div>
 
-                        <!-- Začátek -->
-                        <div class="row">
-                            <div class="col-5">
-                                <h6 class="card-subtitle mb-2">Začátek:</h6>
-                            </div>
-                            <div class="col-7">
-                                <h6 class="card-subtitle mb-2">{$presentation->startsAt|date:'d.m.Y H:i'}</h6>
-                            </div>
-                        </div>
+						<!-- Konec -->
+						<div class="row">
+							<div class="col-5">
+								<h6 class="card-subtitle mb-2">Konec:</h6>
+							</div>
+							<div class="col-7">
+								{if isset($presentation->endsAt)}
+									<h6 class="card-subtitle mb-2">{$presentation->endsAt|date:'d.m.Y H:i'}</h6>
+								{else}
+									<h6 class="card-subtitle mb-2">TBD</h6>
+								{/if}
+
+							</div>
+						</div>
 
                         <!-- Konec -->
                         <div class="row">
@@ -68,44 +77,42 @@
                             </div>
                         </div>
 
-                        <p class="card-text">{$presentation->description}</p>
-                        <a href="{plink :Front:Presentations:detail id => $presentation->getId()}" class="btn btn-primary">Více informací</a>
+						{if $user->isLoggedIn() && $presentation->speaker->getId() === $user->getId()}
+							<a n:href="edit! $presentation->getId()" class="btn btn-warning ajax" data-bs-toggle="modal" data-bs-target="#dialog-{$presentation->getId()}">Upravit</a>
+						{/if}
+					</div>
+				</div>
+			</div>
 
-                        {if $presentation->speaker->getId() === $user->getId()}
-                            <a n:href="edit! $presentation->getId()" class="btn btn-warning ajax" data-bs-toggle="modal" data-bs-target="#dialog">Upravit</a>
-                        {/if}
-                    </div>
-                </div>
-            </div>
-        {/foreach}
-    {else}
-        <h5 class="text-center">Nenalezeny žádné prezentace.</h5>
-    {/if}
-</div>
+			<!-- Unikátní modální okno pro každou prezentaci -->
+			<div class="modal fade" id="dialog-{$presentation->getId()}" tabindex="-1" aria-labelledby="dialog-label-{$presentation->getId()}" aria-hidden="true">
+				<div class="modal-dialog">
+					<div class="modal-content">
+						<div class="modal-header">
+							<h5 class="modal-title" id="dialog-label-{$presentation->getId()}">Upravit prezentaci</h5>
+							<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Zavřít"></button>
+						</div>
+						<div class="modal-body">
+							{snippet presentationEditSnippet}
+								{if $currentPresentationId}
+									{control presentationEditForm}
+								{else}
+									<div class="text-center">
+										<div class="spinner-border" role="status"></div>
+									</div>
+								{/if}
+							{/snippet}
+						</div>
+						<div class="modal-footer">
+							<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Zavřít</button>
+						</div>
+					</div>
+				</div>
+			</div>
 
-<div class="modal fade" id="dialog" tabindex="-1" aria-labelledby="dialog-label" aria-hidden="true">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="dialog-label">Upravit prezentaci</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Zavřít">
-                </button>
-            </div>
-            <div class="modal-body">
-                {snippet presentationEditSnippet}
-                    {if $currentPresentationId}
-                        {control presentationEditForm}
-                    {else}
-                        <div class="text-center">
-                            <div class="spinner-border" role="status">
-                            </div>
-                        </div>
-                    {/if}
-                {/snippet}
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Zavřít</button>
-            </div>
-        </div>
-    </div>
+		{/foreach}
+
+	{else}
+		<h5 class="text-center">Nenalezeny žádné prezentace.</h5>
+	{/if}
 </div>
