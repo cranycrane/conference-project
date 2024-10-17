@@ -7,6 +7,7 @@ use App\Model\Services\PresentationService;
 use Doctrine\Common\Collections\ArrayCollection;
 use Nette\Application\Attributes\Persistent;
 use Nette\Application\UI\Control;
+use Nette\Security\User;
 use Nette\DI\Attributes\Inject;
 
 class PresentationList extends Control {
@@ -49,7 +50,7 @@ class PresentationList extends Control {
 
 	public function render(): void
 	{
-    	$this->template->currentPresentationId = $this->currentPresentationId;
+    $this->template->currentPresentationId = $this->currentPresentationId;
 		$this->template->presentations = $this->presentations;
 		$this->template->currentDateTime = new \DateTime();
 		$this->template->user = $this->presenter->getUser();

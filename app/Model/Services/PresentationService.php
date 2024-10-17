@@ -102,4 +102,14 @@ class PresentationService implements ICrudService {
 	{
 		return new ArrayCollection($this->presentationRepository->findAll());
 	}
+
+	public function findByUser(?int $userId): ArrayCollection
+	{
+		if ($userId === null) {
+			// Vrátíme prázdnou kolekci, pokud je uživatel null
+			return new ArrayCollection();
+		}
+
+		return new ArrayCollection($this->presentationRepository->findBy(criteria: ['speaker' => $userId]));
+	}
 }

@@ -14,18 +14,19 @@
 						{/if}
 					</div>
 
-					<div class="card-body">
-						<h5 class="card-title">{$presentation->title}</h5>
+                    <div class="card-body">
+                        <h5 class="card-title">{$presentation->title}</h5>
 
-						<!-- Další informace o prezentaci -->
-						<div class="row pt-2">
-							<div class="col-5">
-								<h6 class="card-subtitle mb-2">Konference:</h6>
-							</div>
-							<div class="col-7">
-								<h6 class="card-subtitle mb-2">{$presentation->conference->title}</h6>
-							</div>
-						</div>
+                        <!-- Zvětšené štítky schválení -->
+                        {if $user->isLoggedIn() && ($presentation->speaker->getId() === $user->getId() || $conference->user->getId() === $user->getId() || $user->isInRole('admin'))}
+                            {if $presentation->state === 1}
+                                <span class="badge bg-warning mb-3" style="font-size: 0.9rem; padding: 10px;">Čeká na schválení</span>
+                            {elseif $presentation->state === 2}
+                                <span class="badge bg-success mb-3" style="font-size: 0.9rem; padding: 10px;">Schváleno</span>
+                            {elseif $presentation->state === 3}
+                                <span class="badge bg-danger mb-3" style="font-size: 0.9rem; padding: 10px;">Neschváleno</span>
+                            {/if}
+                        {/if}
 
 						<!-- Začátek -->
 						<div class="row">
@@ -56,18 +57,25 @@
 							</div>
 						</div>
 
-						<!-- Přednášející -->
-						<div class="row">
-							<div class="col-5">
-								<h6 class="card-subtitle mb-2">Přednášející:</h6>
-							</div>
-							<div class="col-7">
-								<h6 class="card-subtitle mb-2">{$presentation->speaker->getFullName()}</h6>
-							</div>
-						</div>
+                        <!-- Konec -->
+                        <div class="row">
+                            <div class="col-5">
+                                <h6 class="card-subtitle mb-2">Konec:</h6>
+                            </div>
+                            <div class="col-7">
+                                <h6 class="card-subtitle mb-2">{$presentation->endsAt|date:'d.m.Y H:i'}</h6>
+                            </div>
+                        </div>
 
-						<p class="card-text">{$presentation->description}</p>
-						<a href="{plink :Front:Presentations:detail id => $presentation->getId()}" class="btn btn-primary">Více informací</a>
+                        <!-- Přednášející -->
+                        <div class="row">
+                            <div class="col-5">
+                                <h6 class="card-subtitle mb-2">Přednášející:</h6>
+                            </div>
+                            <div class="col-7">
+                                <h6 class="card-subtitle mb-2">{$presentation->speaker->getFullName()}</h6>
+                            </div>
+                        </div>
 
 						{if $user->isLoggedIn() && $presentation->speaker->getId() === $user->getId()}
 							<a n:href="edit! $presentation->getId()" class="btn btn-warning ajax" data-bs-toggle="modal" data-bs-target="#dialog-{$presentation->getId()}">Upravit</a>
