@@ -67,11 +67,11 @@ class Reservation extends AbstractEntity
 
 
 	public function __construct(int $numOfPeople, string $email, string $firstName, 
-								string $secondName, ?User $user, Conference $conference)
+								string $lastName, ?User $user, Conference $conference)
 	{
 		$this->numOfPeople = $numOfPeople;
 		$this->firstName = $firstName;
-		$this->secondName = $secondName;
+		$this->lastName = $lastName;
 		$this->email = $email;
 		$this->user = $user;
 		$this->conference = $conference;

@@ -103,6 +103,7 @@ class ReservationForm extends Control
 		} catch (\Exception $e) {
 			$this->presenter->flashMessage('Nastala neznámá chyba. Na opravě pracujeme.' . $e->getMessage(), 'error');
 		}
+        $this->redirect('this');
 	}
 
     public function render(): void
