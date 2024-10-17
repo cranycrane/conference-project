@@ -80,10 +80,6 @@ class ReservationForm extends Control
             ->setDefaultValue(1)
             ->addRule(Form::MIN, 'Počet lidí musí být kladný.', 1);
 
-		$form->addText('numOfpeople')
-			->addConditionOn()
-
-
         $form->addSubmit('submit', 'Potvrdit rezervaci');
 
         $form->onSuccess[] = [$this, 'formSucceeded'];
