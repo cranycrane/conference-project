@@ -18,12 +18,14 @@
                         <h5 class="card-title">{$presentation->title}</h5>
                         
                         <!-- Zvětšené štítky schválení -->
-                        {if $presentation->state === 1}
-                            <span class="badge bg-warning mb-3" style="font-size: 0.9rem; padding: 10px;">Čeká na schválení</span>
-                        {elseif $presentation->state === 2}
-                            <span class="badge bg-success mb-3" style="font-size: 0.9rem; padding: 10px;">Schváleno</span>
-                        {elseif $presentation->state === 3}
-                            <span class="badge bg-danger mb-3" style="font-size: 0.9rem; padding: 10px;">Neschváleno</span>
+                        {if $user->isLoggedIn() && ($presentation->getUser()->getId() === $user->getId() || $conference->getUser()->getId() === $user->getId() || $user->isInRole('admin'))}
+                            {if $presentation->state === 1}
+                                <span class="badge bg-warning mb-3" style="font-size: 0.9rem; padding: 10px;">Čeká na schválení</span>
+                            {elseif $presentation->state === 2}
+                                <span class="badge bg-success mb-3" style="font-size: 0.9rem; padding: 10px;">Schváleno</span>
+                            {elseif $presentation->state === 3}
+                                <span class="badge bg-danger mb-3" style="font-size: 0.9rem; padding: 10px;">Neschváleno</span>
+                            {/if}
                         {/if}
 
                         <!-- Další informace o prezentaci -->

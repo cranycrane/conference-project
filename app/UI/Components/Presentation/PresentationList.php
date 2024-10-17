@@ -21,11 +21,10 @@ class PresentationList extends Control {
   #[Persistent]
   public ?int $currentPresentationId = null;
 
-	public function __construct(PresentationService $presentationService, ArrayCollection $presentations, PresentationFormFactory $presentationFormFactory,  User $user) {
+	public function __construct(PresentationService $presentationService, ArrayCollection $presentations, PresentationFormFactory $presentationFormFactory) {
 		$this->presentationService = $presentationService;
 		$this->presentations = $presentations;
     	$this->presentationFormFactory = $presentationFormFactory;
-		$this->user = $user;
 	}
 
   	public function handleEdit(int $id): void {
