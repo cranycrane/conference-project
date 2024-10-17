@@ -34,11 +34,14 @@ class ReservationService implements ICrudService {
 	 * @param array<string, scalar> $data
 	 */
 	public function create(array $data): Reservation {
-		$user = $this->entityManager->getReference(User::class, $data['userId']);
+		$user = $data['userId'] ? $this->entityManager->getReference(User::class, $data['userId']) : null;
 		$conference = $this->entityManager->getReference(Conference::class, $data['conferenceId']);
 
 		$reservation = new Reservation(
 			$data['numOfPeople'],
+			$data['firstName'],
+			$data['lastName'],
+			$data['email'],
 			$user,
 			$conference
 		);
@@ -55,8 +58,8 @@ class ReservationService implements ICrudService {
 	}
 
 	public function delete($id): void {
-		$user = $this->find($id);
-		$this->entityManager->remove($user);
+		$reservation = $this->find($id);
+		$this->entityManager->remove($reservation);
 		$this->entityManager->flush();
 	}
 

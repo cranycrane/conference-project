@@ -24,6 +24,7 @@ ENV COMPOSER_ALLOW_SUPERUSER=1
 
 CMD sh -c "\
 	composer install && composer dump-autoload && \
+	chmod -R 777 ./var && \
 	bin/console orm:schema-tool:update --force && \
 	NETTE_DEBUG=1 php bin/console doctrine:fixtures:load --no-interaction && \
     apache2-foreground"
