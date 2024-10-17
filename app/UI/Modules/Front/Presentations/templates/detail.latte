@@ -71,7 +71,7 @@
 	</div>
 	<p class="text-center">{$presentation->description}</p>
 
-	{if $presentation->speaker->getId() === $user->getId()}
+	{if $user->isLoggedIn() && $presentation->speaker->getId() === $user->getId()}
 		<div class="row pt-2 justify-content-center align-items-center my-3">
 			<div class="col text-end">
 				<a href="#" class="btn btn-warning" data-bs-toggle="modal" data-bs-target="#dialog">Upravit</a>
