@@ -13,7 +13,6 @@ use Nette\DI\Attributes\Inject;
 class PresentationList extends Control {
 
   private PresentationFormFactory $presentationFormFactory;
-  private User $user;
 
 	private PresentationService $presentationService;
 
@@ -50,9 +49,9 @@ class PresentationList extends Control {
 		$this->template->currentPresentationId = $this->currentPresentationId;
 
 
-		$userId = $this->user->getId();
-	
-		$this->template->presentations = $this->presentationService->findByUser($userId); 
+		$userId = $this->presenter->user->getId();
+
+		$this->template->presentations = $this->presentationService->findByUser($userId);
 		$this->template->currentDateTime = new \DateTime();
 		$this->template->user = $this->presenter->getUser();
 		$this->template->setFile(__DIR__ . '/templates/PresentationList.latte');

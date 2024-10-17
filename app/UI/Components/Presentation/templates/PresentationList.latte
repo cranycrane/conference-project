@@ -16,9 +16,9 @@
 
                     <div class="card-body">
                         <h5 class="card-title">{$presentation->title}</h5>
-                        
+
                         <!-- Zvětšené štítky schválení -->
-                        {if $user->isLoggedIn() && ($presentation->getUser()->getId() === $user->getId() || $conference->getUser()->getId() === $user->getId() || $user->isInRole('admin'))}
+                        {if $user->isLoggedIn() && ($presentation->speaker->getId() === $user->getId() || $conference->user->getId() === $user->getId() || $user->isInRole('admin'))}
                             {if $presentation->state === 1}
                                 <span class="badge bg-warning mb-3" style="font-size: 0.9rem; padding: 10px;">Čeká na schválení</span>
                             {elseif $presentation->state === 2}
