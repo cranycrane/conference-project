@@ -18,7 +18,7 @@
                         <h5 class="card-title">{$presentation->title}</h5>
 
                         <!-- Zvětšené štítky schválení -->
-                        {if $user->isLoggedIn() && ($presentation->speaker->getId() === $user->getId() || $conference->user->getId() === $user->getId() || $user->isInRole('admin'))}
+                        {if $user->isLoggedIn() && ($presentation->speaker->getId() === $user->getId() || $presentation->conference->getUser()->getId() === $user->getId() || $user->isInRole('admin'))}
                             {if $presentation->state === 1}
                                 <span class="badge bg-warning mb-3" style="font-size: 0.9rem; padding: 10px;">Čeká na schválení</span>
                             {elseif $presentation->state === 2}
@@ -77,6 +77,7 @@
                             </div>
                         </div>
 
+						<a href="{plink :Front:Presentations:detail id => $presentation->getId()}" class="btn btn-primary">Více informací</a>
 						{if $user->isLoggedIn() && $presentation->speaker->getId() === $user->getId()}
 							<a n:href="edit! $presentation->getId()" class="btn btn-warning ajax" data-bs-toggle="modal" data-bs-target="#dialog-{$presentation->getId()}">Upravit</a>
 						{/if}
