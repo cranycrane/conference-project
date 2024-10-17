@@ -2,6 +2,7 @@
 
 namespace App\Model\Services;
 
+use App\Domain\Attendance\Attendance;
 use App\Domain\Conference\Conference;
 use App\Domain\Presentation\Presentation;
 use App\Domain\Presentation\PresentationRepository;
@@ -50,6 +51,39 @@ class PresentationService implements ICrudService {
 		$this->entityManager->flush();
 
 		return $presentation;
+	}
+
+
+	public function findUserSchedule(int $userId): ArrayCollection {
+		$attendances = $this->entityManager->getRepository(Attendance::class)->findUserSchedule($userId);
+		$presentations = array_map(fn($attendance) => $attendance->presentation, $attendances);
+		return new ArrayCollection($presentations);
+	}
+
+	public function groupPresentationsByDay(ArrayCollection $presentations): ArrayCollection {
+		$grouped = [];
+
+		foreach ($presentations as $presentation) {
+			$day = $presentation->startsAt->format('Y-m-d');
+			if (!isset($grouped[$day])) {
+				$grouped[$day] = [];
+			}
+			$grouped[$day][] = $presentation;
+		}
+
+		ksort($grouped);
+
+		return new ArrayCollection($grouped);
+	}
+
+	public function sortPresentationsByTime(ArrayCollection $groupedPresentations): ArrayCollection {
+		foreach ($groupedPresentations as $day => &$presentations) {
+			usort($presentations, function($a, $b) {
+				return $a->startsAt <=> $b->startsAt;
+			});
+		}
+
+		return $groupedPresentations;
 	}
 
   public function update(): void
@@ -101,5 +135,15 @@ class PresentationService implements ICrudService {
 	public function findAll(): ArrayCollection
 	{
 		return new ArrayCollection($this->presentationRepository->findAll());
+	}
+
+	public function findByUser(?int $userId): ArrayCollection
+	{
+		if ($userId === null) {
+			// Vrátíme prázdnou kolekci, pokud je uživatel null
+			return new ArrayCollection();
+		}
+
+		return new ArrayCollection($this->presentationRepository->findBy(criteria: ['speaker' => $userId]));
 	}
 }

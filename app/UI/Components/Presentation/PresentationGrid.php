@@ -39,7 +39,7 @@ class PresentationGrid extends BaseGrid {
 
 		$grid->addColumnText('tags', 'Tagy')
 			->setRenderer(function (Presentation $presentation) {
-				return implode(', ', $presentation->tags);
+				return is_array($presentation->tags) ? implode(', ', $presentation->tags) : '';
 			});
 
 		$grid->addColumnText('photo', 'Foto');

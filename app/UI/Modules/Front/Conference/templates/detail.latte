@@ -94,6 +94,14 @@
 		<li class="nav-item" role="presentation">
 			<button class="nav-link active text-dark" id="home-tab" data-bs-toggle="tab" data-bs-target="#home" type="button" role="tab" aria-controls="home" aria-selected="true">Prezentace</button>
 		</li>
+		<li class="nav-item" role="presentation">
+			<button class="nav-link text-dark" id="schedule-tab" data-bs-toggle="tab" data-bs-target="#schedule" type="button" role="tab" aria-controls="schedue" aria-selected="true">Rozvrh konference</button>
+		</li>
+		{if $userScheduleList}
+			<li class="nav-item" role="presentation">
+				<button class="nav-link text-dark" id="userSchedule-tab" data-bs-toggle="tab" data-bs-target="#userSchedule" type="button" role="tab" aria-controls="userSchedule" aria-selected="false">Můj rozvrh</button>
+			</li>
+		{/if}
 		{if $user->isLoggedIn() && $conference->getUser()->getId() === $user->getId()}
 			<li class="nav-item" role="presentation">
 				<button class="nav-link text-dark" id="profile-tab" data-bs-toggle="tab" data-bs-target="#profile" type="button" role="tab" aria-controls="profile" aria-selected="false">Neschválené prezentace</button>
@@ -108,12 +116,25 @@
 		<div class="tab-pane fade show active" id="home" role="tabpanel" aria-labelledby="home-tab">
 				{control presentationsList}
 		</div>
-		{*	NE-SCHVALENE PREZENTACE	*}
-		{if $user->isLoggedIn() && $conference->getUser()->getId() === $user->getId()}
 
+		{*	ROZVRH KONFERENCE	*}
+		<div class="tab-pane fade show" id="schedule" role="tabpanel" aria-labelledby="schedule-tab">
+				{control scheduleList}
+		</div>
+
+		{*	OSOBNI ROZVRH KONFERENCE	*}
+		{if $userScheduleList}
+			<div class="tab-pane fade" id="userSchedule" role="tabpanel" aria-labelledby="userSchedule-tab">
+				{control userScheduleList}
+			</div>
+		{/if}
+
+		{if $user->isLoggedIn() && $conference->getUser()->getId() === $user->getId()}
+			{*	NE-SCHVALENE PREZENTACE	*}
 			<div class="tab-pane fade" id="profile" role="tabpanel" aria-labelledby="profile-tab">
 				{control presentationsNotApprovedList}
 			</div>
+
 			{*	MISTNOSTI	*}
 			<div class="tab-pane fade" id="contact" role="tabpanel" aria-labelledby="contact-tab">
 				{control roomGrid}
@@ -123,7 +144,7 @@
 
 
 
-
+{if $user->isLoggedIn()}
 	<div class="modal fade" id="dialog" tabindex="-1" aria-labelledby="dialog-label" aria-hidden="true">
 		<div class="modal-dialog">
 			<div class="modal-content">
@@ -159,6 +180,7 @@
 			</div>
 		</div>
 	</div>
+{/if}
 
 	<div class="modal fade" id="dialog-reservation" tabindex="-1" aria-labelledby="dialog-label" aria-hidden="true">
 		<div class="modal-dialog">
