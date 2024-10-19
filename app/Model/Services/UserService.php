@@ -75,6 +75,12 @@ class UserService implements ICrudService
 		$this->entityManager->flush();
 	}
 
+	public function update(User $user): void
+	{
+		$this->entityManager->persist($user);
+		$this->entityManager->flush();
+	}
+
 	public function delete($id): void
 	{
 		$user = $this->find($id);
