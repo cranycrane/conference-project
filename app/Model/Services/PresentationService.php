@@ -54,8 +54,8 @@ class PresentationService implements ICrudService {
 	}
 
 
-	public function findUserSchedule(int $userId): ArrayCollection {
-		$attendances = $this->entityManager->getRepository(Attendance::class)->findUserSchedule($userId);
+	public function findUserSchedule(int $userId, int $conferenceId): ArrayCollection {
+		$attendances = $this->entityManager->getRepository(Attendance::class)->findUserSchedule($userId, $conferenceId);
 		$presentations = array_map(fn($attendance) => $attendance->presentation, $attendances);
 		return new ArrayCollection($presentations);
 	}

@@ -24,11 +24,14 @@ class AttendanceRepository extends AbstractRepository
 			->getResult();
 	}
 
-	public function findUserSchedule(int $userId): array {
+	public function findUserSchedule(int $userId, int $conferenceId): array {
 		return $this->createQueryBuilder('a')
 			->innerJoin('a.presentation', 'p')
+			->innerJoin('p.conference', 'c') // Předpokládáme, že prezentace je spojená s konferencí
 			->where('a.user = :userId')
+			->andWhere('c.id = :conferenceId')
 			->setParameter('userId', $userId)
+			->setParameter('conferenceId', $conferenceId)
 			->getQuery()
 			->getResult();
 	}

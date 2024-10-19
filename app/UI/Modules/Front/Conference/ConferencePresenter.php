@@ -126,7 +126,7 @@ final class ConferencePresenter extends BaseFrontPresenter
 		}
 
 		$userId = $user->getId();
-		$presentations = $this->presentationService->findUserSchedule($userId);
+		$presentations = $this->presentationService->findUserSchedule($userId, $this->conferenceId);
 
 			bdump("NULL");
 		if (!$presentations->isEmpty()) {
