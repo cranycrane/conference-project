@@ -5,6 +5,8 @@ namespace App\UI\Modules\Front\Sign;
 use App\Model\Exception\Logic\DuplicateEmailException;
 use App\Model\Exception\Runtime\AuthenticationException;
 use App\Model\Services\UserService;
+use App\UI\Components\Sign\SignUpForm;
+use App\UI\Components\Sign\SignUpFormFactory;
 use App\UI\Form\FormFactory;
 use App\UI\Modules\Base\BasePresenter;
 use App\UI\Modules\Front\BaseFrontPresenter;
@@ -24,6 +26,13 @@ class SignPresenter extends BaseFrontPresenter {
 
 	#[Inject]
 	public FormFactory $formFactory;
+
+	#[Inject]
+	public SignUpFormFactory $signUpFormFactory;
+
+	public function createComponentSignUpForm(): SignUpForm {
+		return $this->signUpFormFactory->create();
+	}
 
 	protected function createComponentSignInForm(): Form
 	{
@@ -51,58 +60,6 @@ class SignPresenter extends BaseFrontPresenter {
 				}
 			} catch (AuthenticationException) {
 				$form->addError('Jméno nebo heslo je chybně zadáno');
-				$this->flashMessage('Jméno nebo heslo chybně zadáno', 'error');
-			}
-		};
-
-		return $form;
-	}
-
-	protected function createComponentSignUpForm(): Form
-	{
-		$form = $this->formFactory->forFrontend();
-
-		$form->addEmail('email', 'E-mail:')
-			->setOption('required', true)
-			->addRule($form::Email, 'Prosím zadejte platný e-mail')
-			->setRequired('Zadejte váš e-mail.');
-
-		$form->addText('firstName', 'Křestní jméno:')
-			->addRule($form::Filled, 'Prosím zadejte křesní jméno')
-			->setRequired('Prosím, zadejte křestní jméno.');
-
-		$form->addText('lastName', 'Příjmení:')
-			->setRequired('Prosím, zadejte příjmení.');
-
-//		$form->addInteger('yearBorn', 'Rok narození:')
-//			->addRule($form::Min, 'Zadejte platný rok narození', 1940)
-//			->addRule($form::Max, 'Zadejte platný rok narození', (int) date('Y'))
-//			->setRequired('Prosím, zadejte rok narození.');
-
-		$form->addPassword('password', 'Heslo:')
-			->setOption('description', sprintf('alespoň %d znaků', $this->userService::PasswordMinLength))
-			->setRequired('Vytvořte si své heslo.')
-			->addRule($form::MinLength, 'Heslo musí mít minimálně 8 znaků', $this->userService::PasswordMinLength);
-
-		$form->addPassword('passwordVerify', 'Heslo znovu:')
-			->setRequired('Zopakujte své heslo:')
-			->addRule($form::Equal, 'Hesla se neshodují.', $form['password']);
-
-
-		$form->addSubmit('send', 'Registrovat se');
-
-		// Handle form submission
-		$form->onSuccess[] = function (Form $form, array $data): void {
-			try {
-				// Attempt to register a new user
-				$this->userService->create($data);
-				$this->getUser()->login($data['email'], $data['password']);
-
-				$this->presenter->flashMessage('Registrace byla úspěšná.', 'success');
-				$this->redirect(':Front:Home:default');
-			} catch (DuplicateEmailException) {
-				// Handle the case where the email is already taken
-				$form['email']->addError('E-mail se již používá.');
 			}
 		};
 
