@@ -146,9 +146,5 @@ final class ConferencePresenter extends BaseFrontPresenter
 		$this->template->conference = $this->conferenceService->find((int)$id);
 	}
 
-	public function renderMy(): void {
-		$userId = $this->getUser()->getId();  // Získáme ID přihlášeného uživatele
-		$this->template->conferences = $this->presentationService->findByUser($userId);  // Najdeme prezentace uživatele
-	}
 
 }
