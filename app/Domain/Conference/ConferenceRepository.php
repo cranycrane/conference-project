@@ -30,4 +30,13 @@ class ConferenceRepository extends EntityRepository
             ->getQuery()
             ->getResult();
     }
+	public function findConferencesByOrganizer($userId): array
+    {
+        return $this->createQueryBuilder('c')
+            ->where('c.user = :userId')
+            ->setParameter('userId', $userId)
+            ->orderBy('c.startsAt', 'DESC')
+            ->getQuery()
+            ->getResult();
+    }
 }

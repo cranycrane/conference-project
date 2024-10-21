@@ -211,4 +211,16 @@ class ConferenceService
     {
         return new ArrayCollection($this->conferenceRepository->findAll());
     }
+
+
+    public function findByUser(?int $userId): ArrayCollection
+    {
+    if ($userId === null) {
+        return new ArrayCollection();
+    }
+
+    return new ArrayCollection($this->conferenceRepository->findBy(['user' => $userId]));
+    }
+
+
 }
