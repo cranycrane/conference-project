@@ -9,6 +9,9 @@ use App\Model\Services\ReservationService;
 use App\Model\Services\UserService;
 use App\UI\Form\FormFactory;
 use Doctrine\Common\Collections\ArrayCollection;
+use App\Model\Exception\Logic\DuplicateEmailException;
+use App\Domain\User\User;
+
 
 
 
@@ -52,8 +55,10 @@ class ReservationForm extends Control
         $form->setAjax(false);
         $form->addHidden('id');
 
-        $emailField = $form->addText('email', 'Email:')
-            ->setRequired('Prosím, zadejte email.');
+        $emailField = $form->addEmail('email', 'E-mail:')
+			->setOption('required', true)
+			->addRule($form::Email, 'Prosím zadejte platný e-mail')
+			->setRequired('Zadejte váš e-mail.');
 
         $firstNameField = $form->addText('firstName', 'Jméno:')
             ->setRequired('Prosím, zadejte křestní jméno.');
@@ -73,6 +78,32 @@ class ReservationForm extends Control
             $lastNameField
                 ->setDisabled()
                 ->setDefaultValue($this->lastName);
+        }
+        else{
+            $registrationCheckbox = $form->addCheckbox('registration', 'Chci se zároveň registrovat');
+
+            $passwordField = $form->addPassword('password', 'Heslo:')
+                ->setHtmlId('passwordField')
+                ->setRequired(false)
+                ->setOption('description', sprintf('alespoň %d znaků', $this->userService::PasswordMinLength));
+                
+            $passwordField2 = $form->addPassword('passwordVerify', 'Heslo znovu:')
+                ->setHtmlId('passwordField2')
+                ->setRequired(false);
+                
+            // Add condition to require the password field if the registration checkbox is checked
+            $passwordField->addConditionOn($registrationCheckbox, $form::EQUAL, true)
+                ->setRequired('Vytvořte si své heslo.')
+                ->addRule($form::MinLength, 'Heslo musí mít minimálně 8 znaků', $this->userService::PasswordMinLength);
+
+            $passwordField2->addConditionOn($registrationCheckbox, $form::EQUAL, true)
+                ->setRequired('Zopakujte své heslo:')
+                ->addRule($form::Equal, 'Hesla se neshodují.', $form['password']);
+
+            $registrationCheckbox
+                ->addCondition($form::EQUAL, true)
+                ->toggle('#passwordField2') 
+                ->toggle('#passwordField');       
         }
 
         $form->addInteger('numOfPeople', 'Počet lidí:')
@@ -96,18 +127,26 @@ class ReservationForm extends Control
             }
 			$values['userId'] = $this->userId;
 			$values['conferenceId'] = $this->conferenceId;
+
+            if($values['password']){
+                $newUser = $this->userService->create($values);
+                $values['userId'] = $newUser->getId();
+            }
+
 			$this->reservationService->create($values);
 
 			$this->presenter->flashMessage('Rezervace úspěšně uložena.', 'success');
 
 		} catch (\Exception $e) {
 			$this->presenter->flashMessage('Nastala neznámá chyba. Na opravě pracujeme.' . $e->getMessage(), 'error');
+            
 		}
         $this->redirect('this');
 	}
 
     public function render(): void
     {
+        $this->template->userId = $this->userId;
         $this->template->setFile(__DIR__ . '/templates/ReservationForm.latte');
         $this->template->render();
     }

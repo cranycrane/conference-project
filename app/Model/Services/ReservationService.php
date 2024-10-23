@@ -39,9 +39,9 @@ class ReservationService implements ICrudService {
 
 		$reservation = new Reservation(
 			$data['numOfPeople'],
+			$data['email'],
 			$data['firstName'],
 			$data['lastName'],
-			$data['email'],
 			$user,
 			$conference
 		);
