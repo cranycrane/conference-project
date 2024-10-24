@@ -8,19 +8,24 @@ use Nette\Application\UI\Control;
 use Nette\Utils\ArrayHash;
 use Ublaboo\DataGrid\Column\Action\Confirmation\StringConfirmation;
 use Ublaboo\DataGrid\DataGrid;
+use App\UI\Components\Room\RoomForm;
+use App\UI\Components\Room\RoomFormFactory;
+use App\UI\Modules\Front\BaseFrontPresenter;
+use Nette\DI\Attributes\Inject;
 
 class RoomGrid extends Control {
 
 	private RoomService $roomService;
-	private ?int $conferenceId = null;
+	private RoomFormFactory $roomFormFactory;
+	private int $conferenceId;
+	#[Persistent]
+	public ?int $currentRoomId = null;
 
-	public function __construct(RoomService $roomService) {
+	public function __construct(RoomService $roomService, RoomFormFactory $roomFormFactory, int $conferenceId) {
 		$this->roomService = $roomService;
+		$this->conferenceId = $conferenceId;
+		$this->roomFormFactory = $roomFormFactory;
 	}
-
-	public function setConferenceId(?int $conferenceId): void {
-        $this->conferenceId = $conferenceId; // Setter to pass the conferenceId
-    }
 
 	public function createComponentGrid(): DataGrid {
 		$grid = new DataGrid();
@@ -37,6 +42,12 @@ class RoomGrid extends Control {
 
 		$grid->addColumnText('address', 'Address')
 			->setSortable();
+
+		$grid->addAction('edit', 'Upravit', 'edit!')
+			->setClass('btn btn-primary')
+			->setText('Upravit')
+			->setDataAttribute('bs-toggle', 'modal')  // Trigger the modal
+			->setDataAttribute('bs-target', '#dialog-editRoom');  // Set unique modal ID for each room;
 
 		$grid->addAction('delete', 'Smazat', 'delete!')
 			->setIcon('trash')
@@ -75,15 +86,35 @@ class RoomGrid extends Control {
 		return $grid;
 	}
 
+	public function handleEdit(int $id): void
+    {
+		$this->currentRoomId = $id;  // Store the room ID for editing
+		if ($this->presenter->isAjax()) {
+			$this->redrawControl('roomEditSnippet');
+		}
+    }
+
 	public function handleDelete(int $id): void
 	{
 		$this->roomService->delete($id);
 		$this->presenter->flashMessage('Místnost byla úspěšně smazána.', 'success');
 		$this->presenter->redrawControl('grid');
+		$this->redirect('this');
+	}
+
+	public function createComponentRoomEditForm(): RoomForm {
+		if($this->currentRoomId != null){
+			$room=$this->roomService->find($this->currentRoomId);
+			return $this->roomFormFactory->create($this->conferenceId, $room);
+		}
+		{
+			return $this->roomFormFactory->create($this->conferenceId);
+		}
 	}
 
 	public function render(): void
 	{
+		$this->template->currentRoomId = $this->currentRoomId;
 		$this->template->setFile(__DIR__ . '/templates/RoomGrid.latte');
 		$this->template->render();
 	}
