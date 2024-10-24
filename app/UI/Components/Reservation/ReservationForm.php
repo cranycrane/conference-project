@@ -11,12 +11,7 @@ use App\UI\Form\FormFactory;
 use Doctrine\Common\Collections\ArrayCollection;
 use App\Model\Exception\Logic\DuplicateEmailException;
 use App\Domain\User\User;
-
-
-
-
-
-
+use Tracy\Debugger;
 
 class ReservationForm extends Control
 {
@@ -137,12 +132,12 @@ class ReservationForm extends Control
 			$this->reservationService->create($values);
 
 			$this->presenter->flashMessage('Rezervace úspěšně uložena.', 'success');
+			bdump("super1");
 
-		} catch (\Exception $e) {
-			$this->presenter->flashMessage('Nastala neznámá chyba. Na opravě pracujeme.' . $e->getMessage(), 'error');
-
+			$this->redirect('this');
+		} catch (DuplicateEmailException) {
+			$this->presenter->flashMessage('Uživatel s tímto e-mailem jíž existuje', 'error');
 		}
-        $this->redirect('this');
 	}
 
     public function render(): void
