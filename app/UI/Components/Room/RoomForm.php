@@ -4,91 +4,73 @@ namespace App\UI\Components\Room;
 
 use Nette\Application\UI\Form;
 use Nette\Application\UI\Control;
+use App\Domain\Room\Room;
 use App\Model\Services\RoomService;
 use App\UI\Form\FormFactory;
+use Doctrine\Common\Collections\ArrayCollection;
 
 class RoomForm extends Control
 {
     private FormFactory $formFactory;
-    private RoomService $RoomService;
-    private ?int $conferenceId = null;
-    private bool $admin = true;
+    private RoomService $roomService;
+    private ?Room $room;
+    private int $conferenceId;
 
-    public function __construct(FormFactory $formFactory, RoomService $RoomService, bool $admin)
+    public function __construct(FormFactory $formFactory, RoomService $roomService, int $conferenceId, Room $room = null)
     {
         $this->formFactory = $formFactory;
-        $this->RoomService = $RoomService;
-        $this->admin = $admin;
-    }
-
-    public function setConferenceId(?int $conferenceId): void {
-        $this->conferenceId = $conferenceId; // Setter to pass the conferenceId
+        $this->roomService = $roomService;
+        $this->room = $room;
+		$this->conferenceId = $conferenceId;
     }
 
     public function createComponentForm(): Form
     {
         // Využití vaší továrny na formuláře
-        $form = $this->formFactory->forBackend(); // nebo forBackend(), pokud je formulář určen pro administrátory
-        $form->setAjax(false);
-        $form->addHidden('id');
+        $form = $this->formFactory->forFrontend(); // nebo forBackend(), pokud je formulář určen pro administrátory
+
+        $form->addHidden('id')
+            ->setDefaultValue($this->room ? $this->room->getId() : null);
       
         $form->addText('roomNumber', 'Room Number:')
             ->setRequired('Please enter the room number.');
+
         $form->addText('address', 'Address:')
             ->setRequired('Please enter the address.');
 
+        if ($this->room) {
+            $form->setDefaults($this->room);
+        }
 
-        $form->addSubmit('send', 'Uložit místnost');
+        $form->addSubmit('submit', 'Uložit');
 
-        $form->addSubmit('back', 'Zpět')
-            ->setHtmlAttribute('class', 'btn btn-secondary') // Šedé tlačítko
-            ->setValidationScope([]) // Bez validace
-            ->onClick[] = function() {
-                if($this->admin){
-                    $this->presenter->redirect('Room:default', ['conferenceId' => $this->conferenceId]);
-                }
-                else{
-                    $this->presenter->redirect('Conference:detail', ['id' => $this->conferenceId]);
-                }    
-            };
+		$form->onSuccess[] = [$this, 'formSucceeded'];
 
-        $form->onSuccess[] = [$this, 'formSucceeded'];
-
-        return $form;
+		return $form;
     }
 
-    public function formSucceeded(Form $form, $values): void
-    {
-        \Tracy\Debugger::barDump($values, 'Form Values');
+    public function formSucceeded(Form $form, array $values): void {
+		try {
+			if($this->room) {
+				$this->room->roomNumber = $values['roomNumber'];
+				$this->room->address = $values['address'];
 
-        try {
-            $this->RoomService->saveRoom($values, $this->conferenceId);
-            $this->presenter->flashMessage('Místnost byla úspěšně upravena.', 'success');
-        } catch (\Exception $e) {
-            \Tracy\Debugger::barDump($values, 'Form Values');
+				$this->roomService->update();
 
-            $this->presenter->flashMessage('Nastala chyba při ukládání místnosti.', 'error');
-        }
-        \Tracy\Debugger::barDump($this->conferenceId, 'conferenceId before redirect');
-        if ($this->presenter->isAjax()) {
-            // Přidáme payload pro přesměrování
-            if($this->admin){
-                $this->presenter->payload->redirect = $this->presenter->link('Room:default', ['conferenceId' => $this->conferenceId]);
-            }
-            else{
-                $this->presenter->payload->redirect = $this->presenter->link('Conference:detail', ['id' => $this->conferenceId]);
-            }
-            $this->presenter->redrawControl(); // Překreslíme modální okno
-        } else {
-            // Pokud nejde o AJAX, přesměrujeme standardně
-            if($this->admin){
-                $this->presenter->redirect('Room:default', ['conferenceId' => $this->conferenceId]);
-            }
-            else{
-                $this->presenter->redirect('Conference:detail', ['id' => $this->conferenceId]);
-            }
-        }
-    }
+			} else {
+				$values['conferenceId'] = $this->conferenceId;
+
+				$this->roomService->create($values);
+			}
+
+			$this->presenter->flashMessage('Místnost byla úspěšně uložena.', 'success');
+
+		} catch (\Exception $e) {
+			$this->presenter->flashMessage('Nastala neznámá chyba. Na opravě pracujeme.' . $e->getMessage(), 'error');
+		}
+        $this->redirect('this');
+	}
+
 
     public function render(): void
     {

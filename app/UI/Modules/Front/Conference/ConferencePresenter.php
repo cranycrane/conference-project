@@ -100,8 +100,6 @@ final class ConferencePresenter extends BaseFrontPresenter
         return $grid;
 	}
 
-	
-
 	protected function createComponentConferenceEditForm(): ConferenceForm {
 		$form = $this->conferenceFormFactory->create();
 

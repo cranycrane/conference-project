@@ -2,6 +2,7 @@
 
 namespace App\UI\Modules\Admin\Room;
 
+use App\Domain\Conference\Conference;
 use App\Domain\Room\Room;
 use App\Model\Services\RoomService;
 use App\Model\Services\ConferenceService;
@@ -27,56 +28,24 @@ final class RoomPresenter extends BaseAdminPresenter
     #[Inject]
     public RoomGridFactory $roomGridFactory;
 
-    
+    private ?Room $currentRoom = null;
+
+    private int $conferenceId;
+
+    public function actionDefault(?int $conferenceId = null): void
+    {
+        $this->conferenceId = $conferenceId ?? 0; // Default to 0 or some valid ID
+    }
 
     public function createComponentRoomGrid(): RoomGrid {
-        $grid = $this->roomGridFactory->create();
-    
-        $conferenceId = $this->getParameter('conferenceId'); // Get conferenceId from request
-    
-        if ($conferenceId !== null) {
-            $conferenceId = (int) $conferenceId; // Cast conferenceId to an integer
-        }
-    
-        $grid->setConferenceId($conferenceId); // Pass the conferenceId to RoomGrid
-    
-        return $grid;
+        return $this->roomGridFactory->create($this->conferenceId);
     }
 
     public function createComponentRoomForm(): RoomForm {
-        $form = $this->roomFormFactory->create(true);
-
-        $conferenceId = $this->getParameter('conferenceId'); // Get conferenceId from request
-    
-        if ($conferenceId !== null) {
-            $conferenceId = (int) $conferenceId; // Cast conferenceId to an integer
-        }
-    
-        $form->setConferenceId($conferenceId); // Pass the conferenceId to RoomGrid
-    
-        return $form;
+        return $this->roomFormFactory->create($this->conferenceId);
     }
    
-    public function renderEdit(int $id, int $conferenceId = null): void
-    {
-        $room = $this->roomService->find($id);
-        if (!$room) {
-            $this->error('Room not found');
-        }
-
-        $template = $this->getTemplate();
-        $template->room = $room;
-        $template->conferenceId = $conferenceId;
-
-        $form = $this['roomForm']->getComponent('form');
-        $form->setDefaults([
-            'id' => $room->getId(),
-            'roomNumber' => $room->roomNumber,
-            'address' => $room->address,
-            'conference' => $room->conference,
-        ]);
-    }
-
+    
     public function renderDefault(int $conferenceId = null): void
     {
         if ($conferenceId !== null) {
@@ -97,26 +66,7 @@ final class RoomPresenter extends BaseAdminPresenter
     }
 
 
-    public function renderCreate(int $conferenceId = null): void
-    {
-        $template = $this->getTemplate();
-        $template->room = null; // No room data since we're creating a new one
-        
-        // Fetch the conference entity based on the conferenceId
-        $conference = $this->conferenceService->find($conferenceId);
-        
-        if (!$conference) {
-            $this->error('Conference not found');
-        }
-        
-        $template->conference = $conference;
-        
-        // Set default values for the form, including the Conference object
-        $form = $this['roomForm']->getComponent('form');
-        $form->setDefaults([
-            'conference' => $conference,  // Automatically set the Conference object for the new room
-        ]);
-    }
+    
 
    
 }

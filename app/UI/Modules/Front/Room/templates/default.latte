@@ -1,8 +1,0 @@
-{block content}
-    <h2>Seznam místností pro konferenci: {$conferenceName}</h2>
-    {control roomGrid}
-
-    <!-- Tlačítko pro přidání nové místnosti - přesměruje na novou stránku -->
-    <a href="{link 'Room:create', conferenceId => $conferenceId}" class="btn btn-sm btn-success">Přidat novou místnost</a>
-
-{/block}
