@@ -145,4 +145,6 @@ final class ConferencePresenter extends BaseFrontPresenter
 		$this->template->userScheduleList = $this->createComponentUserScheduleList();
 		$this->template->conference = $this->conferenceService->find((int)$id);
 	}
+
+
 }

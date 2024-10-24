@@ -34,6 +34,12 @@ final class UserPresenter extends BaseFrontPresenter {
 	public PresentationService $presentationService;
 
 	#[Inject]
+	public ConferenceListFactory $conferenceListFactory;
+
+	#[Inject]
+	public ConferenceService $conferenceService;
+
+	#[Inject]
 	public FormFactory $formFactory;
 
 	public function createComponentUpdateProfileForm(): SignUpForm {
@@ -43,6 +49,12 @@ final class UserPresenter extends BaseFrontPresenter {
 	public function createComponentMyPresentations(): PresentationList {
 		return $this->presentationListFactory->create($this->presentationService->findByBySpeaker($this->user->getId()));
 	}
+
+	public function createComponentMyConferences(): ConferenceList {
+        $userId = $this->getUser()->getId();
+        $upcomingConferences = $this->conferenceService->findByUser($userId);
+        return $this->conferenceListFactory->create($upcomingConferences);
+    }
 
 	public function createComponentChangePasswordForm(): Form {
 		$form = $this->formFactory->forFrontend();
