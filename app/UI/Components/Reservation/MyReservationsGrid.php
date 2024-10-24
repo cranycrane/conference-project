@@ -53,9 +53,30 @@ class MyReservationsGrid extends BaseGrid {
 		$grid->addColumnText('numOfPeople', 'Počet lidí')
 			->setSortable();
 
+        $grid->addAction('viewConference', 'Zobrazit konferenci')
+			->setClass('btn btn-primary') // Style the button
+			->setText('Zobrazit konferenci'); // Button text
+
+        $grid->addAction('viewSchedule', 'Zobrazit můj rozvrh')
+			->setClass('btn btn-primary') // Style the button
+			->setText('Zobrazit můj rozvrh'); // Button text
+
 		$this->addTranslation($grid);
 
 		return $grid;
+	}
+
+    public function handleViewConference(int $id): void
+	{
+        $reservation = $this->reservationService->find($id);
+        $conferenceId = $reservation->conference->getId();
+
+		$this->presenter->redirect('Conference:detail', ['id' => $conferenceId]);
+	}
+
+    public function handleViewSchedule(int $id): void
+	{
+		
 	}
 
 	public function render(): void
