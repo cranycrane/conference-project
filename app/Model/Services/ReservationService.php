@@ -67,6 +67,11 @@ class ReservationService implements ICrudService {
 		return $this->reservationRepository->find($id);
 	}
 
+	public function findByUser(int $userId): ArrayCollection
+	{
+		return new ArrayCollection($this->reservationRepository->findBy(['user' => $userId]));
+	}
+
 	public function findAll(): ArrayCollection {
 		return new ArrayCollection($this->reservationRepository->findAll());
 	}

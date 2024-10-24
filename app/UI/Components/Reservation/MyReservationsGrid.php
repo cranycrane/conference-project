@@ -8,7 +8,7 @@ use App\UI\Components\BaseGrid;
 use Nette\Application\UI\Control;
 use Ublaboo\DataGrid\DataGrid;
 
-class ReservationGrid extends BaseGrid {
+class MyReservationsGrid extends BaseGrid {
 
 	private ReservationService $reservationService;	
 
@@ -20,16 +20,29 @@ class ReservationGrid extends BaseGrid {
 	public function createComponentGrid(): DataGrid {
 		$grid = new DataGrid();
 		
-		$grid->setDataSource($this->reservationService->findAll());
-
-		$grid->addColumnText('email', 'Uživatel')
-			->setSortable();
+        $grid->setDataSource($this->reservationService->findByUser($this->presenter->getUser()->getId()));
 
 		$grid->addColumnText('conference', 'Konference')
 			->setSortable()
 			->setRenderer(function (Reservation $reservation) {
 				return $reservation->conference->title;
 			});
+
+            $grid->addColumnDateTime('startsAt', 'Začátek', 'getStartsAt')
+            ->setFormat('j.n.Y H:i')
+            ->setSortable()
+            ->setRenderer(function (Reservation $reservation) {
+                $startsAt = $reservation->conference->getStartsAt();
+                return $startsAt instanceof \DateTime ? $startsAt->format('j.n.Y H:i') : null; 
+            });
+        
+        $grid->addColumnDateTime('endsAt', 'Konec', 'getEndsAt')
+            ->setFormat('j.n.Y H:i')
+            ->setSortable()
+            ->setRenderer(function (Reservation $reservation) {
+                $endsAt = $reservation->conference->getEndsAt();
+                return $endsAt instanceof \DateTime ? $endsAt->format('j.n.Y H:i') : null;
+            });        
 
 		$grid->addColumnText('state', 'Stav')
 			->setSortable()
@@ -40,7 +53,6 @@ class ReservationGrid extends BaseGrid {
 		$grid->addColumnText('numOfPeople', 'Počet lidí')
 			->setSortable();
 
-		$this->addDeleteAction($grid);
 		$this->addTranslation($grid);
 
 		return $grid;

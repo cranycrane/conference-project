@@ -124,6 +124,7 @@ class ReservationForm extends Control
                 $values['email'] = $this->email;
 			    $values['firstName'] = $this->firstName;
                 $values['lastName'] = $this->lastName;
+                $values['password'] = null;
             }
 			$values['userId'] = $this->userId;
 			$values['conferenceId'] = $this->conferenceId;
