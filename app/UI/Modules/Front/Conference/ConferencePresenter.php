@@ -86,6 +86,10 @@ final class ConferencePresenter extends BaseFrontPresenter
 		return $this->reservationFormFactory->create($this->conferenceId, $userId);
 	}
 
+	public function createComponentRoomForm(): RoomForm {
+		return $this->roomFormFactory->create($this->conferenceId);
+	}
+
 	public function createComponentRoomGrid(): RoomGrid {
 		$grid = $this->roomGridFactory->create();
 

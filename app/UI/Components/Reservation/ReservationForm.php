@@ -82,15 +82,15 @@ class ReservationForm extends Control
         else{
             $registrationCheckbox = $form->addCheckbox('registration', 'Chci se zároveň registrovat');
 
-            $passwordField = $form->addPassword('password', 'Heslo:')
-                ->setHtmlId('passwordField')
-                ->setRequired(false)
-                ->setOption('description', sprintf('alespoň %d znaků', $this->userService::PasswordMinLength));
-                
+			$passwordField = $form->addPassword('password', 'Heslo:')
+				->setHtmlId('passwordField')
+				->setRequired(false)
+				->setOption('description', sprintf('alespoň %d znaků', $this->userService::PasswordMinLength));
+
             $passwordField2 = $form->addPassword('passwordVerify', 'Heslo znovu:')
                 ->setHtmlId('passwordField2')
                 ->setRequired(false);
-                
+
             // Add condition to require the password field if the registration checkbox is checked
             $passwordField->addConditionOn($registrationCheckbox, $form::EQUAL, true)
                 ->setRequired('Vytvořte si své heslo.')
@@ -101,9 +101,9 @@ class ReservationForm extends Control
                 ->addRule($form::Equal, 'Hesla se neshodují.', $form['password']);
 
             $registrationCheckbox
-                ->addCondition($form::EQUAL, true)
-                ->toggle('#passwordField2') 
-                ->toggle('#passwordField');       
+                ->addCondition($form::Equal, true)
+                ->toggle('#passwordField2')
+                ->toggle('#passwordField');
         }
 
         $form->addInteger('numOfPeople', 'Počet lidí:')
@@ -140,7 +140,7 @@ class ReservationForm extends Control
 
 		} catch (\Exception $e) {
 			$this->presenter->flashMessage('Nastala neznámá chyba. Na opravě pracujeme.' . $e->getMessage(), 'error');
-            
+
 		}
         $this->redirect('this');
 	}
