@@ -3,6 +3,24 @@
     {control roomGrid}
 
     <!-- Tlačítko pro přidání nové místnosti - přesměruje na novou stránku -->
-    <a href="{link 'Room:create', conferenceId => $conferenceId}" class="btn btn-sm btn-success">Přidat novou místnost</a>
+    <!-- <a href="{link 'Room:create', conferenceId => $conferenceId}" class="btn btn-sm btn-success">Přidat novou místnost</a> -->
+    <a href="#" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#dialog-room">Přidat místnost</a>
 
+    <div class="modal fade" id="dialog-room" tabindex="-1" aria-labelledby="dialog-label" aria-hidden="true">
+		<div class="modal-dialog">
+			<div class="modal-content">
+				<div class="modal-header">
+					<h5 class="modal-title" id="dialog-label">Přidat místnost</h5>
+					<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Zavřít">
+					</button>
+				</div>
+				<div class="modal-body">
+					{control roomForm}
+				</div>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Zavřít</button>
+				</div>
+			</div>
+		</div>
+	</div>
 {/block}
