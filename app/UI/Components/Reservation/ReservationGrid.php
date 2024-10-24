@@ -10,7 +10,8 @@ use Ublaboo\DataGrid\DataGrid;
 
 class ReservationGrid extends BaseGrid {
 
-	private ReservationService $reservationService;
+	private ReservationService $reservationService;	
+
 	public function __construct(ReservationService $reservationService) {
 		parent::__construct($reservationService);
 		$this->reservationService = $reservationService;
@@ -18,13 +19,11 @@ class ReservationGrid extends BaseGrid {
 
 	public function createComponentGrid(): DataGrid {
 		$grid = new DataGrid();
+		
 		$grid->setDataSource($this->reservationService->findAll());
 
 		$grid->addColumnText('email', 'Uživatel')
-			->setSortable()
-			->setRenderer(function (Reservation $reservation) {
-				return $reservation->user->email;
-			});
+			->setSortable();
 
 		$grid->addColumnText('conference', 'Konference')
 			->setSortable()

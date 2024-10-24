@@ -39,9 +39,9 @@ class ReservationService implements ICrudService {
 
 		$reservation = new Reservation(
 			$data['numOfPeople'],
+			$data['email'],
 			$data['firstName'],
 			$data['lastName'],
-			$data['email'],
 			$user,
 			$conference
 		);
@@ -65,6 +65,11 @@ class ReservationService implements ICrudService {
 
 	public function find($id): ?Reservation {
 		return $this->reservationRepository->find($id);
+	}
+
+	public function findByUser(int $userId): ArrayCollection
+	{
+		return new ArrayCollection($this->reservationRepository->findBy(['user' => $userId]));
 	}
 
 	public function findAll(): ArrayCollection {
