@@ -1,0 +1,47 @@
+{block content}
+
+	<div class="container mt-5">
+
+		<!-- Nav tabs -->
+		<ul class="nav nav-tabs justify-content-center pt-2" id="conferenceTabs" role="tablist">
+			{var $first = true} <!-- Pomocná proměnná pro první tab -->
+			{foreach $presentationsByDay as $date => $presentations}
+				<li class="nav-item" role="presentation">
+					<button class="nav-link{if $first} active{/if} text-dark" id="tab-{$date}" data-bs-toggle="tab" data-bs-target="#tabContent-{$date}" type="button" role="tab" aria-controls="tabContent-{$date}" aria-selected="{$first ? 'true' : 'false'}">
+						{$date|date:'d. m. Y'}
+					</button>
+				</li>
+				{var $first = false}
+			{/foreach}
+		</ul>
+
+		<!-- Tab panes -->
+		<div class="tab-content mt-3">
+			{var $first = true} <!-- Znovu použijeme proměnnou pro první tab pane -->
+			{foreach $presentationsByDay as $date => $presentations}
+				<div class="tab-pane fade{if $first} show active{/if}" id="tabContent-{$date}" role="tabpanel" aria-labelledby="tab-{$date}">
+					{foreach $presentations as $presentation}
+						<div class="card mb-3 mx-auto" style="width: 22rem;">
+							<div class="card-body text-center">
+								<h5 class="card-title">{$presentation->title}</h5>
+								<p class="card-text">{$presentation->startsAt->format('H:i')} - {$presentation->endsAt->format('H:i')}</p>
+								<p class="card-text">Místnost: {$presentation->room->roomNumber}</p>
+								<a href="{plink :Front:Presentations:detail id => $presentation->getId()}" class="btn btn-primary">Více informací</a>
+								{if $user->isLoggedIn()}
+									{var $attendance = $presentation->getUserAttendance($user->getId())}
+									{if $attendance}
+										<a n:href="RemoveSchedule! $attendance->getId()" class="btn btn-danger">Odebrat z rozvrhu</a>
+									{else}
+										<a n:href="AddSchedule! $presentation->getId()" class="btn btn-success">Přidat do rozvrhu</a>
+									{/if}
+								{/if}
+							</div>
+						</div>
+					{/foreach}
+				</div>
+				{var $first = false}
+			{/foreach}
+		</div>
+	</div>
+
+{/block}

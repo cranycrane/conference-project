@@ -27,6 +27,9 @@ class ReservationFixture extends AbstractFixture
 
 			$reservation = new Reservation(
 				$reservationData['numOfPeople'],
+				$reservationData['email'],
+				$reservationData['firstName'],
+				$reservationData['lastName'],
 				$user,
 				$conference
 			);
@@ -50,6 +53,9 @@ class ReservationFixture extends AbstractFixture
 			'userReference' => 'admin-user',
 			'conferenceReference' => 'tech-conference',
 			'numOfPeople' => 2,
+			'email' => 'admin@admin.cz',
+			'firstName' => 'Jakub',
+			'lastName' => 'Jeřábek',
 			'state' => Reservation::STATE_CONFIRMED,
 		];
 
@@ -57,6 +63,9 @@ class ReservationFixture extends AbstractFixture
 			'userReference' => 'user-user',
 			'conferenceReference' => 'marketing-summit',
 			'numOfPeople' => 1,
+			'email' => 'user@user.cz',
+        	'firstName' => 'Vojtěch',
+			'lastName' => 'Teichmann',
 			'state' => Reservation::STATE_PAID,
 		];
 	}

@@ -26,7 +26,7 @@ class RoomService implements ICrudService {
 		$this->RoomRepository = $entityManager->getRepository(Room::class);
 		/** @var ConferenceRepository $this->ConferenceRepository */
 		$this->ConferenceRepository = $entityManager->getRepository(Conference::class);
-		
+
 	}
 
 	/**
@@ -37,7 +37,7 @@ class RoomService implements ICrudService {
 		$Room = new Room(
 			$data['address'],
 			$data['roomNumber'],
-			$data['conference'] 
+			$data['conference']
 		);
 
 		// Save Room
@@ -79,8 +79,10 @@ class RoomService implements ICrudService {
 		return $room;
 	}
 
-
-
+	public function update(): void
+	{
+		$this->entityManager->flush();
+	}
 
 	public function delete($id): void
 	{
@@ -104,5 +106,5 @@ class RoomService implements ICrudService {
 		return new ArrayCollection($this->RoomRepository->findAll());
 	}
 
-	
+
 }

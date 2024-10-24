@@ -14,6 +14,10 @@ use App\UI\Components\Presentation\PresentationForm;
 use App\UI\Components\Presentation\PresentationFormFactory;
 use App\UI\Components\Presentation\PresentationList;
 use App\UI\Components\Presentation\PresentationListFactory;
+use App\UI\Components\Presentation\ScheduleList;
+use App\UI\Components\Presentation\ScheduleListFactory;
+use App\UI\Components\Reservation\ReservationForm;
+use App\UI\Components\Reservation\ReservationFormFactory;
 use App\UI\Components\Room\RoomGrid;
 use App\UI\Components\Room\RoomGridFactory;
 use App\UI\Components\Room\RoomForm;
@@ -36,10 +40,16 @@ final class ConferencePresenter extends BaseFrontPresenter
 	public PresentationFormFactory $presentationFormFactory;
 
 	#[Inject]
+	public ReservationFormFactory $reservationFormFactory;
+
+	#[Inject]
 	public ConferenceService $conferenceService;
 
 	#[Inject]
 	public ConferenceFormFactory $conferenceFormFactory;
+
+	#[Inject]
+	public ScheduleListFactory $scheduleListFactory;
 
 	#[Inject]
 	public RoomGridFactory $roomGridFactory;
@@ -51,6 +61,10 @@ final class ConferencePresenter extends BaseFrontPresenter
 
 	public function createComponentPresentationsList(): PresentationList {
 		return $this->presentationListFactory->create($this->presentationService->findByConferenceApproved($this->conferenceId));
+	}
+
+	public function createComponentScheduleList(): ScheduleList {
+		return $this->scheduleListFactory->create($this->presentationService->findByConferenceApproved($this->conferenceId));
 	}
 
 	public function createComponentPresentationsNotApprovedList(): PresentationList {
@@ -65,17 +79,24 @@ final class ConferencePresenter extends BaseFrontPresenter
 		return $this->presentationFormFactory->create($this->conferenceId);
 	}
 
+	public function createComponentReservationForm(): ReservationForm {
+		$user = $this->getUser();
+		$userId = $user->isLoggedIn() ? $user->getId() : null;
+
+		return $this->reservationFormFactory->create($this->conferenceId, $userId);
+	}
+
 	public function createComponentRoomGrid(): RoomGrid {
 		$grid = $this->roomGridFactory->create();
-    
+
         $conferenceId = $this->conferenceId;
-    
+
         if ($conferenceId !== null) {
             $conferenceId = (int) $conferenceId; // Cast conferenceId to an integer
         }
-    
+
         $grid->setConferenceId($conferenceId); // Pass the conferenceId to RoomGrid
-    
+
         return $grid;
 	}
 
@@ -104,11 +125,31 @@ final class ConferencePresenter extends BaseFrontPresenter
 		return $form;
 	}
 
+	public function createComponentUserScheduleList(): ?ScheduleList {
+		$user = $this->getUser();
+
+		if (!$user->isLoggedIn()) {
+			return null;
+		}
+
+		$userId = $user->getId();
+		$presentations = $this->presentationService->findUserSchedule($userId, $this->conferenceId);
+
+			bdump("NULL");
+		if (!$presentations->isEmpty()) {
+			return $this->scheduleListFactory->create($presentations);
+		}
+
+
+		return null;
+	}
+
 	public function actionDetail(string $id): void {
 		$this->conferenceId = (int)$id;
 	}
 
 	public function renderDetail(string $id): void {
+		$this->template->userScheduleList = $this->createComponentUserScheduleList();
 		$this->template->conference = $this->conferenceService->find((int)$id);
 		$this->template->conferenceId = $this->conferenceId;
 	}

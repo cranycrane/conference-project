@@ -2,6 +2,7 @@
 
 namespace App\Domain\Presentation;
 
+use App\Domain\Attendance\Attendance;
 use App\Domain\Conference\Conference;
 use App\Domain\Room\Room;
 use App\Domain\User\User;
@@ -97,6 +98,16 @@ class Presentation extends AbstractEntity
 
 
 		$this->state = self::STATE_CREATED;
+	}
+
+	public function getUserAttendance(int $userId): ?Attendance
+	{
+		foreach ($this->attendances as $attendance) {
+			if ($attendance->user->getId() === $userId) {
+				return $attendance;
+			}
+		}
+		return null;
 	}
 
 	public function setPhotoUpload(FileUpload $file): void {

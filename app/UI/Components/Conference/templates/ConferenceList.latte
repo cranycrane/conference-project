@@ -20,10 +20,10 @@
 						<!-- Další informace o prezentaci -->
 						<div class="row pt-2">
 							<div class="col-5">
-								<h6 class="card-subtitle mb-2">Konference:</h6>
+								<h6 class="card-subtitle mb-2">Žánr:</h6>
 							</div>
 							<div class="col-7">
-								<h6 class="card-subtitle mb-2">{$conference->title}</h6>
+								<h6 class="card-subtitle mb-2">{$conference->genre}</h6>
 							</div>
 						</div>
 
@@ -44,6 +44,15 @@
 							</div>
 							<div class="col-7">
 								<h6 class="card-subtitle mb-2">{$conference->getEndsAt()|date:'d.m.Y H:i'}</h6>
+							</div>
+						</div>
+
+						<div class="row">
+							<div class="col-5">
+								<h6 class="card-subtitle mb-2">Počet rezervací:</h6>
+							</div>
+							<div class="col-7">
+								<h6 class="card-subtitle mb-2">{$conference->reservations->count()}</h6>
 							</div>
 						</div>
 

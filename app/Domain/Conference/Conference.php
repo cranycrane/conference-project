@@ -71,8 +71,6 @@ class Conference extends AbstractEntity
 	/** @ORM\Column(type="integer", length=10, nullable=FALSE) */
 	public int $capacity;
 
-
-
 	/**
 	 * @ORM\ManyToOne(targetEntity="App\Domain\User\User", inversedBy="conferences")
 	 * @ORM\JoinColumn(name="user_id", referencedColumnName="id", nullable=false, onDelete="CASCADE")
@@ -80,7 +78,7 @@ class Conference extends AbstractEntity
 	private User $user;
 
 	/**
-	 * @ORM\OneToMany(targetEntity="App\Domain\Room\Room", mappedBy="room")
+	 * @ORM\OneToMany(targetEntity="App\Domain\Room\Room", mappedBy="conference")
 	 */
 	public Collection $rooms;
 
