@@ -20,6 +20,8 @@ use App\UI\Components\Reservation\ReservationForm;
 use App\UI\Components\Reservation\ReservationFormFactory;
 use App\UI\Components\Room\RoomGrid;
 use App\UI\Components\Room\RoomGridFactory;
+use App\UI\Components\Room\RoomForm;
+use App\UI\Components\Room\RoomFormFactory;
 use App\UI\Modules\Front\BaseFrontPresenter;
 use Nette\DI\Attributes\Inject;
 
@@ -51,6 +53,9 @@ final class ConferencePresenter extends BaseFrontPresenter
 
 	#[Inject]
 	public RoomGridFactory $roomGridFactory;
+
+	#[Inject]
+	public RoomFormFactory $roomFormFactory;
 
 	private int $conferenceId;
 
@@ -144,5 +149,8 @@ final class ConferencePresenter extends BaseFrontPresenter
 	public function renderDetail(string $id): void {
 		$this->template->userScheduleList = $this->createComponentUserScheduleList();
 		$this->template->conference = $this->conferenceService->find((int)$id);
+		$this->template->conferenceId = $this->conferenceId;
 	}
+
+
 }
