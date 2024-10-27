@@ -6,6 +6,7 @@ use App\Domain\Conference\Conference;
 use App\Domain\Conference\ConferenceRepository;
 use App\Domain\User\UserRepository;
 use App\Domain\User\User;
+use App\Model\Utils\DateTime;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\EntityManagerInterface;
 use App\Model\Exception\Logic\InvalidArgumentException;
@@ -82,8 +83,8 @@ class ConferenceService
         $conference->getNumOfPeople();
         $conference->genre = $values->genre;
         $conference->place = $values->place;
-        $conference->setStartsAt(new \DateTime($values->startsAt));
-        $conference->setEndsAt(new \DateTime($values->endsAt));
+        $conference->setStartsAt(DateTime::createFromImmutable($values->startsAt));
+        $conference->setEndsAt(DateTime::createFromImmutable($values->endsAt));
         $conference->priceForSeat = (int) $values->priceForSeat;
         $conference->capacity = (int) $values->capacity;
         $conference->description = $values->description ?? null;
@@ -97,8 +98,8 @@ class ConferenceService
             (int) $values->numOfPeople,
             $values->genre,
             $values->place,
-            new \DateTime($values->startsAt),
-            new \DateTime($values->endsAt),
+			DateTime::createFromImmutable($values->startsAt),
+			DateTime::createFromImmutable($values->endsAt),
             (int) $values->priceForSeat,
             (int) $values->capacity,
             $values->description ?? null
