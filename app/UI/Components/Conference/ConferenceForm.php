@@ -7,6 +7,8 @@ use Nette\Application\UI\Control;
 use App\Model\Services\ConferenceService;
 use App\UI\Form\FormFactory;
 use DateTime;
+use Tracy\Debugger;
+use Tracy\ILogger;
 
 class ConferenceForm extends Control
 {
@@ -32,7 +34,7 @@ class ConferenceForm extends Control
 
         $form->addInteger('numOfPeople', 'Počet účastníků:')
             ->setRequired('Prosím, zadejte počet účastníků.')
-            ->addRule(Form::MIN, 'Počet účastníků musí být kladné číslo.', 1);
+            ->addRule(Form::Min, 'Počet účastníků musí být kladné číslo.', 1);
 
         $form->addText('genre', 'Žánr konference:')
             ->setRequired('Prosím, zadejte žánr konference.');
@@ -40,17 +42,15 @@ class ConferenceForm extends Control
         $form->addText('place', 'Místo konání:')
             ->setRequired('Prosím, zadejte místo konání.');
 
-        $form->addText('startsAt', 'Začátek konference:')
-            ->setRequired('Prosím, zadejte datum začátku.')
-            ->addRule($form::PATTERN, 'Datum musí být ve formátu yyyy-mm-dd hh:mm:ss', '\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}');
+        $form->addDate('startsAt', 'Začátek konference:')
+			->setRequired('Prosím, zadejte datum začátku.');
 
-        $form->addText('endsAt', 'Konec konference:')
-            ->setRequired('Prosím, zadejte datum konce.')
-            ->addRule($form::PATTERN, 'Datum musí být ve formátu yyyy-mm-dd hh:mm:ss', '\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}');
+        $form->addDate('endsAt', 'Konec konference:')
+            ->setRequired('Prosím, zadejte datum konce.');
 
         $form->addInteger('priceForSeat', 'Cena za místo:')
             ->setRequired('Prosím, zadejte cenu.')
-            ->addRule(Form::MIN, 'Cena musí být kladné číslo.', 0);
+            ->addRule(Form::Min, 'Cena musí být kladné číslo.', 0);
 
         $form->addInteger('capacity', 'Kapacita:')
             ->setRequired('Prosím, zadejte kapacitu.')
@@ -75,25 +75,13 @@ class ConferenceForm extends Control
 
     public function formSucceeded(Form $form, $values): void
 {
-    \Tracy\Debugger::barDump($values, 'Form Values');
-
     try {
         $this->conferenceService->saveConference($values);
         $this->presenter->flashMessage('Konference byla úspěšně upravena.', 'success');
     } catch (\Exception $e) {
-        \Tracy\Debugger::barDump($values, 'Form Values');
-
+        Debugger::log('Error while saving conference form:' . $e->getMessage(), ILogger::ERROR);
         $this->presenter->flashMessage('Nastala chyba při ukládání konference.', 'error');
     }
-
-//    if ($this->presenter->isAjax()) {
-//        // Přidáme payload pro přesměrování
-//        $this->presenter->payload->redirect = $this->presenter->link('Conference:default');
-//        $this->presenter->redrawControl(); // Překreslíme modální okno
-//    } else {
-//        // Pokud nejde o AJAX, přesměrujeme standardně
-//        $this->presenter->redirect('Conference:default');
-//    }
 }
 
     public function render(): void

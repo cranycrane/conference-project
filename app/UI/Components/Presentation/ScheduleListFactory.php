@@ -6,6 +6,6 @@ use Doctrine\Common\Collections\ArrayCollection;
 
 interface ScheduleListFactory {
 
-	public function create(ArrayCollection $presentations): ScheduleList;
+	public function create(ArrayCollection $presentations = new ArrayCollection()): ScheduleList;
 
 }

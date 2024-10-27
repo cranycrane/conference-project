@@ -62,7 +62,7 @@ class ReservationFixture extends AbstractFixture
 		yield [
 			'userReference' => 'user-user',
 			'conferenceReference' => 'marketing-summit',
-			'numOfPeople' => 1,
+			'numOfPeople' => 11,
 			'email' => 'user@user.cz',
         	'firstName' => 'Vojtěch',
 			'lastName' => 'Teichmann',

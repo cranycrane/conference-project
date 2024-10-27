@@ -47,6 +47,7 @@ class Conference extends AbstractEntity
 	/** @ORM\Column(type="string", length=255, nullable=TRUE) */
 	public ?string $photo;
 
+	// todo unused remove
 	/**
 	 * @ORM\Column(type="json", nullable=false)
 	 */
@@ -120,6 +121,7 @@ class Conference extends AbstractEntity
 		$this->rooms = new ArrayCollection();
 		$this->reservations = new ArrayCollection();
 		$this->presentations = new ArrayCollection();
+		$this->tags = [];
 
 		$this->state = self::STATE_CREATED;
 	}
@@ -174,6 +176,17 @@ class Conference extends AbstractEntity
 	public function getNumOfPeople(): int
 	{
 		return $this->numOfPeople;
+	}
+
+	public function getTotalReservedSeats(): int
+	{
+		$totalSeats = 0;
+
+		foreach ($this->reservations as $reservation) {
+			$totalSeats += $reservation->numOfPeople;
+		}
+
+		return $totalSeats;
 	}
 
 }
