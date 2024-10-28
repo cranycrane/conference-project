@@ -109,6 +109,9 @@
 			<li class="nav-item" role="presentation">
 				<button class="nav-link text-dark" id="contact-tab" data-bs-toggle="tab" data-bs-target="#contact" type="button" role="tab" aria-controls="contact" aria-selected="false">Místnosti</button>
 			</li>
+			<li class="nav-item" role="presentation">
+				<button class="nav-link text-dark" id="reservation-tab" data-bs-toggle="tab" data-bs-target="#reservation" type="button" role="tab" aria-controls="reservation" aria-selected="false">Rezervace</button>
+			</li>
 		{/if}
 	</ul>
 	<div class="tab-content" id="myTabContent">
@@ -139,6 +142,11 @@
 			<div class="tab-pane fade" id="contact" role="tabpanel" aria-labelledby="contact-tab">
 				{control roomGrid}
 				<a href="#" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#dialog-room">Přidat místnost</a>
+			</div>
+
+			{*	REZERVACE	*}
+			<div class="tab-pane fade" id="reservation" role="tabpanel" aria-labelledby="reservation-tab">
+				{control reservationGrid}
 			</div>
 		{/if}
 	</div>

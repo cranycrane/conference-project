@@ -11,31 +11,38 @@ use Ublaboo\DataGrid\DataGrid;
 class ReservationGrid extends BaseGrid {
 
 	private ReservationService $reservationService;	
+	private ?int $conferenceId = null;
 
-	public function __construct(ReservationService $reservationService) {
+	public function __construct(ReservationService $reservationService, ?int $conferenceId = null) {
 		parent::__construct($reservationService);
 		$this->reservationService = $reservationService;
+		$this->conferenceId = $conferenceId;
 	}
 
 	public function createComponentGrid(): DataGrid {
 		$grid = new DataGrid();
 		
-		$grid->setDataSource($this->reservationService->findAll());
+		
+		if ($this->conferenceId !== null) {
+            $grid->setDataSource($this->reservationService->findByConference($this->conferenceId));
+        } else {
+            $grid->setDataSource($this->reservationService->findAll());
+        }
 
 		$grid->addColumnText('email', 'Uživatel')
 			->setSortable();
 
-		$grid->addColumnText('conference', 'Konference')
-			->setSortable()
-			->setRenderer(function (Reservation $reservation) {
-				return $reservation->conference->title;
-			});
+		if ($this->conferenceId == null){
+			$grid->addColumnText('conference', 'Konference')
+				->setSortable()
+				->setRenderer(function (Reservation $reservation) {
+					return $reservation->conference->title;
+				});
+		}
 
-		$grid->addColumnText('state', 'Stav')
-			->setSortable()
-			->setRenderer(function ($reservation) {
-				return $reservation::STATES[$reservation->state];
-			});
+		$grid->addColumnStatus('state', 'Stav')
+			->setOptions(Reservation::STATES) // 
+			->onChange[] = [$this, 'statusChange'];
 
 		$grid->addColumnText('numOfPeople', 'Počet lidí')
 			->setSortable();
@@ -45,6 +52,29 @@ class ReservationGrid extends BaseGrid {
 
 		return $grid;
 	}
+
+	public function statusChange($id, $newStatus): void
+	{
+		// Update the reservation state in the service
+		$reservation = $this->reservationService->find($id);
+		if ($reservation) {
+			$reservation->setState($newStatus);
+			//$reservation->state = $newStatus;
+			$this->reservationService->update();
+			
+			
+			$this->presenter->flashMessage('Stav rezervace byl úspěšně změněn.', 'success');
+		} else {
+			$this->presenter->flashMessage('Rezervace nebyla nalezena.', 'danger');
+		}
+
+		// Redraw the item to update the status in the grid
+
+		if ($this->presenter->isAjax()) {
+			$this['grid']->redrawItem($id);
+		}
+	}
+
 
 	public function render(): void
 	{

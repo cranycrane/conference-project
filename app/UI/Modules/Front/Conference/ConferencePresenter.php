@@ -18,6 +18,8 @@ use App\UI\Components\Presentation\ScheduleList;
 use App\UI\Components\Presentation\ScheduleListFactory;
 use App\UI\Components\Reservation\ReservationForm;
 use App\UI\Components\Reservation\ReservationFormFactory;
+use App\UI\Components\Reservation\ReservationGrid;
+use App\UI\Components\Reservation\ReservationGridFactory;
 use App\UI\Components\Room\RoomGrid;
 use App\UI\Components\Room\RoomGridFactory;
 use App\UI\Components\Room\RoomForm;
@@ -41,6 +43,9 @@ final class ConferencePresenter extends BaseFrontPresenter
 
 	#[Inject]
 	public ReservationFormFactory $reservationFormFactory;
+
+	#[Inject]
+	public ReservationGridFactory $reservationGridFactory;
 
 	#[Inject]
 	public ConferenceService $conferenceService;
@@ -96,6 +101,10 @@ final class ConferencePresenter extends BaseFrontPresenter
         $conferenceId = $this->conferenceId;
 
         return $grid;
+	}
+
+	public function createComponentReservationGrid(): ReservationGrid {
+		return $this->reservationGridFactory->create($this->conferenceId);
 	}
 
 	protected function createComponentConferenceEditForm(): ConferenceForm {
