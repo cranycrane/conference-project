@@ -8,6 +8,6 @@ use App\UI\Components\Reservation\ReservationForm;
 
 interface QuestionFormFactory {
 
-	public function create(int $presentationId, int $userId, ?Question $question = null): QuestionForm;
+	public function create(int $presentationId, ?int $userId, ?Question $question = null): QuestionForm;
 
 }
