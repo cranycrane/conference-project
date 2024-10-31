@@ -6,6 +6,8 @@ use App\Domain\Question\Question;
 use App\Model\Services\QuestionService;
 use App\UI\Components\BaseGrid;
 use Nette\Application\UI\Control;
+use Nette\Forms\Container;
+use Nette\Utils\ArrayHash;
 use Ublaboo\DataGrid\Column\Action\Confirmation\StringConfirmation;
 use Ublaboo\DataGrid\DataGrid;
 
@@ -44,6 +46,30 @@ class QuestionGrid extends BaseGrid {
 			})
 			->setClass('btn btn-danger btn-sm')
 			->setConfirmation(new StringConfirmation('Opravdu chcete tuto otázku smazat?'));
+
+		/**
+		 * Big inline editing
+		 */
+		$grid->addInlineEdit()
+			->onControlAdd[] = function(Container $container): void {
+			$container->addText('question', '');
+		};
+
+		$grid->getInlineEdit()->onSetDefaults[] = function(Container $container, $item): void {
+			$container->setDefaults([
+				'question' => $item->question,
+			]);
+		};
+
+		$grid->getInlineEdit()->onSubmit[] = function($id, ArrayHash $values): void {
+			/**
+			 * Save new values
+			 */
+			$question = $this->questionService->find($id);
+			$question->question = $values['question'];
+			$this->questionService->update();
+		};
+
 
 		$this->addTranslation($grid);
 

@@ -35,7 +35,7 @@ class QuestionService implements ICrudService {
 	 */
 	public function create(array $data): Question {
 		$user = $this->entityManager->getReference(User::class, $data['userId']);
-		$presentation = $this->entityManager->getReference(Presentation::class, $data['conferenceId']);
+		$presentation = $this->entityManager->getReference(Presentation::class, $data['presentationId']);
 
 		$question = new Question(
 			$data['question'],
