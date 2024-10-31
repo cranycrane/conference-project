@@ -9,6 +9,10 @@ use App\UI\Components\Presentation\PresentationForm;
 use App\UI\Components\Presentation\PresentationFormFactory;
 use App\UI\Components\Presentation\PresentationList;
 use App\UI\Components\Presentation\PresentationListFactory;
+use App\UI\Components\Question\QuestionForm;
+use App\UI\Components\Question\QuestionFormFactory;
+use App\UI\Components\Question\QuestionGrid;
+use App\UI\Components\Question\QuestionGridFactory;
 use App\UI\Modules\Front\BaseFrontPresenter;
 use Nette\DI\Attributes\Inject;
 
@@ -22,6 +26,12 @@ final class PresentationsPresenter extends BaseFrontPresenter {
 
 	#[Inject]
 	public PresentationFormFactory $presentationFormFactory;
+
+	#[Inject]
+	public QuestionGridFactory $questionGridFactory;
+
+	#[Inject]
+	public QuestionFormFactory $questionFormFactory;
 
 	private ?Presentation $currentPresentation = null;
 
@@ -41,6 +51,13 @@ final class PresentationsPresenter extends BaseFrontPresenter {
 		$this->template->presentation = $this->presentationService->find($id);
 	}
 
+	public function createComponentQuestionGrid(): QuestionGrid {
+		return $this->questionGridFactory->create($this->currentPresentation->getId());
+	}
+
+	public function createComponentQuestionForm(): QuestionForm {
+		return $this->questionFormFactory->create($this->currentPresentation->getId(), $this->getUser()->getId());
+	}
 
 	protected function createComponentPresentationEditForm(): PresentationForm {
 		return $this->presentationFormFactory->create($this->conferenceId, $this->currentPresentation);

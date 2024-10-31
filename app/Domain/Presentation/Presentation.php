@@ -84,7 +84,10 @@ class Presentation extends AbstractEntity
 	 */
 	public Conference $conference;
 
-
+	/**
+	 * @ORM\OneToMany(targetEntity="App\Domain\Question\Question", mappedBy="presentation")
+	 */
+	private Collection $questions;
 
 	public function __construct(User $speaker, Conference $conference, string $title, string $description = null, array $tags = null, string $photo = null)
 	{
@@ -95,6 +98,7 @@ class Presentation extends AbstractEntity
 		$this->tags = $tags;
 		$this->photo = $photo;
 		$this->attendances = new ArrayCollection();
+		$this->questions = new ArrayCollection();
 
 
 		$this->state = self::STATE_CREATED;
