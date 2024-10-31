@@ -23,7 +23,7 @@ class QuestionForm extends Control
 	private ?Question $question;
 
     public function __construct(FormFactory $formFactory, QuestionService $questionService,
-								int $presentationId, int $userId, ?Question $question = null)
+								int $presentationId, ?int $userId, ?Question $question = null)
     {
         $this->formFactory = $formFactory;
         $this->questionService = $questionService;
@@ -56,7 +56,7 @@ class QuestionForm extends Control
     public function formSucceeded(Form $form, array $values): void {
         try{
 			if($this->question) {
-				$this->question = $values['question'];
+				$this->question->question = $values['question'];
 
 				$this->questionService->update();
 			} else {

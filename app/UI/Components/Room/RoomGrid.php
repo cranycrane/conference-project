@@ -61,28 +61,30 @@ class RoomGrid extends Control {
 		/**
 		 * Big inline editing
 		 */
-		$grid->addInlineEdit()
-			->onControlAdd[] = function(Container $container): void {
-			$container->addText('roomNumber', '');
-			$container->addText('address', '');
-		};
+		if($this->presenter->getUser()->isLoggedIn()) {
+			$grid->addInlineEdit()
+				->onControlAdd[] = function(Container $container): void {
+				$container->addText('roomNumber', '');
+				$container->addText('address', '');
+			};
 
-		$grid->getInlineEdit()->onSetDefaults[] = function(Container $container, $item): void {
-			$container->setDefaults([
-				'roomNumber' => $item->roomNumber,
-				'address' => $item->address,
-			]);
-		};
+			$grid->getInlineEdit()->onSetDefaults[] = function(Container $container, $item): void {
+				$container->setDefaults([
+					'roomNumber' => $item->roomNumber,
+					'address' => $item->address,
+				]);
+			};
 
-		$grid->getInlineEdit()->onSubmit[] = function($id, ArrayHash $values): void {
-			/**
-			 * Save new values
-			 */
-			$room = $this->roomService->find($id);
-			$room->roomNumber = $values['roomNumber'];
-			$room->address = $values['address'];
-			$this->roomService->update();
-		};
+			$grid->getInlineEdit()->onSubmit[] = function($id, ArrayHash $values): void {
+				/**
+				 * Save new values
+				 */
+				$room = $this->roomService->find($id);
+				$room->roomNumber = $values['roomNumber'];
+				$room->address = $values['address'];
+				$this->roomService->update();
+			};
+		}
 
 		return $grid;
 	}
