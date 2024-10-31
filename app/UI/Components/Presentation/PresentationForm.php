@@ -46,7 +46,7 @@ class PresentationForm extends Control {
 			->setRequired();
 
 		$form->addText('speakerName', 'Jméno řečníka:')
-			->setDisabled(!$isOrganizerOrAdmin)
+			->setDisabled(true)
 			->setDefaultValue($this->presentation?->speaker->getFullname()
 				?? $this->presenter->getUser()->getIdentity()->getFullname());
 

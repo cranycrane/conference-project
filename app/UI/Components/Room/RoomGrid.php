@@ -3,6 +3,7 @@
 namespace App\UI\Components\Room;
 
 use App\Model\Services\RoomService;
+use Nette\Application\Attributes\Persistent;
 use Nette\Forms\Container;
 use Nette\Application\UI\Control;
 use Nette\Utils\ArrayHash;
