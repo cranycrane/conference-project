@@ -64,12 +64,31 @@
 		</div>
 	</div>
 
-	<div class="row pt-2 justify-content-center align-items-center my-3">
-		<div class="col-auto">
-		<h3 class="card-subtitle mb-2">Popis</h3>
+	{* TAB MENU *}
+	<ul class="nav nav-tabs justify-content-center pt-2" id="myTab" role="tablist">
+		<li class="nav-item" role="presentation">
+			<button class="nav-link active text-dark" id="description-tab" data-bs-toggle="tab" data-bs-target="#description" type="button" role="tab" aria-controls="home" aria-selected="true">Popis</button>
+		</li>
+		<li class="nav-item" role="presentation">
+			<button class="nav-link text-dark" id="questions-tab" data-bs-toggle="tab" data-bs-target="#questions" type="button" role="tab" aria-controls="schedue" aria-selected="true">Otázky</button>
+		</li>
+	</ul>
+
+	{* TAB CONTENT *}
+	<div class="tab-content" id="myTabContent">
+		{*	SCHVALENE PREZENTACE	*}
+		<div class="tab-pane fade show active" id="description" role="tabpanel" aria-labelledby="description-tab">
+			<p class="text-center mt-4">{$presentation->description}</p>
+		</div>
+
+		{*	ROZVRH KONFERENCE	*}
+		<div class="tab-pane fade show" id="questions" role="tabpanel" aria-labelledby="questions-tab">
+			{control questionGrid}
 		</div>
 	</div>
-	<p class="text-center">{$presentation->description}</p>
+
+
+
 
 	{if $user->isLoggedIn() && $presentation->speaker->getId() === $user->getId()}
 		<div class="row pt-2 justify-content-center align-items-center my-3">
