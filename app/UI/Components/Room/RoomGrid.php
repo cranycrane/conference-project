@@ -43,20 +43,6 @@ class RoomGrid extends Control {
 		$grid->addColumnText('address', 'Address')
 			->setSortable();
 
-		$grid->addAction('edit', 'Upravit', 'edit!')
-			->setClass('btn btn-primary')
-			->setText('Upravit')
-			->setDataAttribute('bs-toggle', 'modal')  // Trigger the modal
-			->setDataAttribute('bs-target', '#dialog-editRoom');  // Set unique modal ID for each room;
-
-		$grid->addAction('delete', 'Smazat', 'delete!')
-			->setIcon('trash')
-			->setClass('btn btn-danger')
-			->setConfirmation(
-				new StringConfirmation('Opravdu chcete smazat místnost %s?', 'roomNumber')
-			);
-
-
 		/**
 		 * Big inline editing
 		 */
@@ -83,6 +69,17 @@ class RoomGrid extends Control {
 			$this->roomService->update();
 		};
 
+
+		$grid->addAction('delete', 'Smazat', 'delete!')
+			->setIcon('trash')
+			->setClass('btn btn-danger')
+			->setConfirmation(
+				new StringConfirmation('Opravdu chcete smazat místnost %s?', 'roomNumber')
+			);
+
+
+		
+
 		return $grid;
 	}
 
@@ -103,13 +100,14 @@ class RoomGrid extends Control {
 	}
 
 	public function createComponentRoomEditForm(): RoomForm {
-		if($this->currentRoomId != null){
-			$room=$this->roomService->find($this->currentRoomId);
-			return $this->roomFormFactory->create($this->conferenceId, $room);
+		$roomForm = $this->roomFormFactory->create($this->conferenceId);
+    
+		if ($this->currentRoomId != null) {
+			$room = $this->roomService->find($this->currentRoomId);
+			$roomForm->setRoom($room);
 		}
-		{
-			return $this->roomFormFactory->create($this->conferenceId);
-		}
+		
+		return $roomForm;
 	}
 
 	public function render(): void

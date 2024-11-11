@@ -185,6 +185,14 @@ class ConferenceService
         if (!$conference) {
             throw new InvalidArgumentException("Conference not found.");
         }
+    
+        foreach ($conference->reservations as $reservation) {
+            $this->entityManager->remove($reservation);
+        }
+    
+        foreach ($conference->presentations as $presentation) {
+            $this->entityManager->remove($presentation);
+        }
 
         $this->entityManager->remove($conference);
         $this->entityManager->flush();

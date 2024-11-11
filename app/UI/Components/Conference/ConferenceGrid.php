@@ -49,7 +49,15 @@ class ConferenceGrid extends Control {
 		$grid->addAction('viewRooms', 'Místnosti')
 			->setClass('btn btn-primary') // Style the button
 			->setText('View Rooms'); // Button text
-	
+
+		$grid->addAction('viewReservations', 'Rezervace', 'viewReservations!')
+			->setClass('btn btn-primary')
+			->setText('Rezervace');
+
+		$grid->addAction('viewPresentation', 'Prezentace', 'viewPresentations!')
+			->setClass('btn btn-primary')
+			->setText('Rezervace');
+		
 	
 		return $grid;
 	}
@@ -63,15 +71,23 @@ class ConferenceGrid extends Control {
 
 	public function handleViewRooms(int $id): void
 	{
-		// Zpracujte úpravu zde - přesměrování na editaci nebo inline úprava
-		$this->presenter->redirect('Room:default', $id); // Předpoklad, že máte edit akci v ConferencePresenter
+		$this->presenter->redirect('Room:default', $id);
 	}
 
 	public function handleEdit(int $id): void
-{
-    // Zpracujte úpravu zde - přesměrování na editaci nebo inline úprava
-    $this->presenter->redirect('Conference:edit', $id); // Předpoklad, že máte edit akci v ConferencePresenter
-}
+	{
+		$this->presenter->redirect('Conference:edit', $id); 
+	}
+	public function handleViewReservations(int $id): void
+	{
+		$this->presenter->redirect('Reservation:default', ['conferenceId' => $id]);
+	}
+
+	public function handleViewPresentations(int $id): void
+	{
+
+		$this->presenter->redirect('Presentation:default', $id);
+	}
 
 	public function render(): void
 	{

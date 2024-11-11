@@ -19,6 +19,10 @@ class ReservationGrid extends BaseGrid {
 		$this->conferenceId = $conferenceId;
 	}
 
+	public function setConferenceId(?int $conferenceId): void {
+        $this->conferenceId = $conferenceId;
+    }
+
 	public function createComponentGrid(): DataGrid {
 		$grid = new DataGrid();
 		

@@ -146,4 +146,9 @@ class PresentationService implements ICrudService {
 
 		return new ArrayCollection($this->presentationRepository->findBy(criteria: ['speaker' => $userId]));
 	}
+
+	public function findByConference(int $conferenceId): ArrayCollection
+	{
+		return new ArrayCollection($this->presentationRepository->findBy(['conference' => $conferenceId]));
+	}
 }

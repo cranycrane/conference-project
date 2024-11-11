@@ -14,14 +14,27 @@ use Ublaboo\DataGrid\DataGrid;
 class PresentationGrid extends BaseGrid {
 
 	private PresentationService $presentationService;
-	public function __construct(PresentationService $presentationService) {
+
+	private ?int $conferenceId = null;
+
+	public function __construct(PresentationService $presentationService, ?int $conferenceId = null) {
 		parent::__construct($presentationService);
 		$this->presentationService = $presentationService;
+		$this->conferenceId = $conferenceId;
 	}
+
+	public function setConferenceId(?int $conferenceId): void {
+        $this->conferenceId = $conferenceId;
+    }
 
 	public function createComponentGrid(): DataGrid {
 		$grid = new DataGrid();
-		$grid->setDataSource($this->presentationService->findAll());
+
+		if ($this->conferenceId !== null) {
+            $grid->setDataSource($this->presentationService->findByConference($this->conferenceId));
+        } else {
+            $grid->setDataSource($this->presentationService->findAll());
+        }
 
 		$grid->addColumnText('title', 'Název')
 			->setSortable();
