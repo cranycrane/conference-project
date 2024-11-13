@@ -17,17 +17,30 @@ class PresentationGrid extends BaseGrid {
 
 	private PresentationFormFactory $formFactory;
 	private PresentationService $presentationService;
+
+	private ?int $conferenceId = null;
 	#[Persistent]
 	public ?int $currentPresentationId = null;
-	public function __construct(PresentationService $presentationService, PresentationFormFactory $formFactory) {
+
+	public function __construct(PresentationService $presentationService, PresentationFormFactory $formFactory, ?int $conferenceId = null) {
 		parent::__construct($presentationService);
 		$this->presentationService = $presentationService;
+		$this->conferenceId = $conferenceId;
 		$this->formFactory = $formFactory;
 	}
 
+	public function setConferenceId(?int $conferenceId): void {
+        $this->conferenceId = $conferenceId;
+    }
+
 	public function createComponentGrid(): DataGrid {
 		$grid = new DataGrid();
-		$grid->setDataSource($this->presentationService->findAll());
+
+		if ($this->conferenceId !== null) {
+            $grid->setDataSource($this->presentationService->findByConference($this->conferenceId));
+        } else {
+            $grid->setDataSource($this->presentationService->findAll());
+        }
 
 		$grid->addColumnText('title', 'Název')
 			->setSortable();

@@ -47,7 +47,6 @@ class ConferenceService
         $conference = new Conference(
             $user,
             $data['title'],
-            (int) $data['numOfPeople'],
             $data['genre'],
             $data['place'],
             new \DateTime($data['startsAt']),
@@ -80,7 +79,7 @@ class ConferenceService
 
         // Zde aktualizujeme hodnoty konference
         $conference->title = $values->title;
-        $conference->getNumOfPeople();
+        $conference->getNumOfAttendees();
         $conference->genre = $values->genre;
         $conference->place = $values->place;
         $conference->setStartsAt(DateTime::createFromImmutable($values->startsAt));
@@ -95,7 +94,6 @@ class ConferenceService
         $conference = new Conference(
             $this->userRepository->find($this->netteUser->getId()),
             $values->title,
-            (int) $values->numOfPeople,
             $values->genre,
             $values->place,
 			DateTime::createFromImmutable($values->startsAt),
@@ -184,6 +182,14 @@ class ConferenceService
         $conference = $this->find($id);
         if (!$conference) {
             throw new InvalidArgumentException("Conference not found.");
+        }
+
+        foreach ($conference->reservations as $reservation) {
+            $this->entityManager->remove($reservation);
+        }
+
+        foreach ($conference->presentations as $presentation) {
+            $this->entityManager->remove($presentation);
         }
 
         $this->entityManager->remove($conference);

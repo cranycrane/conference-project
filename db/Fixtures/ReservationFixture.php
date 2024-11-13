@@ -56,7 +56,7 @@ class ReservationFixture extends AbstractFixture
 			'email' => 'admin@admin.cz',
 			'firstName' => 'Jakub',
 			'lastName' => 'Jeřábek',
-			'state' => Reservation::STATE_CONFIRMED,
+			'state' => Reservation::STATE_PAID,
 		];
 
 		yield [

@@ -26,13 +26,11 @@ class Reservation extends AbstractEntity
 	use TUpdatedAt;
 
 	public const STATE_CREATED = 1;
-	public const STATE_CONFIRMED = 2;
 	public const STATE_PAID = 3;
 	public const STATE_CANCELED = 4;
 
 	public const STATES = [
 		self::STATE_CREATED => 'Vytvořeno',
-		self::STATE_CONFIRMED => 'Potvrzeno',
 		self::STATE_PAID => 'Zaplaceno',
 		self::STATE_CANCELED => 'Zrušeno'
 	];
@@ -66,7 +64,7 @@ class Reservation extends AbstractEntity
 
 
 
-	public function __construct(int $numOfPeople, string $email, string $firstName, 
+	public function __construct(int $numOfPeople, string $email, string $firstName,
 								string $lastName, ?User $user, Conference $conference)
 	{
 		$this->numOfPeople = $numOfPeople;

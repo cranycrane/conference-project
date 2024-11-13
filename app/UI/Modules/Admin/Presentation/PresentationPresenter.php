@@ -2,6 +2,9 @@
 
 namespace App\UI\Modules\Admin\Presentation;
 
+
+use App\Model\Services\PresentationService;
+use App\Model\Services\ConferenceService;
 use App\UI\Components\Presentation\PresentationGrid;
 use App\UI\Components\Presentation\PresentationGridFactory;
 use App\UI\Components\Question\QuestionGrid;
@@ -16,9 +19,29 @@ class PresentationPresenter extends BaseAdminPresenter {
 	#[Inject]
 	public PresentationGridFactory $gridFactory;
 
+	#[Inject]
+    public ConferenceService $conferenceService;
+
+    private ?int $conferenceId = null;
+
+    public function actionDefault(?int $conferenceId = null): void
+    {
+        $this->conferenceId = $conferenceId;
+
+        if ($conferenceId) {
+            $conference = $this->conferenceService->find($conferenceId);
+            if ($conference) {
+                $this->template->conferenceName = $conference->title;
+            }
+        }
+    }
+
 	public function createComponentGrid(): PresentationGrid {
-		return $this->gridFactory->create();
-	}
+        $grid = $this->gridFactory->create();
 
+        // Nastavení conferenceId do gridu
+        $grid->setConferenceId($this->conferenceId);
 
+        return $grid;
+    }
 }

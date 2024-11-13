@@ -1,4 +1,12 @@
 {block #content}
-	<h2>Rezervace</h2>
-	{control grid}
+        {if isset($conferenceName)}
+			<h2>Rezervace pro konferenci: {$conferenceName}</h2>
+			{control grid}
+			<a href="{plink :Admin:Conference:default}" class="btn btn-secondary mt-3">Zpět na seznam konferencí</a>
+        {else}
+            <h2>Rezervace</h2>
+			{control grid}
+        {/if}
+
+
 {/block}
