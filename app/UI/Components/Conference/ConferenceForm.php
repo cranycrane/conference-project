@@ -32,20 +32,16 @@ class ConferenceForm extends Control
         $form->addText('title', 'Název konference:')
             ->setRequired('Prosím, zadejte název konference.');
 
-        $form->addInteger('numOfPeople', 'Počet účastníků:')
-            ->setRequired('Prosím, zadejte počet účastníků.')
-            ->addRule(Form::Min, 'Počet účastníků musí být kladné číslo.', 1);
-
         $form->addText('genre', 'Žánr konference:')
             ->setRequired('Prosím, zadejte žánr konference.');
 
         $form->addText('place', 'Místo konání:')
             ->setRequired('Prosím, zadejte místo konání.');
 
-        $form->addDate('startsAt', 'Začátek konference:')
+        $form->addDateTime('startsAt', 'Začátek konference:')
 			->setRequired('Prosím, zadejte datum začátku.');
 
-        $form->addDate('endsAt', 'Konec konference:')
+        $form->addDateTime('endsAt', 'Konec konference:')
             ->setRequired('Prosím, zadejte datum konce.');
 
         $form->addInteger('priceForSeat', 'Cena za místo:')

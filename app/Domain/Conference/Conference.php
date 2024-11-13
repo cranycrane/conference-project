@@ -2,6 +2,7 @@
 
 namespace App\Domain\Conference;
 
+use App\Domain\Reservation\Reservation;
 use App\Domain\User\User;
 use App\Model\Database\Entity\AbstractEntity;
 use App\Model\Database\Entity\TCreatedAt;
@@ -13,6 +14,7 @@ use DateTime;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+
 
 /**
  * @ORM\Entity(repositoryClass="App\Domain\Conference\ConferenceRepository")
@@ -35,8 +37,10 @@ class Conference extends AbstractEntity
 	/** @ORM\Column(type="string", length=255, nullable=FALSE) */
 	public string $title;
 
-	/** @ORM\Column(type="integer", length=10, nullable=FALSE) */
-	private int $numOfPeople;
+//	/**
+//	 * @ORM\Transient
+//	 * */
+//	private int $numOfAttendees;
 
 	/** @ORM\Column(type="integer", length=10, nullable=FALSE) */
 	private int $state;
@@ -97,7 +101,6 @@ class Conference extends AbstractEntity
 	public function __construct(
 		User $user,
 		string $title,
-		int $numOfPeople,
 		string $genre,
 		string $place,
 		DateTime $startsAt,
@@ -109,7 +112,6 @@ class Conference extends AbstractEntity
 	{
 		$this->user = $user;
 		$this->title = $title;
-		$this->numOfPeople = $numOfPeople;
 		$this->genre = $genre;
 		$this->place = $place;
 		$this->startsAt = $startsAt;
@@ -173,17 +175,14 @@ class Conference extends AbstractEntity
 		$this->endsAt = $endsAt;
 	}
 
-	public function getNumOfPeople(): int
-	{
-		return $this->numOfPeople;
-	}
-
-	public function getTotalReservedSeats(): int
+	public function getNumOfAttendees(): int
 	{
 		$totalSeats = 0;
 
 		foreach ($this->reservations as $reservation) {
-			$totalSeats += $reservation->numOfPeople;
+			if($reservation->getState() === Reservation::STATE_CREATED || $reservation->getState() === Reservation::STATE_PAID) {
+				$totalSeats += $reservation->numOfPeople;
+			}
 		}
 
 		return $totalSeats;

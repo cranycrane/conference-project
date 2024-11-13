@@ -117,7 +117,6 @@ final class ConferencePresenter extends BaseFrontPresenter
 		$formComp->setDefaults([
 			'id' => $conference->getId(),
 			'title' => $conference->title,
-			'numOfPeople' => $conference->getNumOfPeople(),
 			'genre' => $conference->genre,
 			'place' => $conference->place,
 			'startsAt' => $conference->getStartsAt()->format('Y-m-d H:i:s'),

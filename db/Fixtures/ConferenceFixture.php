@@ -24,7 +24,6 @@ class ConferenceFixture extends AbstractFixture
 			$conference = new Conference(
 				$user,
 				$conferenceData['title'],
-				$conferenceData['numOfPeople'],
 				$conferenceData['genre'],
 				$conferenceData['place'],
 				$conferenceData['startsAt'],
@@ -55,7 +54,6 @@ class ConferenceFixture extends AbstractFixture
 		yield [
 			'userReference' => 'admin-user',
 			'title' => 'Tech Conference 2024',
-			'numOfPeople' => 200,
 			'genre' => 'Technology',
 			'place' => 'Prague',
 			'startsAt' => new DateTime('2025-05-01 09:00:00'),
@@ -70,7 +68,6 @@ class ConferenceFixture extends AbstractFixture
 		yield [
 			'userReference' => 'user-user',
 			'title' => 'Marketing Summit 2024',
-			'numOfPeople' => 150,
 			'genre' => 'Marketing',
 			'place' => 'Brno',
 			'startsAt' => new DateTime('2025-06-15 10:00:00'),

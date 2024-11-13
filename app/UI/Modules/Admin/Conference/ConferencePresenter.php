@@ -44,7 +44,7 @@ class ConferencePresenter extends BaseAdminPresenter {
     if (!$conference) {
         $this->error('Konference nenalezena');
     }
-    
+
     $template = $this->getTemplate();
     $template->conference = $conference;
 
@@ -52,7 +52,6 @@ class ConferencePresenter extends BaseAdminPresenter {
     $form->setDefaults([
         'id' => $conference->getId(),
         'title' => $conference->title,
-        'numOfPeople' => $conference->getNumOfPeople(),
         'genre' => $conference->genre,
         'place' => $conference->place,
         'startsAt' => $conference->getStartsAt()->format('Y-m-d H:i:s'),

@@ -46,6 +46,10 @@ class ReservationService implements ICrudService {
 			$conference
 		);
 
+		if($conference->priceForSeat === 0) {
+			$reservation->setState(Reservation::STATE_PAID);
+		}
+
 		// Save reservation
 		$this->entityManager->persist($reservation);
 		$this->entityManager->flush();

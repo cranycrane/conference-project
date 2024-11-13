@@ -10,6 +10,7 @@ use App\UI\Components\Sign\SignUpFormFactory;
 use App\UI\Form\FormFactory;
 use App\UI\Modules\Base\BasePresenter;
 use App\UI\Modules\Front\BaseFrontPresenter;
+use Doctrine\ORM\NoResultException;
 use Nette\Application\Attributes\Persistent;
 use Nette\Application\UI\Presenter;
 use Nette\DI\Attributes\Inject;
@@ -60,6 +61,8 @@ class SignPresenter extends BaseFrontPresenter {
 				}
 			} catch (AuthenticationException) {
 				$form->addError('Jméno nebo heslo je chybně zadáno');
+			} catch (NoResultException) {
+				$form->addError('Uživatel s tímto e-mailem neexistuje');
 			}
 		};
 
