@@ -5,7 +5,7 @@
 				<div class="card" style="width: 100%;"> <!-- Nastavení šířky karty na 100% sloupce -->
 					<div class="card-image-container"> <!-- Kontejner pro obrázek a overlay -->
 						{if $presentation->photo}
-							<img class="card-img-top" src="{$basePath}{$presentation->photo}" alt="Card image cap">
+							<img class="card-img-top" src="{$basePath}/{$presentation->photo}" alt="Card image cap">
 						{else}
 							<img class="card-img-top" src="{$basePath}/uploads/presentations/default.jpg" alt="Card image cap">
 						{/if}

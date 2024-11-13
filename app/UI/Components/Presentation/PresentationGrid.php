@@ -7,20 +7,26 @@ use App\Model\Services\PresentationService;
 use App\Model\Utils\Html;
 use App\UI\Components\BaseGrid;
 use Doctrine\Common\Collections\ArrayCollection;
+use Nette\Application\Attributes\Persistent;
 use Nette\Application\UI\Control;
+use Nette\DI\Attributes\Inject;
 use Ublaboo\DataGrid\Column\Action\Confirmation\StringConfirmation;
 use Ublaboo\DataGrid\DataGrid;
 
 class PresentationGrid extends BaseGrid {
 
+	private PresentationFormFactory $formFactory;
 	private PresentationService $presentationService;
 
 	private ?int $conferenceId = null;
+	#[Persistent]
+	public ?int $currentPresentationId = null;
 
-	public function __construct(PresentationService $presentationService, ?int $conferenceId = null) {
+	public function __construct(PresentationService $presentationService, PresentationFormFactory $formFactory, ?int $conferenceId = null) {
 		parent::__construct($presentationService);
 		$this->presentationService = $presentationService;
 		$this->conferenceId = $conferenceId;
+		$this->formFactory = $formFactory;
 	}
 
 	public function setConferenceId(?int $conferenceId): void {
@@ -39,11 +45,9 @@ class PresentationGrid extends BaseGrid {
 		$grid->addColumnText('title', 'Název')
 			->setSortable();
 
-		$grid->addColumnText('state', 'Stav')
-			->setSortable()
-			->setRenderer(function ($item) {
-				return $item->getStateLabel();
-			});
+		$grid->addColumnStatus('state', 'Stav')
+			->setOptions(Presentation::STATES)
+			->onChange[] = [$this, 'statusChange'];
 
 		$grid->addColumnText('description', 'Popis')
 			->setRenderer(function ($item) {
@@ -84,6 +88,12 @@ class PresentationGrid extends BaseGrid {
 			})
 			->setSortable();
 
+		$grid->addAction('edit', 'Upravit', 'edit!')
+			->setClass('btn btn-primary ajax')
+			->setDataAttribute('bs-toggle', 'modal')
+			->setDataAttribute('bs-target', '#dialog-presentation');
+
+
 		$this->addDeleteAction($grid);
 
 		$this->addTranslation($grid);
@@ -91,8 +101,38 @@ class PresentationGrid extends BaseGrid {
 		return $grid;
 	}
 
+	public function statusChange($id, $newStatus): void
+	{
+		$presentation = $this->presentationService->find($id);
+		if ($presentation) {
+			$presentation->setState($newStatus);
+			$this->presentationService->update();
+
+			$this->presenter->flashMessage('Stav prezentace byl úspěšně změněn.', 'success');
+		} else {
+			$this->presenter->flashMessage('Prezentace nebyla nalezena.', 'danger');
+		}
+
+		// Redraw the item to update the status in the grid
+
+		if ($this->presenter->isAjax()) {
+			$this['grid']->redrawItem($id);
+		}
+	}
+
+	public function createComponentPresentationEditForm(): PresentationForm {
+		$presentation = $this->presentationService->find($this->currentPresentationId);
+		return $this->formFactory->create($presentation->conference->getId(), $presentation);
+	}
+
+	public function handleEdit($id): void {
+		$this->currentPresentationId = $id;
+		$this->redrawControl('presentationEditSnippet');
+	}
+
 	public function render(): void
 	{
+		$this->template->currentPresentationId = $this->currentPresentationId;
 		$this->template->setFile(__DIR__ . '/templates/PresentationGrid.latte');
 		$this->template->render();
 	}
