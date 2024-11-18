@@ -27,6 +27,8 @@ class ConferencePresenter extends BaseAdminPresenter {
     #[Inject]
     public ConferenceService $conferenceService;
 
+    public $conferenceId = null;
+
 
     public function createComponentConferenceGrid(): ConferenceGrid {
         return $this->conferenceGridFactory->create();
@@ -34,7 +36,13 @@ class ConferencePresenter extends BaseAdminPresenter {
 
     // Přidáme metodu pro vytvoření komponenty ConferenceForm
     public function createComponentConferenceForm(): ConferenceForm {
-        return $this->conferenceFormFactory->create();
+        $conferenceForm = $this->conferenceFormFactory->create();
+    
+        if (isset($this->conferenceId)) {
+            $conferenceForm->setId($this->conferenceId);
+        }
+        
+        return $conferenceForm;
     }
 
     public function renderEdit(int $id): void
@@ -44,6 +52,8 @@ class ConferencePresenter extends BaseAdminPresenter {
     if (!$conference) {
         $this->error('Konference nenalezena');
     }
+
+    $this->conferenceId = $id;
 
     $template = $this->getTemplate();
     $template->conference = $conference;
