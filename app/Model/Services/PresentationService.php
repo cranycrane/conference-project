@@ -46,6 +46,10 @@ class PresentationService implements ICrudService {
 			$data['photo'] ?? null
 		);
 
+		if($data['photoImage']->isOk()) {
+			$presentation->setPhotoUpload($data['photoImage']);
+		}
+
 		// Save presentation
 		$this->entityManager->persist($presentation);
 		$this->entityManager->flush();

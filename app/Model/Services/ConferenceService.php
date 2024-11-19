@@ -88,6 +88,10 @@ class ConferenceService
         $conference->capacity = (int) $values->capacity;
         $conference->description = $values->description ?? null;
 
+		if($values['photoImage']->isOk()) {
+			$conference->setPhotoUpload($values['photoImage']);
+		}
+
         $this->entityManager->flush();
     } else {
         // Pokud není ID, vytváříme novou konferenci
@@ -102,6 +106,10 @@ class ConferenceService
             (int) $values->capacity,
             $values->description ?? null
         );
+
+		if($values['photoImage']->isOk()) {
+			$conference->setPhotoUpload($values['photoImage']);
+		}
 
         $this->entityManager->persist($conference);
         $this->entityManager->flush();

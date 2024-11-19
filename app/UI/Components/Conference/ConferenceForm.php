@@ -28,9 +28,9 @@ class ConferenceForm extends Control
 
     public function createComponentForm(): Form
     {
-        
+
         // Využití vaší továrny na formuláře
-        $form = $this->formFactory->forBackend(); 
+        $form = $this->formFactory->forBackend();
         $form->setAjax(false);
         $form->addHidden('id');
 
@@ -72,7 +72,7 @@ class ConferenceForm extends Control
             ->addRule(Form::Min, 'Cena musí být kladné číslo.', 0);
 
         $numAttendees = $this->conferenceId ? $this->conferenceService->find($this->conferenceId)->getNumOfAttendees() : 0;
-        
+
         $form->addInteger('capacity', 'Kapacita:')
             ->setRequired('Prosím, zadejte kapacitu.')
             ->addRule(Form::MIN, 'Kapacita musí být kladné číslo.', 1)
@@ -80,6 +80,12 @@ class ConferenceForm extends Control
 
         $form->addTextArea('description', 'Popis:')
             ->setNullable();
+
+		$form->addUpload('photoImage', 'Fotka/Poster:')
+			->setOption('description', sprintf('maximálně 5 MB, JPEG, PNG, GIF, WebP nebo AVIF'))
+			->addRule($form::Image, 'Soubor musí být JPEG, PNG, GIF, WebP nebo AVIF')
+			->addRule($form::MaxFileSize, 'Maximální velikost je 5 MB', 2 * 1024 * 1024);
+
 
         $form->addSubmit('send', 'Uložit konferenci');
 
