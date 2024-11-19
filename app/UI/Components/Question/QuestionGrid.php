@@ -44,7 +44,7 @@ class QuestionGrid extends BaseGrid {
 			$grid->setDataSource($this->questionService->findAll());
 		}
 
-//		$grid->addColumnText('user.email', 'Uživatel');
+		$grid->addColumnText('user.email', 'Uživatel');
 
 		$grid->addColumnText('question', 'Otázka');
 
