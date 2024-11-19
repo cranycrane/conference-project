@@ -34,7 +34,7 @@ final class UserAuthenticator implements Authenticator, IdentityHandler
 		if ($user === null) {
 			throw new AuthenticationException('The email is incorrect.', self::IdentityNotFound);
 		} elseif (!$user->isActivated()) {
-			throw new AuthenticationException('The user is not active.', self::InvalidCredential);
+			throw new AuthenticationException('The user is not active.', self::NotApproved);
 		} elseif (!$this->passwords->verify($password, $user->getPasswordHash())) {
 			throw new AuthenticationException('The password is incorrect.', self::InvalidCredential);
 		}

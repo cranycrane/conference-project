@@ -31,6 +31,10 @@ class QuestionGrid extends BaseGrid {
 	public function createComponentGrid(): DataGrid {
 		$grid = new DataGrid();
 
+		$user = $this->presenter->getUser();
+		$isOrganizerOrAdmin = $user->isLoggedIn() && ($user->isInRole('admin') ||
+			$user->getId() === $this->presentationId);
+
 		if ($this->presentationId !== null) {
             $grid->setDataSource($this->questionService->findByPresentation($this->presentationId));
         } else {
@@ -43,7 +47,7 @@ class QuestionGrid extends BaseGrid {
 
 		$grid->addColumnText('question', 'Otázka');
 
-		if($this->presenter->getUser()->isLoggedIn()) {
+		if($isOrganizerOrAdmin) {
 			$grid->addAction('edit', 'Upravit', 'edit!')
 				->setRenderCondition(function ($item) {
 					$currentUser = $this->presenter->getUser();
@@ -55,7 +59,6 @@ class QuestionGrid extends BaseGrid {
 				->setDataAttribute('bs-toggle', 'modal')
 				->setDataAttribute('bs-target', '#dialog-question');
 
-
 			$grid->addAction('delete', 'Smazat')
 				->setRenderCondition(function ($item) {
 					$currentUser = $this->presenter->getUser();
@@ -65,7 +68,6 @@ class QuestionGrid extends BaseGrid {
 				})
 				->setClass('btn btn-danger btn-sm')
 				->setConfirmation(new StringConfirmation('Opravdu chcete tuto otázku smazat?'));
-
 		}
 
 		$this->addTranslation($grid);

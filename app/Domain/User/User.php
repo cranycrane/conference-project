@@ -33,7 +33,11 @@ class User extends AbstractEntity
 	public const STATE_ACTIVATED = 2;
 	public const STATE_BLOCKED = 3;
 
-	public const STATES = [self::STATE_FRESH, self::STATE_BLOCKED, self::STATE_ACTIVATED];
+	public const STATES = [
+		self::STATE_FRESH => 'Vytvořený',
+		self::STATE_BLOCKED => 'Blokovaný',
+		self::STATE_ACTIVATED => 'Aktivovaný'
+	];
 
 	/** @ORM\Column(type="string", length=255, nullable=FALSE, unique=false) */
 	public string $firstName;
@@ -164,7 +168,7 @@ class User extends AbstractEntity
 
 	public function setState(int $state): void
 	{
-		if (!in_array($state, self::STATES, true)) {
+		if (!array_key_exists($state, self::STATES)) {
 			throw new InvalidArgumentException(sprintf('Unsupported state %s', $state));
 		}
 

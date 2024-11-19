@@ -2,8 +2,11 @@
 
 namespace App\UI\Components\User;
 
+use App\Domain\User\User;
 use App\Model\Services\UserService;
 use Nette\Application\UI\Control;
+use Nette\Forms\Container;
+use Nette\Utils\ArrayHash;
 use Ublaboo\DataGrid\Column\Action\Confirmation\StringConfirmation;
 use Ublaboo\DataGrid\DataGrid;
 
@@ -19,15 +22,43 @@ class UserGrid extends Control {
 
 		$grid->setDataSource($this->userService->findAll());
 
-		$grid->addColumnText('id', 'ID')
-			->setSortable();
+		$grid->addColumnText('id', 'ID');
 
-		$grid->addColumnText('email', 'E-mail')
-			->setSortable();
+		$grid->addColumnText('email', 'E-mail');
 
-		$grid->addAction('edit', 'Spravovat uživatele', 'edit!')
-			->setIcon('pencil-alt')
-			->setClass('btn btn-sm btn-primary');
+		$grid->addColumnText('firstName', 'Křestní jméno');
+
+		$grid->addColumnText('lastName', 'Příjmení');
+
+		$grid->addColumnStatus('state', 'Stav')
+			->setOptions(User::STATES) //
+			->onChange[] = [$this, 'statusChange'];
+
+		$grid->addInlineEdit()
+			->onControlAdd[] = function(Container $container): void {
+			$container->addText('email', '');
+			$container->addText('firstName', '');
+			$container->addText('lastName', '');
+		};
+
+		$grid->getInlineEdit()->onSetDefaults[] = function(Container $container, $item): void {
+			$container->setDefaults([
+				'email' => $item->email,
+				'firstName' => $item->firstName,
+				'lastName' => $item->lastName,
+			]);
+		};
+
+		$grid->getInlineEdit()->onSubmit[] = function($id, ArrayHash $values): void {
+			/**
+			 * Save new values
+			 */
+			$user = $this->userService->find($id);
+			$user->email = $values['email'];
+			$user->firstName = $values['firstName'];
+			$user->lastName = $values['lastName'];
+			$this->userService->update($user);
+		};
 
 		$grid->addAction('delete', 'Smazat', 'delete!')
 			->setIcon('trash')
@@ -39,9 +70,22 @@ class UserGrid extends Control {
 		return $grid;
 	}
 
-	public function handleEdit(int $id): void {
-		$this->presenter->flashMessage('Uživatel úspěšně smazán', 'success');
-		bdump("POMC");
+	public function statusChange($id, $newStatus): void
+	{
+		// Update the reservation state in the service
+		$user = $this->userService->find($id);
+		if ($user) {
+			$user->setState($newStatus);
+			$this->userService->update($user);
+
+			$this->presenter->flashMessage('Stav uživatele byl úspěšně změněn.', 'success');
+		} else {
+			$this->presenter->flashMessage('Uživatel nebyl nalezen.', 'danger');
+		}
+
+		if ($this->presenter->isAjax()) {
+			$this['grid']->redrawItem($id);
+		}
 	}
 
 	public function handleDelete(int $id): void {
