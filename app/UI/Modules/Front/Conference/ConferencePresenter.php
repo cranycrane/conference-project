@@ -109,6 +109,7 @@ final class ConferencePresenter extends BaseFrontPresenter
 
 	protected function createComponentConferenceEditForm(): ConferenceForm {
 		$form = $this->conferenceFormFactory->create();
+		$form->setId($this->conferenceId);
 
 		$conference = $this->conferenceService->find($this->conferenceId);
 

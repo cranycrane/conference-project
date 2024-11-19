@@ -14,6 +14,7 @@ class ConferenceForm extends Control
 {
     private FormFactory $formFactory;
     private ConferenceService $conferenceService;
+    private ?int $conferenceId = null;
 
     public function __construct(FormFactory $formFactory, ConferenceService $conferenceService)
     {
@@ -21,13 +22,17 @@ class ConferenceForm extends Control
         $this->conferenceService = $conferenceService;
     }
 
+    public function setId(int $conferenceId){
+        $this->conferenceId = $conferenceId;
+    }
+
     public function createComponentForm(): Form
     {
+        
         // Využití vaší továrny na formuláře
         $form = $this->formFactory->forBackend(); // nebo forBackend(), pokud je formulář určen pro administrátory
         $form->setAjax(false);
         $form->addHidden('id');
-
 
         $form->addText('title', 'Název konference:')
             ->setRequired('Prosím, zadejte název konference.');
@@ -48,9 +53,12 @@ class ConferenceForm extends Control
             ->setRequired('Prosím, zadejte cenu.')
             ->addRule(Form::Min, 'Cena musí být kladné číslo.', 0);
 
+        $numAttendees = $this->conferenceId ? $this->conferenceService->find($this->conferenceId)->getNumOfAttendees() : 0;
+        
         $form->addInteger('capacity', 'Kapacita:')
             ->setRequired('Prosím, zadejte kapacitu.')
-            ->addRule(Form::MIN, 'Kapacita musí být kladné číslo.', 1);
+            ->addRule(Form::MIN, 'Kapacita musí být kladné číslo.', 1)
+            ->addRule(Form::MIN, "Kapacita musí být větší než počet již přihlášených účastníků, tzn. {$numAttendees}.", $numAttendees);
 
         $form->addTextArea('description', 'Popis:')
             ->setNullable();

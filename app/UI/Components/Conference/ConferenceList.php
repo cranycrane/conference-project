@@ -44,6 +44,7 @@ class ConferenceList extends Control {
 		})->first();
 
 		$form = $this->conferenceFormFactory->create();
+		$form->setId($id);
 		$formComp = $form['form'];
 
 		$formComp->setDefaults([
