@@ -14,7 +14,7 @@ use DateTime;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
-
+use Nette\Http\FileUpload;
 
 /**
  * @ORM\Entity(repositoryClass="App\Domain\Conference\ConferenceRepository")
@@ -146,6 +146,12 @@ class Conference extends AbstractEntity
 	public function getState(): int
 	{
 		return $this->state;
+	}
+
+	public function setPhotoUpload(FileUpload $file): void {
+		$fileName = 'uploads/conferences/' . $file->getSanitizedName();
+		$file->move($fileName);
+		$this->photo = $fileName;
 	}
 
 	public function setState(int $state): void
