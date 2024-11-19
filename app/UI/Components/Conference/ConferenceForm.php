@@ -30,7 +30,7 @@ class ConferenceForm extends Control
     {
         
         // Využití vaší továrny na formuláře
-        $form = $this->formFactory->forBackend(); // nebo forBackend(), pokud je formulář určen pro administrátory
+        $form = $this->formFactory->forBackend(); 
         $form->setAjax(false);
         $form->addHidden('id');
 
@@ -44,10 +44,28 @@ class ConferenceForm extends Control
             ->setRequired('Prosím, zadejte místo konání.');
 
         $form->addDateTime('startsAt', 'Začátek konference:')
-			->setRequired('Prosím, zadejte datum začátku.');
+			->setRequired('Prosím, zadejte datum začátku.')
+            ->addRule(function ($control) {
+                $startDate = $control->value;
+                if (!$startDate instanceof \DateTimeInterface) {
+                    $startDate = new DateTime($startDate);
+                }
+                return $startDate >= new DateTime('today');
+            }, 'Datum začátku nemůže být v minulosti.');
 
         $form->addDateTime('endsAt', 'Konec konference:')
-            ->setRequired('Prosím, zadejte datum konce.');
+            ->setRequired('Prosím, zadejte datum konce.')
+            ->addRule(function ($control) use ($form) {
+                $startDate = $form['startsAt']->value;
+                if (!$startDate instanceof \DateTimeInterface) {
+                    $startDate = new DateTime($startDate);
+                }
+                $endDate = $control->value;
+                if (!$endDate instanceof \DateTimeInterface) {
+                    $endDate = new DateTime($endDate);
+                }
+                return $endDate > $startDate;
+            }, 'Datum konce musí být pozdější než datum začátku.');
 
         $form->addInteger('priceForSeat', 'Cena za místo:')
             ->setRequired('Prosím, zadejte cenu.')
@@ -73,8 +91,18 @@ class ConferenceForm extends Control
         };
 
         $form->onSuccess[] = [$this, 'formSucceeded'];
+        $form->onError[] = [$this, 'formError'];
 
         return $form;
+    }
+
+    public function formError(Form $form): void
+    {
+        foreach ($form->getControls() as $control) {
+            if ($control->error !== null) {
+                $this->presenter->flashMessage($control->error, 'error');
+            }
+        }
     }
 
     public function formSucceeded(Form $form, $values): void
