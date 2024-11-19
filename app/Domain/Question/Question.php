@@ -31,13 +31,13 @@ class Question extends AbstractEntity
 
 	/**
 	 * @ORM\ManyToOne(targetEntity="App\Domain\Presentation\Presentation", inversedBy="questions")
-	 * @ORM\JoinColumn(nullable=false)
+	 * @ORM\JoinColumn(nullable=false, onDelete="CASCADE")
 	 */
 	public Presentation $presentation;
 
 	/**
 	 * @ORM\ManyToOne(targetEntity="App\Domain\User\User", inversedBy="questions")
-	 * @ORM\JoinColumn(nullable=false)
+	 * @ORM\JoinColumn(nullable=false, onDelete="CASCADE")
 	 */
 	public User $user;
 

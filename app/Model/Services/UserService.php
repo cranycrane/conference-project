@@ -88,7 +88,7 @@ class UserService implements ICrudService
 		$this->entityManager->flush();
 	}
 
-	public function find($id): User
+	public function find($id): ?User
 	{
 		return $this->userRepository->find($id);
 	}

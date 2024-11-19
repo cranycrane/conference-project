@@ -4,6 +4,7 @@ namespace App\UI\Modules\Front\Sign;
 
 use App\Model\Exception\Logic\DuplicateEmailException;
 use App\Model\Exception\Runtime\AuthenticationException;
+use App\Model\Security\Authenticator\UserAuthenticator;
 use App\Model\Services\UserService;
 use App\UI\Components\Sign\SignUpForm;
 use App\UI\Components\Sign\SignUpFormFactory;
@@ -15,6 +16,7 @@ use Nette\Application\Attributes\Persistent;
 use Nette\Application\UI\Presenter;
 use Nette\DI\Attributes\Inject;
 use Nette\Forms\Form;
+use Nette\Security\Authenticator;
 
 class SignPresenter extends BaseFrontPresenter {
 	/**
@@ -59,8 +61,12 @@ class SignPresenter extends BaseFrontPresenter {
 				else {
 					$this->redirect(':Front:Home:');
 				}
-			} catch (AuthenticationException) {
-				$form->addError('Jméno nebo heslo je chybně zadáno');
+			} catch (AuthenticationException $e) {
+				if($e->getCode() === Authenticator::NotApproved) {
+					$form->addError('Uživatel je zablokován.');
+				} else {
+					$form->addError('Jméno nebo heslo je chybně zadáno');
+				}
 			} catch (NoResultException) {
 				$form->addError('Uživatel s tímto e-mailem neexistuje');
 			}
