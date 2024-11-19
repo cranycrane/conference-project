@@ -81,7 +81,7 @@ class SignUpForm extends Control {
 				$this->userService->create($values);
 				$this->presenter->getUser()->login($values['email'], $values['password']);
 				$this->presenter->flashMessage('Registrace byla úspěšná.', 'success');
-				$this->redirect(':Front:Home:default');
+				$this->presenter->redirect(':Front:Home:default');
 			}
 		} catch (DuplicateEmailException) {
 			// Handle the case where the email is already taken
