@@ -80,7 +80,7 @@ class Presentation extends AbstractEntity
 
 	/**
 	 * @ORM\ManyToOne(targetEntity="App\Domain\Conference\Conference", inversedBy="presentations")
-	 * @ORM\JoinColumn(name="conference_id", referencedColumnName="id", nullable=false)
+	 * @ORM\JoinColumn(name="conference_id", referencedColumnName="id", nullable=false, onDelete="CASCADE")
 	 */
 	public Conference $conference;
 
