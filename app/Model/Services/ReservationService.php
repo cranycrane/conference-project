@@ -3,6 +3,7 @@
 namespace App\Model\Services;
 
 use App\Domain\Conference\Conference;
+use App\Domain\Conference\ConferenceRepository;
 use App\Domain\Presentation\Presentation;
 use App\Domain\Presentation\PresentationRepository;
 use App\Domain\Reservation\Reservation;
@@ -20,6 +21,7 @@ use Nette\Utils\Validators;
 class ReservationService implements ICrudService {
 
 	private ReservationRepository $reservationRepository;
+	private ConferenceRepository $conferenceRepository;
 	private EntityManagerInterface $entityManager;
 
 	public function __construct(
@@ -28,6 +30,8 @@ class ReservationService implements ICrudService {
 		$this->entityManager = $entityManager;
 		/** @var ReservationRepository $this ->presentationRepository */
 		$this->reservationRepository = $entityManager->getRepository(Reservation::class);
+		/** @var ConferenceRepository $this ->conferenceRepository */
+		$this->conferenceRepository = $entityManager->getRepository(Conference::class);
 	}
 
 	/**
@@ -83,5 +87,17 @@ class ReservationService implements ICrudService {
 
 	public function findAll(): ArrayCollection {
 		return new ArrayCollection($this->reservationRepository->findAll());
+	}
+
+	public function getRemainingCapacity(int $conferenceId): int {
+		$conference = $this->conferenceRepository->find($conferenceId);
+		if (!$conference) {
+			throw new \Exception('Konference neexistuje.');
+		}
+	
+		$capacity = $conference->capacity;
+		$reserved = $conference->getNumOfAttendees();
+	
+		return $capacity - $reserved;
 	}
 }

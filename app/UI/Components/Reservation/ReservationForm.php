@@ -101,10 +101,12 @@ class ReservationForm extends Control
                 ->toggle('#passwordField');
         }
 
-        $form->addInteger('numOfPeople', 'Počet lidí:')
+        $form->addInteger('numOfPeople', 'Počet lidí (max. 20):')
             ->setRequired('Prosím, zadejte počet lidí.')
             ->setDefaultValue(1)
-            ->addRule(Form::MIN, 'Počet lidí musí být kladný.', 1);
+            ->addRule(Form::MIN, 'Počet lidí musí být kladný.', 1)
+            ->addRule(Form::MAX, 'Najednout můžete rezervovat maximálně 20 vstupenek', 20)
+            ->addRule(Form::MAX, "Konference má zbývající kapacitu jen {$this->reservationService->getRemainingCapacity($this->conferenceId)} osob", $this->reservationService->getRemainingCapacity($this->conferenceId));
 
         $form->addSubmit('submit', 'Potvrdit rezervaci');
 
@@ -147,3 +149,4 @@ class ReservationForm extends Control
         $this->template->render();
     }
 }
+
