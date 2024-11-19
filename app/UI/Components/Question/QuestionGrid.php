@@ -30,20 +30,21 @@ class QuestionGrid extends BaseGrid {
 
 	public function createComponentGrid(): DataGrid {
 		$grid = new DataGrid();
+		$grid->setRememberState(false);
 
 		$user = $this->presenter->getUser();
 		$isOrganizerOrAdmin = $user->isLoggedIn() && ($user->isInRole('admin') ||
-			$user->getId() === $this->presentationId);
+				$user->getId() === $this->presentationId);
 
 		if ($this->presentationId !== null) {
-            $grid->setDataSource($this->questionService->findByPresentation($this->presentationId));
-        } else {
+			$grid->setDataSource($this->questionService->findByPresentation($this->presentationId));
+		} else {
 			$grid->addColumnText('presentation.title', 'Prezentace');
 			$grid->addColumnText('presentation.conference.title', 'Konference');
-            $grid->setDataSource($this->questionService->findAll());
-        }
+			$grid->setDataSource($this->questionService->findAll());
+		}
 
-		$grid->addColumnText('user.email', 'Uživatel');
+//		$grid->addColumnText('user.email', 'Uživatel');
 
 		$grid->addColumnText('question', 'Otázka');
 
