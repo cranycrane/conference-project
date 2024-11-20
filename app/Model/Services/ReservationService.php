@@ -42,6 +42,11 @@ class ReservationService implements ICrudService {
 		$user = $data['userId'] ? $this->entityManager->getReference(User::class, $data['userId']) : null;
 		$conference = $this->entityManager->getReference(Conference::class, $data['conferenceId']);
 
+		$remainingCapacity = $conference->capacity - $conference->getNumOfAttendees();
+		if ($remainingCapacity < $data['numOfPeople']) {
+			throw new NoCapacityException();
+		}
+
 		$reservation = new Reservation(
 			$data['numOfPeople'],
 			$data['email'],
@@ -55,10 +60,6 @@ class ReservationService implements ICrudService {
 			$reservation->setState(Reservation::STATE_PAID);
 		}
 
-		$remainingCapacity = $conference->capacity - $conference->getNumOfAttendees();
-		if ($remainingCapacity < $data['numOfPeople']) {
-			throw new NoCapacityException();
-		}
 
 		// Save reservation
 		$this->entityManager->persist($reservation);
@@ -100,10 +101,10 @@ class ReservationService implements ICrudService {
 		if (!$conference) {
 			throw new \Exception('Konference neexistuje.');
 		}
-	
+
 		$capacity = $conference->capacity;
 		$reserved = $conference->getNumOfAttendees();
-	
+
 		return $capacity - $reserved;
 	}
 }

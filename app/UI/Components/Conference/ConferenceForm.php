@@ -50,7 +50,6 @@ class ConferenceForm extends Control
 		bdump($isConferenceRunning);
 
         $form->addDateTime('startsAt', 'Začátek konference:')
-			->setDisabled($isConferenceRunning)
 			->setRequired('Prosím, zadejte datum začátku.')
             ->addRule(function ($control) {
                 $startDate = $control->value;
@@ -61,7 +60,7 @@ class ConferenceForm extends Control
             }, 'Datum začátku nemůže být v minulosti.');
 
         $form->addDateTime('endsAt', 'Konec konference:')
-			->setDisabled($isConferenceRunning)
+			->setOmitted(false)
             ->setRequired('Prosím, zadejte datum konce.')
             ->addRule(function ($control) use ($form) {
                 $startDate = $form['startsAt']->value;
@@ -74,6 +73,11 @@ class ConferenceForm extends Control
                 }
                 return $endDate > $startDate;
             }, 'Datum konce musí být pozdější než datum začátku.');
+
+		if ($isConferenceRunning) {
+			$form['startsAt']->setHtmlAttribute('readonly', 'readonly');
+			$form['endsAt']->setHtmlAttribute('readonly', 'readonly');
+		}
 
         $form->addInteger('priceForSeat', 'Cena za místo:')
             ->setRequired('Prosím, zadejte cenu.')
@@ -115,12 +119,14 @@ class ConferenceForm extends Control
     public function formSucceeded(Form $form, $values): void
 {
     try {
+		bdump("Sending");
         $this->conferenceService->saveConference($values);
         $this->presenter->flashMessage('Konference byla úspěšně upravena.', 'success');
-    } 
+    }
     catch (NoCapacityException) {
+		bdump("No capacity exception");
         $this->presenter->flashMessage('Kapacita musí být větší než počet již přihlášených účastníků', 'error');
-    } 
+    }
     catch (\Exception $e) {
         Debugger::log('Error while saving conference form:' . $e->getMessage(), ILogger::ERROR);
         $this->presenter->flashMessage('Nastala chyba při ukládání konference.', 'error');

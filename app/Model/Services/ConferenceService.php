@@ -79,6 +79,7 @@ class ConferenceService
         }
 
 		if ((int) $values->capacity < $conference->getNumOfAttendees()) {
+			bdump("Throwing exception");
 			throw new NoCapacityException();
 		}
 

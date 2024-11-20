@@ -106,15 +106,25 @@ class ReservationForm extends Control
             ->setRequired('Prosím, zadejte počet lidí.')
             ->setDefaultValue(1)
             ->addRule(Form::MIN, 'Počet lidí musí být kladný.', 1)
-            //->addRule(Form::MAX, "Konference má zbývající kapacitu jen {$this->reservationService->getRemainingCapacity($this->conferenceId)} osob", $this->reservationService->getRemainingCapacity($this->conferenceId))
+            ->addRule(Form::MAX, "Konference má zbývající kapacitu jen {$this->reservationService->getRemainingCapacity($this->conferenceId)} osob", $this->reservationService->getRemainingCapacity($this->conferenceId))
             ->addRule(Form::MAX, 'Najednout můžete rezervovat maximálně 20 vstupenek', 20);
 
         $form->addSubmit('submit', 'Potvrdit rezervaci');
 
         $form->onSuccess[] = [$this, 'formSucceeded'];
+		$form->onError[] = [$this, 'formError'];
 
         return $form;
     }
+
+	public function formError(Form $form): void
+	{
+		foreach ($form->getControls() as $control) {
+			if ($control->error !== null) {
+				$this->presenter->flashMessage('Chyba při provádění rezervace: ' . $control->error, 'error');
+			}
+		}
+	}
 
     public function formSucceeded(Form $form, array $values): void {
         try{
@@ -137,7 +147,7 @@ class ReservationForm extends Control
 			$this->presenter->flashMessage('Rezervace úspěšně uložena.', 'success');
 			bdump("super1");
 
-		} 
+		}
         catch (DuplicateEmailException) {
             $this->presenter->flashMessage('Uživatel s tímto e-mailem jíž existuje', 'error');
 		}
