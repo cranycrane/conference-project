@@ -4,6 +4,8 @@ namespace App\Model\Services;
 
 use App\Domain\Conference\Conference;
 use App\Domain\Conference\ConferenceRepository;
+use App\Domain\Presentation\Presentation;
+use App\Domain\Presentation\PresentationRepository;
 use App\Domain\User\UserRepository;
 use App\Domain\User\User;
 use App\Model\Utils\DateTime;
@@ -17,6 +19,7 @@ class ConferenceService
     private ConferenceRepository $conferenceRepository;
     private EntityManagerInterface $entityManager;
     private UserRepository $userRepository;
+    private PresentationRepository $presentationRepository;
     private NetteUser $netteUser;
 
     public function __construct(EntityManagerInterface $entityManager, NetteUser $netteUser)
@@ -25,6 +28,8 @@ class ConferenceService
         $this->conferenceRepository = $entityManager->getRepository(Conference::class);
         /** @var UserRepository $this->userRepository */
         $this->userRepository = $entityManager->getRepository(User::class);
+        /** @var PresentationRepository $this->presentationRepository */
+        $this->presentationRepository = $entityManager->getRepository(Presentation::class);
         $this->netteUser = $netteUser;
     }
 
@@ -75,6 +80,10 @@ class ConferenceService
 
         if (!$conference) {
             throw new \Exception('Konference nebyla nalezena.');
+        }
+
+        if ($this->presentationRepository->checkTimeOfPresentations($conference, $values->startsAt, $values->endsAt) == false) {
+            throw new \Exception('V rámci konference jsou již naplánované prezentace mimo vámi zvolený termín.');
         }
 
         // Zde aktualizujeme hodnoty konference
