@@ -44,7 +44,13 @@ class ConferenceForm extends Control
         $form->addText('place', 'Místo konání:')
             ->setRequired('Prosím, zadejte místo konání.');
 
+		$isConferenceRunning = $this->conferenceId &&
+			(new DateTime() > $this->conferenceService->find($this->conferenceId)->getStartsAt());
+
+		bdump($isConferenceRunning);
+
         $form->addDateTime('startsAt', 'Začátek konference:')
+			->setDisabled($isConferenceRunning)
 			->setRequired('Prosím, zadejte datum začátku.')
             ->addRule(function ($control) {
                 $startDate = $control->value;
@@ -55,6 +61,7 @@ class ConferenceForm extends Control
             }, 'Datum začátku nemůže být v minulosti.');
 
         $form->addDateTime('endsAt', 'Konec konference:')
+			->setDisabled($isConferenceRunning)
             ->setRequired('Prosím, zadejte datum konce.')
             ->addRule(function ($control) use ($form) {
                 $startDate = $form['startsAt']->value;
