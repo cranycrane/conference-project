@@ -10,6 +10,7 @@ use App\Model\Utils\DateTime;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\EntityManagerInterface;
 use App\Model\Exception\Logic\InvalidArgumentException;
+use App\Model\Exception\Logic\NoCapacityException;
 use Nette\Security\User as NetteUser;
 
 class ConferenceService
@@ -76,6 +77,11 @@ class ConferenceService
         if (!$conference) {
             throw new \Exception('Konference nebyla nalezena.');
         }
+
+		if ((int) $values->capacity < $conference->getNumOfAttendees()) {
+			throw new NoCapacityException();
+		}
+
 
         // Zde aktualizujeme hodnoty konference
         $conference->title = $values->title;

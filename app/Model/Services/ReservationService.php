@@ -12,6 +12,7 @@ use App\Domain\User\User;
 use App\Domain\User\UserRepository;
 use App\Model\Exception\Logic\DuplicateEmailException;
 use App\Model\Exception\Logic\InvalidArgumentException;
+use App\Model\Exception\Logic\NoCapacityException;
 use App\Model\Security\Passwords;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\DBAL\Exception\UniqueConstraintViolationException;
@@ -52,6 +53,11 @@ class ReservationService implements ICrudService {
 
 		if($conference->priceForSeat === 0) {
 			$reservation->setState(Reservation::STATE_PAID);
+		}
+
+		$remainingCapacity = $conference->capacity - $conference->getNumOfAttendees();
+		if ($remainingCapacity < $data['numOfPeople']) {
+			throw new NoCapacityException();
 		}
 
 		// Save reservation
