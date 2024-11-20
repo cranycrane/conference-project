@@ -50,10 +50,10 @@ class PresentationForm extends Control {
 			->setDefaultValue($this->presentation?->speaker->getFullname()
 				?? $this->presenter->getUser()->getIdentity()->getFullname());
 
-		$form->addDateTime('startsAt', 'Kdy začne:')
+		$startsAt = $form->addDateTime('startsAt', 'Kdy začne:')
 			->setDisabled(!$isOrganizerOrAdmin);
 
-		$form->addDateTime('endsAt', 'Kdy skončí:')
+		$endsAt = $form->addDateTime('endsAt', 'Kdy skončí:')
 			->setDisabled(!$isOrganizerOrAdmin);
 
 		$roomOptions = [];
@@ -63,11 +63,11 @@ class PresentationForm extends Control {
 			}
 		}
 
-		$form->addSelect('roomNumber', 'Místnost:', $roomOptions)
+		$roomSelect = $form->addSelect('roomNumber', 'Místnost:', $roomOptions)
 			->setDisabled(!$isOrganizerOrAdmin)
 			->setHtmlAttribute('class', 'form-select')
 			->setPrompt('Není přiřazena')
-			->setDefaultValue($this->presentation?->room ? $this->presentation->room->getId() : null); // Use room ID, not room number
+			->setDefaultValue($this->presentation?->room ? $this->presentation->room->getId() : null);
 
 
 		$form->addUpload('photoImage', 'Fotka/Poster:')
@@ -80,6 +80,15 @@ class PresentationForm extends Control {
 				->setDisabled(!$isOrganizerOrAdmin)
 				->setHtmlAttribute('class', 'form-select')
 				->setDefaultValue($this->presentation->state);
+
+			$roomSelect->addConditionOn($form['state'], $form::Equal, Presentation::STATE_APPROVED)
+				->addRule($form::Filled, 'Při schválení musí být přidělena místnost.');
+
+			$startsAt->addConditionOn($form['state'], $form::Equal, Presentation::STATE_APPROVED)
+				->addRule($form::Filled, 'Při schválení musí být známý čas začátku.');
+
+			$endsAt->addConditionOn($form['state'], $form::Equal, Presentation::STATE_APPROVED)
+				->addRule($form::Filled, 'Při schválení musí být známý čas konce.');
 
 			$form->setDefaults($this->presentation);
 		}
