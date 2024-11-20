@@ -58,6 +58,16 @@ class PresentationService implements ICrudService {
         $endsAt = null;
     }
 
+	if ($startsAt && ($startsAt < $conference->getStartsAt() || $startsAt > $conference->getEndsAt())) {
+        throw new \Exception('Začátek prezentace musí být v rámci konference.');
+    }
+    if ($endsAt && ($endsAt < $conference->getStartsAt() || $endsAt > $conference->getEndsAt())) {
+        throw new \Exception('Konec prezentace musí být v rámci konference.');
+    }
+    if ($startsAt && $endsAt && $startsAt > $endsAt) {
+        throw new \Exception('Začátek prezentace musí být před koncem.');
+    }
+
 		$presentation = new Presentation(
 			$user,
       $conference,
@@ -144,6 +154,17 @@ class PresentationService implements ICrudService {
     }
     if (isset($data['roomId'])) {
         $presentation->room = $this->entityManager->getReference(Room::class, $data['roomId']);
+    }
+
+	$conference = $presentation->conference;
+    if ($presentation->startsAt && ($presentation->startsAt < $conference->getStartsAt() || $presentation->startsAt > $conference->getEndsAt())) {
+        throw new \Exception('Začátek prezentace musí být v rámci konference.');
+    }
+    if ($presentation->endsAt && ($presentation->endsAt < $conference->getStartsAt() || $presentation->endsAt > $conference->getEndsAt())) {
+        throw new \Exception('Konec prezentace musí být v rámci konference.');
+    }
+    if ($presentation->startsAt && $presentation->endsAt && $presentation->startsAt > $presentation->endsAt) {
+        throw new \Exception('Začátek prezentace musí být před koncem.');
     }
 
     // Kontrola kolizí
