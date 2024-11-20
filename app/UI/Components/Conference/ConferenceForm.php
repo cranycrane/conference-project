@@ -5,6 +5,7 @@ namespace App\UI\Components\Conference;
 use Nette\Application\UI\Form;
 use Nette\Application\UI\Control;
 use App\Model\Services\ConferenceService;
+use App\Model\Exception\Logic\NoCapacityException;
 use App\UI\Form\FormFactory;
 use DateTime;
 use Tracy\Debugger;
@@ -75,8 +76,8 @@ class ConferenceForm extends Control
 
         $form->addInteger('capacity', 'Kapacita:')
             ->setRequired('Prosím, zadejte kapacitu.')
-            ->addRule(Form::MIN, 'Kapacita musí být kladné číslo.', 1)
-            ->addRule(Form::MIN, "Kapacita musí být větší než počet již přihlášených účastníků, tzn. {$numAttendees}.", $numAttendees);
+            //->addRule(Form::MIN, "Kapacita musí být větší než počet již přihlášených účastníků, tzn. {$numAttendees}.", $numAttendees)
+            ->addRule(Form::MIN, 'Kapacita musí být kladné číslo.', 1);
 
         $form->addTextArea('description', 'Popis:')
             ->setNullable();
@@ -116,7 +117,11 @@ class ConferenceForm extends Control
     try {
         $this->conferenceService->saveConference($values);
         $this->presenter->flashMessage('Konference byla úspěšně upravena.', 'success');
-    } catch (\Exception $e) {
+    } 
+    catch (NoCapacityException) {
+        $this->presenter->flashMessage('Kapacita musí být větší než počet již přihlášených účastníků', 'error');
+    } 
+    catch (\Exception $e) {
         Debugger::log('Error while saving conference form:' . $e->getMessage(), ILogger::ERROR);
         $this->presenter->flashMessage('Nastala chyba při ukládání konference.', 'error');
     }

@@ -10,6 +10,7 @@ use App\Model\Services\UserService;
 use App\UI\Form\FormFactory;
 use Doctrine\Common\Collections\ArrayCollection;
 use App\Model\Exception\Logic\DuplicateEmailException;
+use App\Model\Exception\Logic\NoCapacityException;
 use App\Domain\User\User;
 use Tracy\Debugger;
 
@@ -105,8 +106,8 @@ class ReservationForm extends Control
             ->setRequired('Prosím, zadejte počet lidí.')
             ->setDefaultValue(1)
             ->addRule(Form::MIN, 'Počet lidí musí být kladný.', 1)
-            ->addRule(Form::MAX, 'Najednout můžete rezervovat maximálně 20 vstupenek', 20)
-            ->addRule(Form::MAX, "Konference má zbývající kapacitu jen {$this->reservationService->getRemainingCapacity($this->conferenceId)} osob", $this->reservationService->getRemainingCapacity($this->conferenceId));
+            //->addRule(Form::MAX, "Konference má zbývající kapacitu jen {$this->reservationService->getRemainingCapacity($this->conferenceId)} osob", $this->reservationService->getRemainingCapacity($this->conferenceId))
+            ->addRule(Form::MAX, 'Najednout můžete rezervovat maximálně 20 vstupenek', 20);
 
         $form->addSubmit('submit', 'Potvrdit rezervaci');
 
@@ -136,10 +137,14 @@ class ReservationForm extends Control
 			$this->presenter->flashMessage('Rezervace úspěšně uložena.', 'success');
 			bdump("super1");
 
-			$this->redirect('this');
-		} catch (DuplicateEmailException) {
-			$this->presenter->flashMessage('Uživatel s tímto e-mailem jíž existuje', 'error');
+		} 
+        catch (DuplicateEmailException) {
+            $this->presenter->flashMessage('Uživatel s tímto e-mailem jíž existuje', 'error');
 		}
+        catch (NoCapacityException) {
+            $this->presenter->flashMessage('Konference nemá dostatečnou kapacitu', 'error');
+        }
+        $this->redirect('this');
 	}
 
     public function render(): void
