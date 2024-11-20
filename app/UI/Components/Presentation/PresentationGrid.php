@@ -106,7 +106,8 @@ class PresentationGrid extends BaseGrid {
 		$presentation = $this->presentationService->find($id);
 		if ($presentation) {
 			$presentation->setState($newStatus);
-			$this->presentationService->update();
+			$data = ['state' => $newStatus];
+			$this->presentationService->update($presentation, $data);
 
 			$this->presenter->flashMessage('Stav prezentace byl úspěšně změněn.', 'success');
 		} else {

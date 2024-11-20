@@ -13,6 +13,7 @@ use App\Model\Database\Entity\TUpdatedAt;
 use App\Model\Exception\Logic\InvalidArgumentException;
 use App\Model\Security\Identity;
 use DateTime;
+use DateTimeImmutable;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
@@ -55,11 +56,15 @@ class Presentation extends AbstractEntity
 	/** @ORM\Column(type="string", length=255, nullable=TRUE) */
 	public ?string $photo;
 
-	/** @ORM\Column(type="datetime", nullable=TRUE) */
-	public ?DateTime $startsAt;
+	/**
+	 * @ORM\Column(type="datetime", nullable=TRUE)
+	 */
+	public ?\DateTimeInterface $startsAt;
 
-	/** @ORM\Column(type="datetime", nullable=TRUE) */
-	public ?DateTime $endsAt;
+	/**
+	 * @ORM\Column(type="datetime", nullable=TRUE)
+	 */
+	public ?\DateTimeInterface $endsAt;
 
 	/**
 	 * @ORM\ManyToOne(targetEntity="App\Domain\User\User", inversedBy="presentations")
@@ -89,7 +94,7 @@ class Presentation extends AbstractEntity
 	 */
 	private Collection $questions;
 
-	public function __construct(User $speaker, Conference $conference, string $title, string $description = null, array $tags = null, string $photo = null)
+	public function __construct(User $speaker, Conference $conference, string $title, string $description = null, array $tags = null, string $photo = null, ?DateTimeImmutable $startsAt = null, ?DateTimeImmutable $endsAt = null)
 	{
 		$this->speaker = $speaker;
 		$this->conference = $conference;
@@ -97,6 +102,8 @@ class Presentation extends AbstractEntity
 		$this->description = $description;
 		$this->tags = $tags;
 		$this->photo = $photo;
+		$this->startsAt = $startsAt;
+		$this->endsAt = $endsAt;
 		$this->attendances = new ArrayCollection();
 		$this->questions = new ArrayCollection();
 

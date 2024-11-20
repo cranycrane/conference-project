@@ -111,7 +111,7 @@ class PresentationForm extends Control {
 					$this->presentation->setPhotoUpload($values['photoImage']);
 				}
 
-				$this->presentationService->update();
+				$this->presentationService->update($this->presentation, $values);
 
 			} else {
 				$values['userId'] = $this->presenter->getUser()->getId();
@@ -124,7 +124,7 @@ class PresentationForm extends Control {
 
 		} catch(\Exception $e) {
 			Debugger::log("ERROR Saving presentation: " . $e->getMessage(), ILogger::EXCEPTION);
-			$this->presenter->flashMessage('Nastala neznámá chyba. Na opravě pracujeme.', 'error');
+			$this->presenter->flashMessage($e->getMessage(), 'error');
 		}
 
 		$this->presenter->redirect('this');
