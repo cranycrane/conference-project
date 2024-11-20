@@ -7,6 +7,7 @@ use App\Domain\Conference\Conference;
 use App\Domain\Presentation\Presentation;
 use App\Domain\Presentation\PresentationRepository;
 use App\Domain\User\User;
+use App\Domain\Room\Room;
 use App\Domain\User\UserRepository;
 use App\Model\Exception\Logic\DuplicateEmailException;
 use App\Model\Exception\Logic\InvalidArgumentException;
@@ -36,6 +37,26 @@ class PresentationService implements ICrudService {
 	{
     $user = $this->entityManager->getReference(User::class, $data['userId']);
     $conference = $this->entityManager->getReference(Conference::class, $data['conferenceId']);
+	if (isset($data['startsAt']) && $data['startsAt']) {
+        if ($data['startsAt'] instanceof \DateTimeInterface) {
+            $startsAt = $data['startsAt'];
+        } else {
+            $startsAt = new \DateTime($data['startsAt']);
+        }
+    } else {
+        $startsAt = null;
+    }
+
+    // Zpracování endsAt
+    if (isset($data['endsAt']) && $data['endsAt']) {
+        if ($data['endsAt'] instanceof \DateTimeInterface) {
+            $endsAt = $data['endsAt'];
+        } else {
+            $endsAt = new \DateTime($data['endsAt']);
+        }
+    } else {
+        $endsAt = null;
+    }
 
 		$presentation = new Presentation(
 			$user,
@@ -43,7 +64,9 @@ class PresentationService implements ICrudService {
 			$data['title'],
 			$data['description'] ?? null,
 			$data['tags'] ?? null,
-			$data['photo'] ?? null
+			$data['photo'] ?? null,
+			$startsAt,
+			$endsAt
 		);
 
 		// Save presentation
@@ -86,10 +109,66 @@ class PresentationService implements ICrudService {
 		return $groupedPresentations;
 	}
 
-  public function update(): void
+	public function update(Presentation $presentation, array $data): Presentation
   {
+
+	if (isset($data['title'])) {
+        $presentation->title = $data['title'];
+    }
+    if (isset($data['description'])) {
+        $presentation->description = $data['description'];
+    }
+    if (isset($data['tags'])) {
+        $presentation->tags = $data['tags'];
+    }
+    if (isset($data['photo'])) {
+        $presentation->photo = $data['photo'];
+    }
+    if (isset($data['startsAt'])) {
+        if ($data['startsAt'] instanceof \DateTimeInterface) {
+            $presentation->startsAt = $data['startsAt'];
+        } else {
+            $presentation->startsAt = new \DateTime($data['startsAt']);
+        }
+    }
+    if (isset($data['endsAt'])) {
+        if ($data['endsAt'] instanceof \DateTimeInterface) {
+            $presentation->endsAt = $data['endsAt'];
+        } else {
+            $presentation->endsAt = new \DateTime($data['endsAt']);
+        }
+    }
+    if (isset($data['roomId'])) {
+        $presentation->room = $this->entityManager->getReference(Room::class, $data['roomId']);
+    }
+
+    // Kontrola kolizí
+    if ($this->hasCollision($presentation)) {
+        throw new \Exception('V této místnosti již probíhá jiná prezentace ve zvoleném čase.');
+    }
     $this->entityManager->flush();
+
+	return $presentation;
   }
+
+  private function hasCollision(Presentation $presentation): bool
+{
+    if (!$presentation->startsAt || !$presentation->endsAt || !$presentation->room) {
+        
+        return false;
+    }
+
+    $excludeId = $presentation->getId() ?? null;
+
+    $collisions = $this->presentationRepository->findCollisions(
+        $presentation->room,
+        $presentation->startsAt,
+        $presentation->endsAt,
+        $excludeId
+    );
+
+    return !empty($collisions);
+}
 
 	public function findByBySpeaker(int $speakerId): ArrayCollection {
 		return new ArrayCollection($this->presentationRepository->findPresentationsBySpeaker($speakerId));
