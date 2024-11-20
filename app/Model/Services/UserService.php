@@ -77,9 +77,16 @@ class UserService implements ICrudService
 
 	public function update(User $user): void
 	{
+		$existingUser = $this->userRepository->findOneByEmail($user->getEmail());
+
+		if ($existingUser !== null && $existingUser->getId() !== $user->getId()) {
+			throw new DuplicateEmailException('E-mail již existuje v systému.');
+		}
+
 		$this->entityManager->persist($user);
 		$this->entityManager->flush();
 	}
+
 
 	public function delete($id): void
 	{

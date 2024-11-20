@@ -10,7 +10,7 @@ use Ublaboo\DataGrid\DataGrid;
 
 class ReservationGrid extends BaseGrid {
 
-	private ReservationService $reservationService;	
+	private ReservationService $reservationService;
 	private ?int $conferenceId = null;
 
 	public function __construct(ReservationService $reservationService, ?int $conferenceId = null) {
@@ -25,31 +25,29 @@ class ReservationGrid extends BaseGrid {
 
 	public function createComponentGrid(): DataGrid {
 		$grid = new DataGrid();
-		
-		
+
+
 		if ($this->conferenceId !== null) {
             $grid->setDataSource($this->reservationService->findByConference($this->conferenceId));
         } else {
             $grid->setDataSource($this->reservationService->findAll());
         }
 
-		$grid->addColumnText('email', 'Uživatel')
-			->setSortable();
+		$grid->addColumnText('email', 'Uživatel');
+
 
 		if ($this->conferenceId == null){
 			$grid->addColumnText('conference', 'Konference')
-				->setSortable()
 				->setRenderer(function (Reservation $reservation) {
 					return $reservation->conference->title;
 				});
 		}
 
 		$grid->addColumnStatus('state', 'Stav')
-			->setOptions(Reservation::STATES) // 
+			->setOptions(Reservation::STATES) //
 			->onChange[] = [$this, 'statusChange'];
 
-		$grid->addColumnText('numOfPeople', 'Počet lidí')
-			->setSortable();
+		$grid->addColumnText('numOfPeople', 'Počet lidí');
 
 		$this->addDeleteAction($grid);
 		$this->addTranslation($grid);
@@ -65,8 +63,8 @@ class ReservationGrid extends BaseGrid {
 			$reservation->setState($newStatus);
 			//$reservation->state = $newStatus;
 			$this->reservationService->update();
-			
-			
+
+
 			$this->presenter->flashMessage('Stav rezervace byl úspěšně změněn.', 'success');
 		} else {
 			$this->presenter->flashMessage('Rezervace nebyla nalezena.', 'danger');
