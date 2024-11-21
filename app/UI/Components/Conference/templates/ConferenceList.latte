@@ -5,9 +5,9 @@
 				<div class="card" style="width: 100%;"> <!-- Nastavení šířky karty na 100% sloupce -->
 					<div class="card-image-container"> <!-- Kontejner pro obrázek a overlay -->
 						{if $conference->photo}
-							<img class="card-img-top" src="{$basePath}/{$conference->photo}" alt="Card image cap">
+							<img class="card-img-top" src="{$basePath}/{$conference->photo}" alt="Card image cap" style="max-height: 300px; object-fit: cover; width: 100%;">
 						{else}
-							<img class="card-img-top" src="{$basePath}/uploads/conferences/default.jpg" alt="Card image cap">
+							<img class="card-img-top" src="{$basePath}/uploads/conferences/default.jpg" alt="Card image cap" style="max-height: 300px; object-fit: cover; width: 100%;">
 						{/if}
                			{if $conference->getEndsAt() < $currentDateTime} <!-- Zkontroluje, zda prezentace již skončila -->
 							<div class="presentation-overlay">PROBĚHLO</div>
