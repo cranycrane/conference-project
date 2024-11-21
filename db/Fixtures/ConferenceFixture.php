@@ -33,7 +33,6 @@ class ConferenceFixture extends AbstractFixture
 				$conferenceData['description']
 			);
 
-			$conference->tags = $conferenceData['tags'];
 			$conference->setState($conferenceData['state']);
 
 			$referenceName = $conferenceData['title'] === 'Tech Conference 2024' ? 'tech-conference' : 'marketing-summit';
@@ -61,7 +60,6 @@ class ConferenceFixture extends AbstractFixture
 			'priceForSeat' => 1000,
 			'capacity' => 200,
 			'description' => 'A conference about the latest in technology.',
-			'tags' => ['Tech', 'Innovation', 'Future'],
 			'state' => Conference::STATE_CREATED,
 		];
 
@@ -75,7 +73,6 @@ class ConferenceFixture extends AbstractFixture
 			'priceForSeat' => 750,
 			'capacity' => 150,
 			'description' => 'Insights and trends in marketing for 2024.',
-			'tags' => ['Marketing', 'Business', 'Trends'],
 			'state' => Conference::STATE_ONGOING,
 		];
 	}

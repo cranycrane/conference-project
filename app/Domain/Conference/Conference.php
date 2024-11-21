@@ -37,11 +37,6 @@ class Conference extends AbstractEntity
 	/** @ORM\Column(type="string", length=255, nullable=FALSE) */
 	public string $title;
 
-//	/**
-//	 * @ORM\Transient
-//	 * */
-//	private int $numOfAttendees;
-
 	/** @ORM\Column(type="integer", length=10, nullable=FALSE) */
 	private int $state;
 
@@ -50,12 +45,6 @@ class Conference extends AbstractEntity
 
 	/** @ORM\Column(type="string", length=255, nullable=TRUE) */
 	public ?string $photo;
-
-	// todo unused remove
-	/**
-	 * @ORM\Column(type="json", nullable=false)
-	 */
-	public array $tags = [];
 
 	/** @ORM\Column(type="string", length=255, nullable=FALSE) */
 	public string $place;
@@ -123,7 +112,6 @@ class Conference extends AbstractEntity
 		$this->rooms = new ArrayCollection();
 		$this->reservations = new ArrayCollection();
 		$this->presentations = new ArrayCollection();
-		$this->tags = [];
 
 		$this->state = self::STATE_CREATED;
 	}
