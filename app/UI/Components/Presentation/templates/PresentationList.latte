@@ -79,7 +79,7 @@
 
 						<a href="{plink :Front:Presentations:detail id => $presentation->getId()}" class="btn btn-primary">Více informací</a>
 						{if $user->isLoggedIn() && ($presentation->speaker->getId() === $user->getId()
-						|| $presentation->conference->user->getId() === $user->getId())}
+						|| $presentation->conference->getUser()->getId() === $user->getId())}
 							<a n:href="edit! $presentation->getId()" class="btn btn-warning ajax" data-bs-toggle="modal" data-bs-target="#dialog-{$presentation->getId()}">Upravit</a>
 						{/if}
 					</div>
