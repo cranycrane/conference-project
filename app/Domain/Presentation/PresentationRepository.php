@@ -4,6 +4,7 @@ namespace App\Domain\Presentation;
 
 use App\Domain\Reservation\Reservation;
 use App\Domain\User\User;
+use App\Domain\Conference\Conference;
 use App\Domain\Room\Room;
 use App\Model\Database\Repository\AbstractRepository;
 
@@ -54,6 +55,21 @@ class PresentationRepository extends AbstractRepository
       }
 
       return $qb->getQuery()->getResult();
+  }
+
+  public function checkTimeOfPresentations(Conference $conference, \DateTimeImmutable $startsAt, \DateTimeImmutable $endsAt): bool
+  {
+      $qb = $this->createQueryBuilder('p')
+          ->select('COUNT(p.id)')
+          ->where('p.conference = :conference')
+          ->andWhere('p.startsAt < :startsAt OR p.endsAt > :endsAt')
+          ->setParameter('conference', $conference)
+          ->setParameter('startsAt', $startsAt)
+          ->setParameter('endsAt', $endsAt);
+
+      $count = (int) $qb->getQuery()->getSingleScalarResult();
+
+      return $count === 0;
   }
 
 

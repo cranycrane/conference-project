@@ -129,7 +129,8 @@ class ConferenceForm extends Control
     }
     catch (\Exception $e) {
         Debugger::log('Error while saving conference form:' . $e->getMessage(), ILogger::ERROR);
-        $this->presenter->flashMessage('Nastala chyba při ukládání konference.', 'error');
+        $errorMessage = $e->getMessage();
+        $this->presenter->flashMessage($errorMessage, 'error');
     }
 	$this->redirect('this');
 }
