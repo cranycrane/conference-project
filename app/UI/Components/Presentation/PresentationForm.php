@@ -34,7 +34,7 @@ class PresentationForm extends Control {
 		$form = $this->formFactory->forFrontend();
 
 		$isOrganizerOrAdmin = $this->presenter->getUser()->isInRole('admin') ||
-			$this->presenter->getUser()->isInRole('organizer');
+			$this->presenter->getUser()->getId() === $this->presentation?->conference->getUser()->getId();
 
 		$form->addHidden('id')
 			->setDefaultValue($this->presentation ? $this->presentation->getId() : null);
