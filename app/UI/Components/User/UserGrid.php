@@ -67,6 +67,8 @@ class UserGrid extends Control {
 				new StringConfirmation('Opravdu chcete smazat uživatele %s?', 'email')
 			);
 
+		$grid->addGroupButtonAction('Delete')->setClass('btn btn-sm btn-danger ajax')->onClick[] = [$this, 'deleteGroup'];
+
 		return $grid;
 	}
 
@@ -88,6 +90,20 @@ class UserGrid extends Control {
 		}
 	}
 
+	public function deleteGroup(array $ids): void {
+		try {
+			foreach($ids as $id) {
+				$this->userService->delete($id);
+			}
+			$this->getPresenter()->flashMessage('Uživatelé úspěšně smazáni', 'success');
+		} catch (\Exception $e) {
+			$this->getPresenter()->flashMessage('Chyba: ' . $e->getMessage(), 'error');
+			$this->getPresenter()->redrawControl('flashMessages');
+		}
+
+		$this->redirect('this');
+	}
+
 	public function handleDelete(int $id): void {
 		try {
 			$this->userService->delete($id);
@@ -102,9 +118,6 @@ class UserGrid extends Control {
 			$this->getPresenter()->redrawControl('flashMessages');
 			$this->redrawControl('flashes');
 			$this['grid']->reload();
-			bdump("AHOJ");
-		} else {
-			bdump("BUUU");
 		}
 	}
 
