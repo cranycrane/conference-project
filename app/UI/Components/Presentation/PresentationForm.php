@@ -40,10 +40,12 @@ class PresentationForm extends Control {
 			->setDefaultValue($this->presentation ? $this->presentation->getId() : null);
 
 		$form->addText('title', 'Název prezentace')
-			->setRequired();
+			->setRequired()
+			->addRule(Form::MAX_LENGTH, 'Název prezentace může mít maximálně 255 znaků.', 255);
 
 		$form->addTextArea('description', 'Popis prezentace')
-			->setRequired();
+			->setRequired()
+			->addRule(Form::MAX_LENGTH, 'Popis prezentace může mít maximálně 255 znaků.', 255);
 
 		$form->addText('speakerName', 'Jméno řečníka:')
 			->setDisabled(true)

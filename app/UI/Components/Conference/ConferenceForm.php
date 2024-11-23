@@ -36,10 +36,12 @@ class ConferenceForm extends Control
         $form->addHidden('id');
 
         $form->addText('title', 'Název konference:')
-            ->setRequired('Prosím, zadejte název konference.');
+            ->setRequired('Prosím, zadejte název konference.')
+            ->addRule(Form::MAX_LENGTH, 'Název konference může mít maximálně 255 znaků.', 255);
 
         $form->addText('genre', 'Žánr konference:')
-            ->setRequired('Prosím, zadejte žánr konference.');
+            ->setRequired('Prosím, zadejte žánr konference.')
+            ->addRule(Form::MAX_LENGTH, 'Žánr konference může mít maximálně 255 znaků.', 255);
 
         $form->addText('place', 'Místo konání:')
             ->setRequired('Prosím, zadejte místo konání.');
@@ -89,7 +91,8 @@ class ConferenceForm extends Control
             ->addRule(Form::MIN, 'Kapacita musí být kladné číslo.', 1);
 
         $form->addTextArea('description', 'Popis:')
-            ->setNullable();
+            ->setNullable()
+            ->addRule(Form::MAX_LENGTH, 'Popis konference může mít maximálně 255 znaků.', 255);
 
 		$form->addUpload('photoImage', 'Fotka/Poster:')
 			->setOption('description', sprintf('maximálně 5 MB, JPEG, PNG, GIF, WebP nebo AVIF'))

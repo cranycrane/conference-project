@@ -39,7 +39,8 @@ class QuestionForm extends Control
         $form->addHidden('id');
 
         $question = $form->addTextArea('question', 'Otázka:')
-            ->setRequired('Prosím, zadejte otázku');
+            ->setRequired('Prosím, zadejte otázku')
+            ->addRule(Form::MAX_LENGTH, 'Otázka může mít maximálně 255 znaků.', 255);
 
 
 		if($this->question) {
