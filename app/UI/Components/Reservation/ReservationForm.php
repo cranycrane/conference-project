@@ -145,7 +145,6 @@ class ReservationForm extends Control
 			$this->reservationService->create($values);
 
 			$this->presenter->flashMessage('Rezervace úspěšně uložena.', 'success');
-			bdump("super1");
 
 		}
         catch (DuplicateEmailException) {
