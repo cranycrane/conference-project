@@ -32,21 +32,25 @@ class SignUpForm extends Control {
 		$form->addEmail('email', 'E-mail:')
 			->setOption('required', true)
 			->addRule($form::Email, 'Prosím zadejte platný e-mail')
-			->setRequired('Zadejte váš e-mail.');
+			->setRequired('Zadejte váš e-mail.')
+			->addRule(Form::MAX_LENGTH, 'E-mail může mít maximálně 255 znaků.', 255);
 
 		$form->addText('firstName', 'Křestní jméno:')
 			->addRule($form::Filled, 'Prosím zadejte křesní jméno')
-			->setRequired('Prosím, zadejte křestní jméno.');
+			->setRequired('Prosím, zadejte křestní jméno.')
+			->addRule(Form::MAX_LENGTH, 'Jméno může mít maximálně 255 znaků.', 255);
 
 		$form->addText('lastName', 'Příjmení:')
-			->setRequired('Prosím, zadejte příjmení.');
+			->setRequired('Prosím, zadejte příjmení.')
+			->addRule(Form::MAX_LENGTH, 'Přijímení může mít maximálně 255 znaků.', 255);
 
 		if(!$this->user) {
 
 		$form->addPassword('password', 'Heslo:')
 			->setOption('description', sprintf('alespoň %d znaků', $this->userService::PasswordMinLength))
 			->setRequired('Vytvořte si své heslo.')
-			->addRule($form::MinLength, 'Heslo musí mít minimálně 8 znaků', $this->userService::PasswordMinLength);
+			->addRule($form::MinLength, 'Heslo musí mít minimálně 8 znaků', $this->userService::PasswordMinLength)
+			->addRule(Form::MAX_LENGTH, 'Heslo může mít maximálně 255 znaků.', 255);
 
 		$form->addPassword('passwordVerify', 'Heslo znovu:')
 			->setRequired('Zopakujte své heslo:')

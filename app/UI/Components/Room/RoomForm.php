@@ -33,10 +33,12 @@ class RoomForm extends Control
             ->setDefaultValue($this->room ? $this->room->getId() : null);
       
         $form->addText('roomNumber', 'Room Number:')
-            ->setRequired('Please enter the room number.');
+            ->setRequired('Please enter the room number.')
+            ->addRule(Form::MAX_LENGTH, 'Číslo místnosti může mít maximálně 255 znaků.', 255);
 
         $form->addText('address', 'Address:')
-            ->setRequired('Please enter the address.');
+            ->setRequired('Please enter the address.')
+            ->addRule(Form::MAX_LENGTH, 'Adresa místnosti může mít maximálně 255 znaků.', 255);
 
         if ($this->room) {
             $form->setDefaults($this->room);

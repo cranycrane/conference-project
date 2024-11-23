@@ -6,6 +6,7 @@ use Nette\Application\UI\Form;
 use Nette\Application\UI\Control;
 use App\Domain\Reservation\Reservation;
 use App\Model\Services\ReservationService;
+use App\Model\Services\ConferenceService;
 use App\Model\Services\UserService;
 use App\UI\Form\FormFactory;
 use Doctrine\Common\Collections\ArrayCollection;
@@ -19,6 +20,7 @@ class ReservationForm extends Control
     private FormFactory $formFactory;
     private ReservationService $reservationService;
     private UserService $userService;
+    private ConferenceService $conferenceService;
     private int $conferenceId;
     private ?int $userId = null;
     private ?string $email = null;
@@ -26,12 +28,13 @@ class ReservationForm extends Control
     private ?string $lastName = null;
 
     public function __construct(FormFactory $formFactory, ReservationService $reservationService,
-                                UserService $userService, int $conferenceId, int $userId = null)
+                                UserService $userService, ConferenceService $conferenceService, int $conferenceId,  int $userId = null)
     {
         $this->formFactory = $formFactory;
         $this->reservationService = $reservationService;
         $this->userService = $userService;
         $this->conferenceId = $conferenceId;
+        $this->conferenceService = $conferenceService;
         $this->userId = $userId;
         if ($this->userId) {
             $user = $this->userService->find($this->userId);
@@ -54,13 +57,16 @@ class ReservationForm extends Control
         $emailField = $form->addEmail('email', 'E-mail:')
 			->setOption('required', true)
 			->addRule($form::Email, 'Prosím zadejte platný e-mail')
+            ->addRule(Form::MAX_LENGTH, 'E-mail může mít maximálně 255 znaků.', 255)
 			->setRequired('Zadejte váš e-mail.');
 
         $firstNameField = $form->addText('firstName', 'Jméno:')
-            ->setRequired('Prosím, zadejte křestní jméno.');
+            ->setRequired('Prosím, zadejte křestní jméno.')
+            ->addRule(Form::MAX_LENGTH, 'Jméno může mít maximálně 255 znaků.', 255);
 
         $lastNameField = $form->addText('lastName', 'Příjmení:')
-            ->setRequired('Prosím, zadejte příjmení.');
+            ->setRequired('Prosím, zadejte příjmení.')
+            ->addRule(Form::MAX_LENGTH, 'Přijímení může mít maximálně 255 znaků.', 255);
 
         if ($this->email && $this->firstName && $this->lastName) {
             // Set email value and disable the field if an email is passed
@@ -107,9 +113,23 @@ class ReservationForm extends Control
             ->setDefaultValue(1)
             ->addRule(Form::MIN, 'Počet lidí musí být kladný.', 1)
             ->addRule(Form::MAX, "Konference má zbývající kapacitu jen {$this->reservationService->getRemainingCapacity($this->conferenceId)} osob", $this->reservationService->getRemainingCapacity($this->conferenceId))
-            ->addRule(Form::MAX, 'Najednout můžete rezervovat maximálně 20 vstupenek', 20);
+            ->addRule(Form::MAX, 'Najednout můžete rezervovat maximálně 20 vstupenek', 20)
+            ->setHtmlId('numOfPeople');
+
+        $conference = $this->conferenceService->find($this->conferenceId);
+        if (!$conference) {
+            throw new \Exception('Konference nebyla nalezena.');
+        }
+        $pricePerSeat = $conference->priceForSeat;
+    
+       
+        $form->addHidden('pricePerSeat', (string)$pricePerSeat);
+
+
+
 
         $form->addSubmit('submit', 'Potvrdit rezervaci');
+
 
         $form->onSuccess[] = [$this, 'formSucceeded'];
 		$form->onError[] = [$this, 'formError'];
@@ -160,6 +180,12 @@ class ReservationForm extends Control
     public function render(): void
     {
         $this->template->userId = $this->userId;
+        $conference = $this->conferenceService->find($this->conferenceId);
+        if (!$conference) {
+            throw new \Exception('Konference nebyla nalezena.');
+        }
+
+        $this->template->pricePerSeat = $conference->priceForSeat;
         $this->template->setFile(__DIR__ . '/templates/ReservationForm.latte');
         $this->template->render();
     }
