@@ -1,18 +1,18 @@
 # Services
 #
 services:
-	# Forms ===================
-	- App\UI\Form\FormFactory
-	- App\UI\Components\Conference\ConferenceFormFactory
-	# Latte ===================
-	latte.latteFactory:
-		setup:
-			- addFilter(datetime, App\Model\Latte\Filters::datetime)
-			- addFilter(neon, App\Model\Latte\Filters::neon)
-			- addFilter(json, App\Model\Latte\Filters::json)
-
-	latte.templateFactory:
-		class: App\Model\Latte\TemplateFactory
+#	# Forms ===================
+#	- App\UI\Form\FormFactory
+#	- App\UI\Components\Conference\ConferenceFormFactory
+#	# Latte ===================
+#	latte.latteFactory:
+#		setup:
+#			- addFilter(datetime, App\Model\Latte\Filters::datetime)
+#			- addFilter(neon, App\Model\Latte\Filters::neon)
+#			- addFilter(json, App\Model\Latte\Filters::json)
+#
+#	latte.templateFactory:
+#		class: App\Model\Latte\TemplateFactory
 
 	# Security ================
 	nette.userStorage:
@@ -30,14 +30,11 @@ services:
 		type: Nette\Application\IRouter
 		factory: @App\Model\Router\RouterFactory::create
 
-	# Console ================
-	- App\Console\HelloCommand
-
 	- App\Model\Database\QueryManager
 
 latte:
-	macros:
-		- App\Model\Latte\Macros::register
+#	macros:
+#		- App\Model\Latte\Macros::register
 search:
   -	in: %appDir%
     classes:

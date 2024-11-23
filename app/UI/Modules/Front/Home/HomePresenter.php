@@ -32,7 +32,6 @@ final class HomePresenter extends BaseFrontPresenter
 	}
 
 	public function createComponentSoonConferences(): ConferenceList {
-		bdump($this->conferenceService->find5UpcomingConferences()->count());
 		return $this->conferenceListFactory->create($this->conferenceService->find5UpcomingConferences());
 	}
 

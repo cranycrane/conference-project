@@ -98,14 +98,6 @@ class User extends AbstractEntity
 		$this->state = self::STATE_FRESH;
 	}
 
-	public function addReservation(Reservation $reservation): void
-	{
-		if (!$this->reservations->contains($reservation)) {
-			$this->reservations[] = $reservation;
-			$reservation->setUser($this);
-		}
-	}
-
 	public function changeLoggedAt(): void
 	{
 		$this->lastLoggedAt = new DateTime();

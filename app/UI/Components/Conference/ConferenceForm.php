@@ -49,8 +49,6 @@ class ConferenceForm extends Control
 		$isConferenceRunning = $this->conferenceId &&
 			(new DateTime() > $this->conferenceService->find($this->conferenceId)->getStartsAt());
 
-		bdump($isConferenceRunning);
-
         $form->addDateTime('startsAt', 'Začátek konference:')
 			->setRequired('Prosím, zadejte datum začátku.')
             ->addRule(function ($control) {
@@ -122,12 +120,10 @@ class ConferenceForm extends Control
     public function formSucceeded(Form $form, $values): void
 {
     try {
-		bdump("Sending");
         $this->conferenceService->saveConference($values);
         $this->presenter->flashMessage('Konference byla úspěšně upravena.', 'success');
     }
     catch (NoCapacityException) {
-		bdump("No capacity exception");
         $this->presenter->flashMessage('Kapacita musí být větší než počet již přihlášených účastníků', 'error');
     }
     catch (\Exception $e) {
