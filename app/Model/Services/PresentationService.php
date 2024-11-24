@@ -47,7 +47,6 @@ class PresentationService implements ICrudService {
         $startsAt = null;
     }
 
-    // Zpracování endsAt
     if (isset($data['endsAt']) && $data['endsAt']) {
         if ($data['endsAt'] instanceof \DateTimeInterface) {
             $endsAt = $data['endsAt'];
@@ -179,7 +178,7 @@ class PresentationService implements ICrudService {
   private function hasCollision(Presentation $presentation): bool
 {
     if (!$presentation->startsAt || !$presentation->endsAt || !$presentation->room) {
-        
+
         return false;
     }
 
@@ -244,7 +243,6 @@ class PresentationService implements ICrudService {
 	public function findByUser(?int $userId): ArrayCollection
 	{
 		if ($userId === null) {
-			// Vrátíme prázdnou kolekci, pokud je uživatel null
 			return new ArrayCollection();
 		}
 

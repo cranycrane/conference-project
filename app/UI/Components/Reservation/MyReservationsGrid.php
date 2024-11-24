@@ -65,13 +65,13 @@ class MyReservationsGrid extends BaseGrid {
 			->setSortable();
 
         $grid->addAction('viewConference', 'Zobrazit konferenci')
-			->setClass('btn btn-primary') // Style the button
-			->setText('Zobrazit konferenci'); // Button text
+			->setClass('btn btn-primary')
+			->setText('Zobrazit konferenci');
 
         $grid->addAction('viewSchedule', 'Zobrazit můj rozvrh')
 			->addAttributes(['data-bs-toggle' => 'modal', 'data-bs-target' => '#dialog-schedule'])
-			->setClass('btn btn-primary ajax') // Style the button
-			->setText('Zobrazit můj rozvrh'); // Button text
+			->setClass('btn btn-primary ajax')
+			->setText('Zobrazit můj rozvrh');
 
 		$this->addTranslation($grid);
 

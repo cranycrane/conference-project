@@ -1,17 +1,15 @@
 {block content}
     <h2>Upravit konferenci: {$conference->title}</h2>
 
-    <!-- Formulář pro editaci konference -->
     {control conferenceForm}
 {/block}
 
 {block scripts}
 <script>
-    // Rozšíření Nette AJAX pro přesměrování po odeslání formuláře
     $.nette.ext('redirect', {
         success: function (payload) {
             if (payload.redirect) {
-                window.location.href = payload.redirect; // Přesměrování na danou URL
+                window.location.href = payload.redirect;
             }
         }
     });

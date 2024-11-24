@@ -34,20 +34,18 @@ class ConferencePresenter extends BaseAdminPresenter {
         return $this->conferenceGridFactory->create();
     }
 
-    // Přidáme metodu pro vytvoření komponenty ConferenceForm
     public function createComponentConferenceForm(): ConferenceForm {
         $conferenceForm = $this->conferenceFormFactory->create();
-    
+
         if (isset($this->conferenceId)) {
             $conferenceForm->setId($this->conferenceId);
         }
-        
+
         return $conferenceForm;
     }
 
     public function renderEdit(int $id): void
     {
-    // Získejte konferenci podle ID
     $conference = $this->conferenceService->find($id);
     if (!$conference) {
         $this->error('Konference nenalezena');
@@ -58,7 +56,7 @@ class ConferencePresenter extends BaseAdminPresenter {
     $template = $this->getTemplate();
     $template->conference = $conference;
 
-    $form = $this['conferenceForm']->getComponent('form'); // Získání formuláře
+    $form = $this['conferenceForm']->getComponent('form');
     $form->setDefaults([
         'id' => $conference->getId(),
         'title' => $conference->title,

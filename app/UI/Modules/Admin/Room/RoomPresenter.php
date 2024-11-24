@@ -44,29 +44,29 @@ final class RoomPresenter extends BaseAdminPresenter
     public function createComponentRoomForm(): RoomForm {
         return $this->roomFormFactory->create($this->conferenceId);
     }
-   
-    
+
+
     public function renderDefault(int $conferenceId = null): void
     {
         if ($conferenceId !== null) {
             $rooms = $this->roomService->findByConference($conferenceId);
-            $conference = $this->conferenceService->find($conferenceId); // Fetch the conference by its ID
+            $conference = $this->conferenceService->find($conferenceId);
 
             if (!$conference) {
                 $this->error('Conference not found');
             }
             $this->template->conferenceId = $conferenceId;
-            $this->template->conferenceName = $conference->title; // Pass the conference name to the template
+            $this->template->conferenceName = $conference->title;
         } else {
             $rooms = $this->roomService->findAll();
-            $this->template->conferenceName = null; // No specific conference
+            $this->template->conferenceName = null;
         }
 
         $this->template->rooms = $rooms;
     }
 
 
-    
 
-   
+
+
 }

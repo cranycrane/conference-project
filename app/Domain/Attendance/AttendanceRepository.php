@@ -27,7 +27,7 @@ class AttendanceRepository extends AbstractRepository
 	public function findUserSchedule(int $userId, int $conferenceId): array {
 		return $this->createQueryBuilder('a')
 			->innerJoin('a.presentation', 'p')
-			->innerJoin('p.conference', 'c') // Předpokládáme, že prezentace je spojená s konferencí
+			->innerJoin('p.conference', 'c')
 			->where('a.user = :userId')
 			->andWhere('c.id = :conferenceId')
 			->setParameter('userId', $userId)

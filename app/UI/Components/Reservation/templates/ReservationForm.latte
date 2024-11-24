@@ -1,7 +1,7 @@
 {block content}
     {control form}
-    <div style="margin-top: 20px;"> 
-        <strong>Celková cena:</strong> 
+    <div style="margin-top: 20px;">
+        <strong>Celková cena:</strong>
         <span id="totalPriceDisplay">{$pricePerSeat}</span> Kč
     </div>
 {/block}
@@ -10,21 +10,20 @@
     <script>
         document.addEventListener('DOMContentLoaded', function () {
 
-            var numOfPeopleInput = document.querySelector('input#numOfPeople'); 
-            var totalPriceDisplay = document.getElementById('totalPriceDisplay'); 
+            var numOfPeopleInput = document.querySelector('input#numOfPeople');
+            var totalPriceDisplay = document.getElementById('totalPriceDisplay');
             var pricePerSeatInput = document.querySelector('input[name="pricePerSeat"]');
-            var pricePerSeat = parseFloat(pricePerSeatInput.value); 
+            var pricePerSeat = parseFloat(pricePerSeatInput.value);
 
             function updateTotalPrice() {
-                // Získání počtu lidí
                 var numOfPeople = parseInt(numOfPeopleInput.value) || 0;
                 var totalPrice = numOfPeople * pricePerSeat;
-                totalPriceDisplay.textContent = totalPrice.toFixed(2); 
+                totalPriceDisplay.textContent = totalPrice.toFixed(2);
                 console.log('Total Price Updated:', totalPrice);
             }
 
             numOfPeopleInput.addEventListener('input', updateTotalPrice);
-            updateTotalPrice(); 
+            updateTotalPrice();
         });
     </script>
 {/block}

@@ -58,7 +58,6 @@ class Conference extends AbstractEntity
 	/** @ORM\Column(type="string", length=255, nullable=TRUE) */
 	public ?string $description;
 
-	// todo currency
 	/** @ORM\Column(type="integer", length=10, nullable=FALSE) */
 	public int $priceForSeat;
 

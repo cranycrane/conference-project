@@ -27,7 +27,7 @@ class ReservationPresenter extends BaseAdminPresenter {
         $this->conferenceId = $conferenceId;
 
 		if ($conferenceId) {
-			$conference = $this->conferenceService->find($conferenceId); 
+			$conference = $this->conferenceService->find($conferenceId);
 			if ($conference) {
 				$this->template->conferenceName = $conference->title;
 			}
@@ -36,10 +36,9 @@ class ReservationPresenter extends BaseAdminPresenter {
 
 	public function createComponentGrid(): ReservationGrid {
         $grid = $this->gridFactory->create();
-        
-        // Nastavíme conferenceId do gridu
+
         $grid->setConferenceId($this->conferenceId);
-        
+
         return $grid;
     }
 }

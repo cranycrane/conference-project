@@ -26,12 +26,11 @@ class RoomForm extends Control
 
     public function createComponentForm(): Form
     {
-        // Využití vaší továrny na formuláře
-        $form = $this->formFactory->forFrontend(); // nebo forBackend(), pokud je formulář určen pro administrátory
+        $form = $this->formFactory->forFrontend();
 
         $form->addHidden('id')
             ->setDefaultValue($this->room ? $this->room->getId() : null);
-      
+
         $form->addText('roomNumber', 'Room Number:')
             ->setRequired('Please enter the room number.')
             ->addRule(Form::MAX_LENGTH, 'Číslo místnosti může mít maximálně 255 znaků.', 255);

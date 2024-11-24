@@ -61,7 +61,6 @@ class ReservationGrid extends BaseGrid {
 		$reservation = $this->reservationService->find($id);
 		if ($reservation) {
 			$reservation->setState($newStatus);
-			//$reservation->state = $newStatus;
 			$this->reservationService->update();
 
 

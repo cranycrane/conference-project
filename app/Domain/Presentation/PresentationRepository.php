@@ -30,13 +30,13 @@ class PresentationRepository extends AbstractRepository
   public function findUpcomingPresentationsWithMostAttendances()
   {
     return $this->createQueryBuilder('p')
-      ->leftJoin('p.attendances', 'a') // Spojí s tabulkou Attendance
-      ->addSelect('COUNT(a.id) AS HIDDEN attendanceCount') // Spočítá počet účastníků
-      ->where('p.endsAt > :currentDateTime') // Omezení na prezentace, které ještě neproběhly
+      ->leftJoin('p.attendances', 'a')
+      ->addSelect('COUNT(a.id) AS HIDDEN attendanceCount')
+      ->where('p.endsAt > :currentDateTime')
       ->setParameter('currentDateTime', new \DateTime())
-      ->groupBy('p.id') // Seskupení podle prezentace
-      ->orderBy('attendanceCount', 'DESC') // Seřazení podle počtu účastníků
-      ->setMaxResults(3) // Vrátí pouze 3 výsledky
+      ->groupBy('p.id')
+      ->orderBy('attendanceCount', 'DESC')
+      ->setMaxResults(3)
       ->getQuery()
       ->getResult();
   }

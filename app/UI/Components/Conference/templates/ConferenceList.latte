@@ -1,15 +1,15 @@
 <div class="row my-4">
 	{if $conferences->count() > 0}
 		{foreach $conferences as $conference}
-			<div class="col-sm-12 col-md-6 col-lg-4 mb-4"> <!-- Responzivní sloupce -->
-				<div class="card" style="width: 100%;"> <!-- Nastavení šířky karty na 100% sloupce -->
-					<div class="card-image-container"> <!-- Kontejner pro obrázek a overlay -->
+			<div class="col-sm-12 col-md-6 col-lg-4 mb-4">
+				<div class="card" style="width: 100%;">
+					<div class="card-image-container">
 						{if $conference->photo}
 							<img class="card-img-top" src="{$basePath}/{$conference->photo}" alt="Card image cap" style="max-height: 300px; object-fit: cover; width: 100%;">
 						{else}
 							<img class="card-img-top" src="{$basePath}/uploads/conferences/default.jpg" alt="Card image cap" style="max-height: 300px; object-fit: cover; width: 100%;">
 						{/if}
-               			{if $conference->getEndsAt() < $currentDateTime} <!-- Zkontroluje, zda prezentace již skončila -->
+               			{if $conference->getEndsAt() < $currentDateTime}
 							<div class="presentation-overlay">PROBĚHLO</div>
 						{/if}
 					</div>

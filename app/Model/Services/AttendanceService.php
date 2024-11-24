@@ -33,7 +33,6 @@ class AttendanceService implements ICrudService {
 	/**
 	 * @param array<string, scalar> $data
 	 */
-	// todo bud slozeny primarni klic, nebo pohlidat aby neexistovaly 2+ krat stejna attendance pro usera a prezetnaci
 	public function create(array $data): Attendance {
 		$user = $this->entityManager->getReference(User::class, $data['userId']);
 		$presentation = $this->entityManager->getReference(Presentation::class, $data['presentationId']);

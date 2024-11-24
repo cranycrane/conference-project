@@ -92,7 +92,6 @@ class ConferenceService
             throw new \Exception('V rámci konference jsou již naplánované prezentace mimo vámi zvolený termín.');
         }
 
-        // Zde aktualizujeme hodnoty konference
         $conference->title = $values->title;
         $conference->getNumOfAttendees();
         $conference->genre = $values->genre;
@@ -109,7 +108,6 @@ class ConferenceService
 
         $this->entityManager->flush();
     } else {
-        // Pokud není ID, vytváříme novou konferenci
         $conference = new Conference(
             $this->userRepository->find($this->netteUser->getId()),
             $values->title,
@@ -169,7 +167,6 @@ class ConferenceService
             throw new InvalidArgumentException("Konference nenalezena.");
         }
 
-        // Použití setter metody dle názvu pole
         switch ($field) {
             case 'title':
                 $conference->title = $value;

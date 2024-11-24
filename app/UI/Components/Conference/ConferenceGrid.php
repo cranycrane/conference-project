@@ -20,7 +20,7 @@ class ConferenceGrid extends Control {
 	public function createComponentGrid(): DataGrid {
 		$grid = new DataGrid();
 		$grid->setDataSource($this->conferenceService->findAll());
-	
+
 		// Přidání sloupců
 		$grid->addColumnText('title', 'Název')
 			->setSortable();
@@ -34,7 +34,7 @@ class ConferenceGrid extends Control {
 			->setFormat(0, ',', ' ');
 		$grid->addColumnNumber('capacity', 'Kapacita')
 			->setFormat(0, ',', ' ');
-	
+
 
 		// Akce pro mazání
 		$grid->addAction('delete', 'Smazat', 'delete!')
@@ -43,12 +43,12 @@ class ConferenceGrid extends Control {
 			->setConfirmation(new StringConfirmation('Opravdu chcete smazat konferenci %s?', 'title'));
 
 		$grid->addAction('edit', 'Upravit')
-			->setClass('btn btn-primary') // Nastavení třídy pro modré tlačítko
+			->setClass('btn btn-primary')
 			->setText('Upravit');
 
 		$grid->addAction('viewRooms', 'Místnosti')
-			->setClass('btn btn-primary') // Style the button
-			->setText('View Rooms'); // Button text
+			->setClass('btn btn-primary')
+			->setText('View Rooms');
 
 		$grid->addAction('viewReservations', 'Rezervace', 'viewReservations!')
 			->setClass('btn btn-primary')
@@ -57,8 +57,8 @@ class ConferenceGrid extends Control {
 		$grid->addAction('viewPresentation', 'Prezentace', 'viewPresentations!')
 			->setClass('btn btn-primary')
 			->setText('Rezervace');
-		
-	
+
+
 		return $grid;
 	}
 
@@ -76,7 +76,7 @@ class ConferenceGrid extends Control {
 
 	public function handleEdit(int $id): void
 	{
-		$this->presenter->redirect('Conference:edit', $id); 
+		$this->presenter->redirect('Conference:edit', $id);
 	}
 	public function handleViewReservations(int $id): void
 	{

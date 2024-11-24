@@ -10,7 +10,7 @@
 
 			<!-- Nav tabs -->
 			<ul class="nav nav-tabs justify-content-center pt-2" id="conferenceTabs" role="tablist">
-				{var $first = true} <!-- Pomocná proměnná pro první tab -->
+				{var $first = true}
 				{foreach $presentationsByDay as $date => $presentations}
 					<li class="nav-item" role="presentation">
 						<button class="nav-link{if $first} active{/if} text-dark" id="tab-{$date}" data-bs-toggle="tab"
@@ -25,7 +25,7 @@
 
 			<!-- Tab panes -->
 			<div class="tab-content mt-3">
-				{var $first = true} <!-- Znovu použijeme proměnnou pro první tab pane -->
+				{var $first = true}
 				{foreach $presentationsByDay as $date => $presentations}
 					<div class="tab-pane fade{if $first} show active{/if}" id="tabContent-{$date}" role="tabpanel"
 						 aria-labelledby="tab-{$date}">
