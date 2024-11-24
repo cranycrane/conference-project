@@ -40,7 +40,7 @@ class PresentationRepository extends AbstractRepository
       ->getQuery()
       ->getResult();
   }
-  public function findCollisions(Room $room, \DateTimeImmutable $startsAt, \DateTimeImmutable $endsAt, ?int $excludePresentationId = null): array
+  public function findCollisions(Room $room, \DateTimeInterface $startsAt, \DateTimeInterface $endsAt, ?int $excludePresentationId = null): array
   {
       $qb = $this->createQueryBuilder('p')
           ->where('p.room = :room')
@@ -57,7 +57,7 @@ class PresentationRepository extends AbstractRepository
       return $qb->getQuery()->getResult();
   }
 
-  public function checkTimeOfPresentations(Conference $conference, \DateTimeImmutable $startsAt, \DateTimeImmutable $endsAt): bool
+  public function checkTimeOfPresentations(Conference $conference, \DateTimeInterface $startsAt, \DateTimeInterface $endsAt): bool
   {
       $qb = $this->createQueryBuilder('p')
           ->select('COUNT(p.id)')
