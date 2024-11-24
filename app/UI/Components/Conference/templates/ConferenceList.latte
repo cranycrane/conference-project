@@ -7,7 +7,7 @@
 						{if $conference->photo}
 							<img class="card-img-top" src="{$basePath}/{$conference->photo}" alt="Card image cap" style="max-height: 300px; object-fit: cover; width: 100%;">
 						{else}
-							<img class="card-img-top" src="{$basePath}/uploads/conferences/default.jpg" alt="Card image cap" style="max-height: 300px; object-fit: cover; width: 100%;">
+							<img class="card-img-top" src="{$basePath}/uploads/conferences/default.webp" alt="Card image cap" style="max-height: 300px; object-fit: cover; width: 100%;">
 						{/if}
                			{if $conference->getEndsAt() < $currentDateTime}
 							<div class="presentation-overlay">PROBĚHLO</div>
