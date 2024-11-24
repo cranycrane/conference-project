@@ -107,17 +107,17 @@ class PresentationGrid extends BaseGrid {
 			$presentation = $this->presentationService->find($id);
 
 			if (!$presentation) {
-				$this->presenter->flashMessage('Prezentace nebyla nalezena.', 'danger');
+				$this->presenter->flashMessage('Prezentace nebyla nalezena.', 'error');
 				return;
 			}
 
 			$data = ['state' => $newStatus];
-
+			bdump($newStatus);
 			$this->presentationService->update($presentation, $data);
 
 			$this->presenter->flashMessage('Stav prezentace byl úspěšně změněn.', 'success');
 		} catch (\Exception $e) {
-			$this->presenter->flashMessage($e->getMessage(), 'danger');
+			$this->presenter->flashMessage($e->getMessage(), 'error');
 		}
 
 		// Redraw the item to update the status in the grid

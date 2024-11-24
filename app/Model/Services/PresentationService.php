@@ -153,9 +153,11 @@ class PresentationService implements ICrudService {
 		$this->validatePresentationTiming($presentation);
 		$this->validateNoCollision($presentation);
 
-		if (isset($data['state']) && $data['state'] === Presentation::STATE_APPROVED) {
+		if (isset($data['state']) && $data['state'] == Presentation::STATE_APPROVED) {
 			$this->validateCanBeApproved($presentation);
-			$presentation->state = $data['state'];
+			$presentation->setState($data['state']);
+		} else if (isset($data['state'])) {
+			$presentation->setState($data['state']);
 		}
 
 		$this->entityManager->flush();
