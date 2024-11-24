@@ -103,23 +103,29 @@ class PresentationGrid extends BaseGrid {
 
 	public function statusChange($id, $newStatus): void
 	{
-		$presentation = $this->presentationService->find($id);
-		if ($presentation) {
-			$presentation->setState($newStatus);
+		try {
+			$presentation = $this->presentationService->find($id);
+
+			if (!$presentation) {
+				$this->presenter->flashMessage('Prezentace nebyla nalezena.', 'danger');
+				return;
+			}
+
 			$data = ['state' => $newStatus];
+
 			$this->presentationService->update($presentation, $data);
 
 			$this->presenter->flashMessage('Stav prezentace byl úspěšně změněn.', 'success');
-		} else {
-			$this->presenter->flashMessage('Prezentace nebyla nalezena.', 'danger');
+		} catch (\Exception $e) {
+			$this->presenter->flashMessage($e->getMessage(), 'danger');
 		}
 
 		// Redraw the item to update the status in the grid
-
 		if ($this->presenter->isAjax()) {
 			$this['grid']->redrawItem($id);
 		}
 	}
+
 
 	public function createComponentPresentationEditForm(): PresentationForm {
 		$presentation = $this->presentationService->find($this->currentPresentationId);

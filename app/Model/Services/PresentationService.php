@@ -121,59 +121,75 @@ class PresentationService implements ICrudService {
 
 		return $groupedPresentations;
 	}
-
 	public function update(Presentation $presentation, array $data): Presentation
-  {
+	{
+		// Aktualizace základních dat
+		if (isset($data['title'])) {
+			$presentation->title = $data['title'];
+		}
+		if (isset($data['description'])) {
+			$presentation->description = $data['description'];
+		}
+		if (isset($data['tags'])) {
+			$presentation->tags = $data['tags'];
+		}
+		if (isset($data['photo'])) {
+			$presentation->photo = $data['photo'];
+		}
+		if (isset($data['startsAt'])) {
+			$presentation->startsAt = $data['startsAt'] instanceof \DateTimeInterface
+				? $data['startsAt']
+				: new \DateTime($data['startsAt']);
+		}
+		if (isset($data['endsAt'])) {
+			$presentation->endsAt = $data['endsAt'] instanceof \DateTimeInterface
+				? $data['endsAt']
+				: new \DateTime($data['endsAt']);
+		}
+		if (isset($data['roomId'])) {
+			$presentation->room = $this->entityManager->getReference(Room::class, $data['roomId']);
+		}
 
-	if (isset($data['title'])) {
-        $presentation->title = $data['title'];
-    }
-    if (isset($data['description'])) {
-        $presentation->description = $data['description'];
-    }
-    if (isset($data['tags'])) {
-        $presentation->tags = $data['tags'];
-    }
-    if (isset($data['photo'])) {
-        $presentation->photo = $data['photo'];
-    }
-    if (isset($data['startsAt'])) {
-        if ($data['startsAt'] instanceof \DateTimeInterface) {
-            $presentation->startsAt = $data['startsAt'];
-        } else {
-            $presentation->startsAt = new \DateTime($data['startsAt']);
-        }
-    }
-    if (isset($data['endsAt'])) {
-        if ($data['endsAt'] instanceof \DateTimeInterface) {
-            $presentation->endsAt = $data['endsAt'];
-        } else {
-            $presentation->endsAt = new \DateTime($data['endsAt']);
-        }
-    }
-    if (isset($data['roomId'])) {
-        $presentation->room = $this->entityManager->getReference(Room::class, $data['roomId']);
-    }
+		$this->validatePresentationTiming($presentation);
+		$this->validateNoCollision($presentation);
 
-	$conference = $presentation->conference;
-    if ($presentation->startsAt && ($presentation->startsAt < $conference->getStartsAt() || $presentation->startsAt > $conference->getEndsAt())) {
-        throw new \Exception('Začátek prezentace musí být v rámci konference.');
-    }
-    if ($presentation->endsAt && ($presentation->endsAt < $conference->getStartsAt() || $presentation->endsAt > $conference->getEndsAt())) {
-        throw new \Exception('Konec prezentace musí být v rámci konference.');
-    }
-    if ($presentation->startsAt && $presentation->endsAt && $presentation->startsAt > $presentation->endsAt) {
-        throw new \Exception('Začátek prezentace musí být před koncem.');
-    }
+		if (isset($data['state']) && $data['state'] === Presentation::STATE_APPROVED) {
+			$this->validateCanBeApproved($presentation);
+			$presentation->state = $data['state'];
+		}
 
-    // Kontrola kolizí
-    if ($this->hasCollision($presentation)) {
-        throw new \Exception('V této místnosti již probíhá jiná prezentace ve zvoleném čase.');
-    }
-    $this->entityManager->flush();
+		$this->entityManager->flush();
+		return $presentation;
+	}
 
-	return $presentation;
-  }
+	private function validatePresentationTiming(Presentation $presentation): void
+	{
+		$conference = $presentation->conference;
+
+		if ($presentation->startsAt && ($presentation->startsAt < $conference->getStartsAt() || $presentation->startsAt > $conference->getEndsAt())) {
+			throw new \Exception('Začátek prezentace musí být v rámci konference.');
+		}
+		if ($presentation->endsAt && ($presentation->endsAt < $conference->getStartsAt() || $presentation->endsAt > $conference->getEndsAt())) {
+			throw new \Exception('Konec prezentace musí být v rámci konference.');
+		}
+		if ($presentation->startsAt && $presentation->endsAt && $presentation->startsAt > $presentation->endsAt) {
+			throw new \Exception('Začátek prezentace musí být před koncem.');
+		}
+	}
+
+	private function validateNoCollision(Presentation $presentation): void
+	{
+		if ($this->hasCollision($presentation)) {
+			throw new \Exception('V této místnosti již probíhá jiná prezentace ve zvoleném čase.');
+		}
+	}
+
+	private function validateCanBeApproved(Presentation $presentation): void
+	{
+		if (!$presentation->room || !$presentation->startsAt || !$presentation->endsAt) {
+			throw new \Exception('Prezentace nemůže být schválena bez přiřazené místnosti a času.');
+		}
+	}
 
   private function hasCollision(Presentation $presentation): bool
 {

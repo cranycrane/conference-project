@@ -111,6 +111,11 @@ class Presentation extends AbstractEntity
 		$this->state = self::STATE_CREATED;
 	}
 
+	public function canBeApproved(): bool
+	{
+		return $this->room !== null && $this->startsAt !== null && $this->endsAt !== null;
+	}
+
 	public function getUserAttendance(int $userId): ?Attendance
 	{
 		foreach ($this->attendances as $attendance) {
