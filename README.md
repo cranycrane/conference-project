@@ -1,4 +1,8 @@
-# Web app Skeleton in Nette+Doctrine
+# Informační systémy (IIS) - Projekt
+Informační systém pro pořádání konferencí.
+
+## Hodnocení
+**28/30 bodů**
 
 # Požadavky
 - Nainstalovaný Docker
